@@ -1,18 +1,32 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import tailwindcss from '@tailwindcss/vite'
+import electron from 'vite-plugin-electron'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     tailwindcss(),
     react(),
+    electron({
+      entry: 'src/electron/main.ts',
+      vite: {
+        build: {
+          outDir: 'dist-electron',
+          rollupOptions: {
+            input: {
+              preload: 'src/electron/preload.cts'
+            }
+          }
+        }
+      }
+    })
   ],
   base: './',
   build: {
     outDir: 'dist-react',
   },
-  server:{
+  server: {
     port: 5123,
     strictPort: true
   },

@@ -7,7 +7,8 @@ app.on('ready', () => {
     const mainWindow = new BrowserWindow({
         webPreferences: {
             contextIsolation: true,
-            preload: getPreloadPath()
+            preload: getPreloadPath(),
+            nodeIntegration: false,
         }
     });
     if (isDev()) {

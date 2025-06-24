@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "types": ["./types"],
+    "types": ["node", "./types"],
     "target": "esnext",
     "useDefineForClassFields": true,
     "lib": [
@@ -22,9 +22,7 @@
     "jsx": "react-jsx"
   },
   "files": [],
-  "exclude": [
-    "src/electron"
-  ],
+  "exclude": ["src/electron"],
   "references": [
     {
       "path": "./tsconfig.app.json"
