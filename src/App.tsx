@@ -1,30 +1,85 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './styles/App.css'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import '@fortawesome/fontawesome-free/css/all.min.css'
+import Layout from '@/components/modules/admin/Layout'
+import Dashboard from '@/layouts/admin/Dashboard'
+import Subjects from '@/layouts/admin/Subjects'
+import Classes from '@/layouts/admin/Classes'
+import Users from '@/layouts/admin/Users'
+import Exams from '@/layouts/admin/Exams'
+import Results from '@/layouts/admin/Results'
+import Settings from '@/layouts/admin/Settings'
+import PageNotFound from '@/components/commons/PageNotFound'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1 className='font-bold'>Vite + React + Electron</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p className="text-red-500 underline ">
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Layout>
+              <Dashboard />
+            </Layout>
+          }
+        />
+        <Route
+          path="/subjects"
+          element={
+            <Layout>
+              <Subjects />
+            </Layout>
+          }
+        />
+        <Route
+          path="/classes"
+          element={
+            <Layout>
+              <Classes />
+            </Layout>
+          }
+        />
+        <Route
+          path="/users"
+          element={
+            <Layout>
+              <Users />
+            </Layout>
+          }
+        />
+        <Route
+          path="/exams"
+          element={
+            <Layout>
+              <Exams />
+            </Layout>
+          }
+        />
+        <Route
+          path="/results"
+          element={
+            <Layout>
+              <Results />
+            </Layout>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <Layout>
+              <Settings />
+            </Layout>
+          }
+        />
+        <Route
+          path="*"
+          element={
+            <Layout>
+              <PageNotFound />
+            </Layout>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
