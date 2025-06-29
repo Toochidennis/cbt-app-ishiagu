@@ -17,9 +17,9 @@ const Sidebar: React.FC<SidebarProps> = ({
         { path: '/subjects', key: 'subjects', label: 'Subject Management', icon: 'fa-book' },
         { path: '/classes', key: 'classes', label: 'Class Management', icon: 'fa-chalkboard' },
         { path: '/users', key: 'users', label: 'User Management', icon: 'fa-users' },
-        { path: '/exams', key: 'exams', label: 'Exam Schedules', icon: 'fa-calendar-alt' },
-        { path: '/results', key: 'results', label: 'Results Analysis', icon: 'fa-chart-bar' },
-        { path: '/settings', key: 'settings', label: 'System Settings', icon: 'fa-cog' },
+        { path: '/exams', key: 'exams', label: 'Exam Management', icon: 'fa-calendar-alt' },
+        { path: '/results', key: 'results', label: 'Results Management', icon: 'fa-chart-bar' },
+        { path: '/settings', key: 'settings', label: 'Settings', icon: 'fa-cog' },
     ];
 
     return (

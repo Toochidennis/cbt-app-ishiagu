@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import CreateExamModal from '@/components/modules/admin/CreateExamModal'
+import DeleteExamModal from "@/components/modules/admin/DeleteExamModal";
+import ExamDetailsModal from "@/components/modules/admin/ViewExamModel";
 
 interface Exam {
   id: number;
@@ -291,13 +294,16 @@ const Exams: React.FC = () => {
       (!endDate || examDate <= endDate);
     return matchesSearch && matchesSubject && matchesClass && matchesDateRange;
   });
+
   // Calculate pagination
   const indexOfLastExam = currentPage * itemsPerPage;
   const indexOfFirstExam = indexOfLastExam - itemsPerPage;
   const currentExams = filteredExams.slice(indexOfFirstExam, indexOfLastExam);
   const totalPages = Math.ceil(filteredExams.length / itemsPerPage);
+
   // Change page
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
   // Check if all filtered exams on current page are selected
   useEffect(() => {
     const currentPageExamIds = currentExams.map((exam) => exam.id);
@@ -480,162 +486,160 @@ const Exams: React.FC = () => {
         </div>
       </div>
       {/* Exam Table */}
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        <div className="">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-8"
-                >
+      <div className="bg-white rounded-lg shadow-sm">
+        <table className="min-w-full divide-y divide-gray-200 table-auto">
+          <thead className="bg-gray-50">
+            <tr>
+              <th
+                scope="col"
+                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-8 "
+              >
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={selectAll}
+                    onChange={handleSelectAll}
+                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded cursor-pointer"
+                  />
+                </div>
+              </th>
+              <th
+                scope="col"
+                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                <div className="flex items-center">
+                  Exam Name
+                  <button className="ml-1 text-gray-400 hover:text-gray-600 cursor-pointer !rounded-button whitespace-nowrap">
+                    <i className="fas fa-sort"></i>
+                  </button>
+                </div>
+              </th>
+              <th
+                scope="col"
+                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                <div className="flex items-center">
+                  Subject
+                  <button className="ml-1 text-gray-400 hover:text-gray-600 cursor-pointer !rounded-button whitespace-nowrap">
+                    <i className="fas fa-sort"></i>
+                  </button>
+                </div>
+              </th>
+              <th
+                scope="col"
+                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                <div className="flex items-center">
+                  Date/Time
+                  <button className="ml-1 text-gray-400 hover:text-gray-600 cursor-pointer !rounded-button whitespace-nowrap">
+                    <i className="fas fa-sort"></i>
+                  </button>
+                </div>
+              </th>
+              <th
+                scope="col"
+                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Duration
+              </th>
+              <th
+                scope="col"
+                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Assigned Classes
+              </th>
+              <th
+                scope="col"
+                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Status
+              </th>
+              <th
+                scope="col"
+                className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {currentExams.map((exam) => (
+              <tr key={exam.id} className="hover:bg-gray-50">
+                <td className="px-4 py-3 whitespace-nowrap">
                   <div className="flex items-center">
                     <input
                       type="checkbox"
-                      checked={selectAll}
-                      onChange={handleSelectAll}
+                      checked={selectedExams.includes(exam.id)}
+                      onChange={() => handleSelectExam(exam.id)}
                       className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded cursor-pointer"
                     />
                   </div>
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  <div className="flex items-center">
-                    Exam Name
-                    <button className="ml-1 text-gray-400 hover:text-gray-600 cursor-pointer !rounded-button whitespace-nowrap">
-                      <i className="fas fa-sort"></i>
-                    </button>
+                </td>
+                <td className="px-4 py-3 whitespace-nowrap">
+                  <div className="text-sm font-medium text-gray-900">
+                    {exam.name}
                   </div>
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  <div className="flex items-center">
-                    Subject
-                    <button className="ml-1 text-gray-400 hover:text-gray-600 cursor-pointer !rounded-button whitespace-nowrap">
-                      <i className="fas fa-sort"></i>
-                    </button>
+                </td>
+                <td className="px-4 py-3 whitespace-nowrap">
+                  <div className="text-sm text-gray-500">
+                    {exam.subject}
                   </div>
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  <div className="flex items-center">
-                    Date/Time
-                    <button className="ml-1 text-gray-400 hover:text-gray-600 cursor-pointer !rounded-button whitespace-nowrap">
-                      <i className="fas fa-sort"></i>
-                    </button>
+                </td>
+                <td className="px-4 py-3 whitespace-nowrap">
+                  <div className="text-sm text-gray-500">
+                    {new Date(exam.date).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                    <span className="ml-2">{exam.time}</span>
                   </div>
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Duration
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Assigned Classes
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Status
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Actions
-                </th>
+                </td>
+                <td className="px-4 py-3 whitespace-nowrap">
+                  <div className="text-sm text-gray-500">
+                    {exam.duration}
+                  </div>
+                </td>
+                <td className="px-4 py-3 whitespace-nowrap">
+                  <div className="text-sm text-gray-500">
+                    {exam.classes.length > 2
+                      ? `${exam.classes[0]}, ${exam.classes[1]} +${exam.classes.length - 2}`
+                      : exam.classes.join(", ")}
+                  </div>
+                </td>
+                <td className="px-4 py-3 whitespace-nowrap">
+                  <span
+                    className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${exam.status === "Upcoming"
+                      ? "bg-blue-100 text-blue-800"
+                      : exam.status === "In Progress"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : "bg-green-100 text-green-800"
+                      }`}
+                  >
+                    {exam.status}
+                  </span>
+                </td>
+                <td className="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
+                  <button
+                    onClick={() => handleViewExam(exam)}
+                    className="text-indigo-600 hover:text-indigo-900 mr-3 cursor-pointer !rounded-button whitespace-nowrap"
+                  >
+                    <i className="fas fa-eye"></i>
+                  </button>
+                  <button className="text-indigo-600 hover:text-indigo-900 mr-3 cursor-pointer !rounded-button whitespace-nowrap">
+                    <i className="fas fa-edit"></i>
+                  </button>
+                  <button
+                    onClick={() => handleDeleteExam(exam)}
+                    className="text-red-600 hover:text-red-900 cursor-pointer !rounded-button whitespace-nowrap"
+                  >
+                    <i className="fas fa-trash-alt"></i>
+                  </button>
+                </td>
               </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {currentExams.map((exam) => (
-                <tr key={exam.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={selectedExams.includes(exam.id)}
-                        onChange={() => handleSelectExam(exam.id)}
-                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded cursor-pointer"
-                      />
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">
-                      {exam.name}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-500">
-                      {exam.subject}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-500">
-                      {new Date(exam.date).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                      <span className="ml-2">{exam.time}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-500">
-                      {exam.duration}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-500">
-                      {exam.classes.length > 2
-                        ? `${exam.classes[0]}, ${exam.classes[1]} +${exam.classes.length - 2}`
-                        : exam.classes.join(", ")}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${exam.status === "Upcoming"
-                          ? "bg-blue-100 text-blue-800"
-                          : exam.status === "In Progress"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : "bg-green-100 text-green-800"
-                        }`}
-                    >
-                      {exam.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button
-                      onClick={() => handleViewExam(exam)}
-                      className="text-indigo-600 hover:text-indigo-900 mr-3 cursor-pointer !rounded-button whitespace-nowrap"
-                    >
-                      <i className="fas fa-eye"></i>
-                    </button>
-                    <button className="text-indigo-600 hover:text-indigo-900 mr-3 cursor-pointer !rounded-button whitespace-nowrap">
-                      <i className="fas fa-edit"></i>
-                    </button>
-                    <button
-                      onClick={() => handleDeleteExam(exam)}
-                      className="text-red-600 hover:text-red-900 cursor-pointer !rounded-button whitespace-nowrap"
-                    >
-                      <i className="fas fa-trash-alt"></i>
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
         {/* Pagination */}
         <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
           <div className="flex-1 flex justify-between sm:hidden">
@@ -645,8 +649,8 @@ const Exams: React.FC = () => {
               }
               disabled={currentPage === 1}
               className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${currentPage === 1
-                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                  : "bg-white text-gray-700 hover:bg-gray-50"
+                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                : "bg-white text-gray-700 hover:bg-gray-50"
                 } cursor-pointer !rounded-button whitespace-nowrap`}
             >
               Previous
@@ -659,8 +663,8 @@ const Exams: React.FC = () => {
               }
               disabled={currentPage === totalPages}
               className={`ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${currentPage === totalPages
-                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                  : "bg-white text-gray-700 hover:bg-gray-50"
+                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                : "bg-white text-gray-700 hover:bg-gray-50"
                 } cursor-pointer !rounded-button whitespace-nowrap`}
             >
               Next
@@ -719,8 +723,8 @@ const Exams: React.FC = () => {
                   }
                   disabled={currentPage === 1}
                   className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 text-sm font-medium ${currentPage === 1
-                      ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                      : "bg-white text-gray-500 hover:bg-gray-50"
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    : "bg-white text-gray-500 hover:bg-gray-50"
                     } cursor-pointer !rounded-button whitespace-nowrap`}
                 >
                   <span className="sr-only">Previous</span>
@@ -732,8 +736,8 @@ const Exams: React.FC = () => {
                       key={number}
                       onClick={() => paginate(number)}
                       className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium ${currentPage === number
-                          ? "z-10 bg-indigo-50 border-indigo-500 text-indigo-600"
-                          : "bg-white text-gray-500 hover:bg-gray-50"
+                        ? "z-10 bg-indigo-50 border-indigo-500 text-indigo-600"
+                        : "bg-white text-gray-500 hover:bg-gray-50"
                         } cursor-pointer !rounded-button whitespace-nowrap`}
                     >
                       {number}
@@ -750,8 +754,8 @@ const Exams: React.FC = () => {
                   }
                   disabled={currentPage === totalPages}
                   className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 text-sm font-medium ${currentPage === totalPages
-                      ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                      : "bg-white text-gray-500 hover:bg-gray-50"
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    : "bg-white text-gray-500 hover:bg-gray-50"
                     } cursor-pointer !rounded-button whitespace-nowrap`}
                 >
                   <span className="sr-only">Next</span>
@@ -764,11 +768,40 @@ const Exams: React.FC = () => {
       </div>
 
       {/* Create Exam Modal */}
+      {showCreateModal && (
+        <CreateExamModal
+          showCreateModal={showCreateModal}
+          setShowCreateModal={setShowCreateModal}
+          subjects={subjects}
+          classes={classes}
+          exams={exams}
+          setExams={setExams}
+          newExam={newExam}
+          setNewExam={setNewExam}
+          handleClassSelection={handleClassSelection}
+        />
+      )}
 
       {/* View Exam Modal */}
+      {showViewModal && (
+        <ExamDetailsModal
+          showViewModal={showViewModal}
+          setShowViewModal={setShowViewModal}
+          examToView={examToView}
+        />
+      )}
 
       {/* Delete Confirmation Modal */}
-
+      {showDeleteModal && (
+        <DeleteExamModal
+          showDeleteModal={showDeleteModal}
+          setShowDeleteModal={setShowDeleteModal}
+          examToDelete={examToDelete}
+          setExamToDelete={setExamToDelete}
+          exams={exams}
+          setExams={setExams}
+        />
+      )}
     </>
   );
 };

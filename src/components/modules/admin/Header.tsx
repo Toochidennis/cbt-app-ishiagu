@@ -1,9 +1,9 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 
 type HeaderProps = {
   sidebarCollapsed: boolean;
-  searchQuery: string;
-  onSearchChange: (val: string) => void;
+  appBarTitle: string;
   onToggleNotifications: () => void;
   onToggleProfileMenu: () => void;
   notificationsOpen: boolean;
@@ -12,8 +12,7 @@ type HeaderProps = {
 
 const Header: React.FC<HeaderProps> = ({
   sidebarCollapsed,
-  searchQuery,
-  onSearchChange,
+  appBarTitle,
   onToggleNotifications,
   onToggleProfileMenu,
   notificationsOpen,
@@ -28,14 +27,9 @@ const Header: React.FC<HeaderProps> = ({
       <div className="flex items-center justify-between w-full p-4 max-w-screen-2xl mx-auto">
         {/* Search bar */}
         <div className="relative flex-shrink">
-          <input
-            type="text"
-            placeholder="Search..."
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
-          />
-          <i className="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+          <h1 className="text-2xl font-semibold text-gray-800">
+            {appBarTitle}
+          </h1>
         </div>
 
         {/* Buttons area */}
