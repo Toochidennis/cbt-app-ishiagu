@@ -2,6 +2,7 @@ import StatsCards from '@/components/modules/admin/StatsCards';
 import ExamChart from '@/components/modules/admin/ExamChart';
 import QuickActions from '@/components/modules/admin/QuickActions';
 import RecentActivities from '@/components/modules/admin/RecentActivities';
+import FormattedDate from '@/components/commons/FormattedDate';
 
 const Dashboard: React.FC = () => {
     const stats = {
@@ -22,14 +23,9 @@ const Dashboard: React.FC = () => {
         <>
             <div className="flex justify-between items-center mb-6">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
+                    <h1 className="text-2xl font-semibold text-gray-800">Overview</h1>
                     <p className="text-gray-600">
-                        {new Date().toLocaleDateString('en-US', {
-                            weekday: 'long',
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                        })}
+                        Welcome to the CBT Examination System Admin Dashboard
                     </p>
                 </div>
                 <div className="flex space-x-2">

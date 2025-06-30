@@ -43,8 +43,6 @@ interface ExamDetail {
 }
 
 const Results: React.FC = () => {
-    const [notifications, setNotifications] = useState(false);
-    const [profileMenu, setProfileMenu] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [subjectFilter, setSubjectFilter] = useState("All");
     const [showSubjectFilter, setShowSubjectFilter] = useState(false);
@@ -725,21 +723,10 @@ const Results: React.FC = () => {
             {/* Breadcrumb and Page Title */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
                 <div>
-                    <div className="flex items-center text-sm text-gray-500 mb-2">
-                        <a
-                            href="https://readdy.ai/home/f0687006-93b6-45d6-87ab-dd4a0c4ebbea/8d774796-6766-426f-a8bc-397a2a179d15"
-                            data-readdy="true"
-                            className="hover:text-indigo-600"
-                        >
-                            Dashboard
-                        </a>
-                        <i className="fas fa-chevron-right mx-2 text-xs text-gray-400"></i>
-                        <span className="text-gray-700">Results Analysis</span>
-                    </div>
-                    <h1 className="text-2xl font-bold text-gray-800">
-                        Results Analysis
+                    <h1 className="text-2xl font-semibold text-gray-800">
+                        Results Management
                     </h1>
-                    <p className="text-gray-600">{formatDate()}</p>
+                    <p className="text-gray-600">View and manage exam results</p>
                 </div>
                 <div className="relative export-options-container mt-4 md:mt-0">
                     <button
@@ -1069,17 +1056,6 @@ const Results: React.FC = () => {
                                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                 >
                                     <div className="flex items-center">
-                                        Pass %
-                                        <button className="ml-1 text-gray-400 hover:text-gray-600 cursor-pointer !rounded-button whitespace-nowrap">
-                                            <i className="fas fa-sort"></i>
-                                        </button>
-                                    </div>
-                                </th>
-                                <th
-                                    scope="col"
-                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
-                                    <div className="flex items-center">
                                         Avg Score
                                         <button className="ml-1 text-gray-400 hover:text-gray-600 cursor-pointer !rounded-button whitespace-nowrap">
                                             <i className="fas fa-sort"></i>
@@ -1103,7 +1079,7 @@ const Results: React.FC = () => {
                                 >
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <a
-                                            href="https://readdy.ai/home/f0687006-93b6-45d6-87ab-dd4a0c4ebbea/a76e9b4b-b711-4b92-861b-5a8be26465fc"
+                                            href=""
                                             data-readdy="true"
                                             className="text-sm font-medium text-indigo-600 hover:text-indigo-900"
                                         >
@@ -1135,23 +1111,10 @@ const Results: React.FC = () => {
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="flex items-center">
-                                            <div className="w-16 bg-gray-200 rounded-full h-2.5">
-                                                <div
-                                                    className="bg-indigo-600 h-2.5 rounded-full"
-                                                    style={{ width: `${exam.passPercentage}%` }}
-                                                ></div>
-                                            </div>
-                                            <span className="text-sm text-gray-500 ml-2">
-                                                {exam.passPercentage}%
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
                                         <div
                                             className={`text-sm font-medium ${exam.averageScore >= 70 ? "text-green-600" : exam.averageScore >= 50 ? "text-yellow-600" : "text-red-600"}`}
                                         >
-                                            {exam.averageScore}/100
+                                            {exam.averageScore}
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

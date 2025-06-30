@@ -27,7 +27,7 @@ const Header: React.FC<HeaderProps> = ({
       <div className="flex items-center justify-between w-full p-4 max-w-screen-2xl mx-auto">
         {/* Search bar */}
         <div className="relative flex-shrink">
-          <h1 className="text-2xl font-semibold text-gray-800">
+          <h1 className="text-2xl font-bold text-gray-800">
             {appBarTitle}
           </h1>
         </div>

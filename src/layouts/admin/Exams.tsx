@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import CreateExamModal from '@/components/modules/admin/CreateExamModal'
 import DeleteExamModal from "@/components/modules/admin/DeleteExamModal";
 import ExamDetailsModal from "@/components/modules/admin/ViewExamModel";
+import FormattedDate from "@/components/commons/FormattedDate";
 
 interface Exam {
   id: number;
@@ -198,17 +199,7 @@ const Exams: React.FC = () => {
     },
   ]);
 
-  // Format date
-  const formatDate = () => {
-    const date = new Date();
-    const options: Intl.DateTimeFormatOptions = {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    };
-    return date.toLocaleDateString("en-US", options);
-  };
+
   // Toggle subject filter dropdown
   const toggleSubjectFilter = () => {
     setShowSubjectFilter(!showSubjectFilter);
@@ -362,21 +353,12 @@ const Exams: React.FC = () => {
       {/* Breadcrumb and Page Title */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
         <div>
-          <div className="flex items-center text-sm text-gray-500 mb-2">
-            <Link
-              to="/"
-              data-readdy="true"
-              className="hover:text-indigo-600"
-            >
-              Dashboard
-            </Link>
-            <i className="fas fa-chevron-right mx-2 text-xs text-gray-400"></i>
-            <span className="text-gray-700">Exam Schedules</span>
-          </div>
-          <h1 className="text-2xl font-bold text-gray-800">
-            Exam Schedules
+          <h1 className="text-2xl font-semibold text-gray-800">
+            Exam Management
           </h1>
-          <p className="text-gray-600">{formatDate()}</p>
+          <p className="text-gray-600">
+          Create and manage exams
+          </p>
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
@@ -530,7 +512,7 @@ const Exams: React.FC = () => {
                 className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
                 <div className="flex items-center">
-                  Date/Time
+                  Date & Time
                   <button className="ml-1 text-gray-400 hover:text-gray-600 cursor-pointer !rounded-button whitespace-nowrap">
                     <i className="fas fa-sort"></i>
                   </button>
@@ -540,13 +522,7 @@ const Exams: React.FC = () => {
                 scope="col"
                 className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                Duration
-              </th>
-              <th
-                scope="col"
-                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                Assigned Classes
+                Assigned Class
               </th>
               <th
                 scope="col"
@@ -592,12 +568,7 @@ const Exams: React.FC = () => {
                       month: "short",
                       day: "numeric",
                     })}
-                    <span className="ml-2">{exam.time}</span>
-                  </div>
-                </td>
-                <td className="px-4 py-3 whitespace-nowrap">
-                  <div className="text-sm text-gray-500">
-                    {exam.duration}
+                    <span className="ml-2">at {exam.time}</span>
                   </div>
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap">
