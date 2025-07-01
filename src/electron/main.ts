@@ -5,13 +5,14 @@ import { getPreloadPath } from './pathResolver.js';
 
 app.on('ready', () => {
     const mainWindow = new BrowserWindow({
-        frame: false,  
         webPreferences: {
             contextIsolation: true,
             preload: getPreloadPath(),
             nodeIntegration: false,
         }
     });
+
+    mainWindow.setMenu(null);
 
     if (isDev()) {
         mainWindow.loadURL('http://localhost:5123')

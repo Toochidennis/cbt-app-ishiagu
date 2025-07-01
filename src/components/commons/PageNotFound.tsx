@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
+import React from 'react';
 
-const PageNotFound = () => {
+const PageNotFound: React.FC = () => {
     return (
         <div className="flex flex-col items-center justify-center h-full text-center">
             <h1 className="text-5xl font-bold text-indigo-600 mb-4">404</h1>

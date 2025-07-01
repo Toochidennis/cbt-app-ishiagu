@@ -40,6 +40,7 @@
   "license": "ISC",
   "description": "CBT",
   "dependencies": {
+    "@apollo/client": "^3.13.8",
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@supabase/supabase-js": "^2.50.0",
     "@tailwindcss/vite": "^4.1.10",
@@ -49,6 +50,7 @@
     "dotenv": "^16.5.0",
     "echarts": "^5.6.0",
     "electron-store": "^10.1.0",
+    "graphql": "^16.11.0",
     "is-online": "^11.0.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -60,6 +62,10 @@
   "devDependencies": {
     "@electron/remote": "^2.1.2",
     "@eslint/js": "^9.25.0",
+    "@graphql-codegen/cli": "^5.0.7",
+    "@graphql-codegen/typescript": "^4.1.6",
+    "@graphql-codegen/typescript-operations": "^4.6.1",
+    "@graphql-codegen/typescript-react-apollo": "^4.3.3",
     "@types/echarts": "^4.9.22",
     "@types/node": "^24.0.3",
     "@types/react": "^19.1.2",

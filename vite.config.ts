@@ -11,11 +11,15 @@ export default defineConfig({
     react(),
     electron({
       entry: 'src/electron/main.ts',
+      onstart(options){
+        options.reload()
+      },
       vite: {
         build: {
           outDir: 'dist-electron',
           rollupOptions: {
             input: {
+              main: 'src/electron/main.ts',
               preload: 'src/electron/preload.cts'
             }
           }
