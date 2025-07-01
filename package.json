@@ -42,6 +42,7 @@
   "dependencies": {
     "@apollo/client": "^3.13.8",
     "@fortawesome/fontawesome-free": "^6.7.2",
+    "@hookform/resolvers": "^5.1.1",
     "@supabase/supabase-js": "^2.50.0",
     "@tailwindcss/vite": "^4.1.10",
     "better-sqlite3": "^12.0.0",
@@ -54,6 +55,7 @@
     "is-online": "^11.0.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-hook-form": "^7.59.0",
     "react-router-dom": "^6.30.1",
     "tailwindcss": "^4.1.10",
     "yup": "^1.6.1",
@@ -70,6 +72,7 @@
     "@types/node": "^24.0.3",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
+    "@types/yup": "^0.29.14",
     "@vitejs/plugin-react-swc": "^3.9.0",
     "electron": "^36.5.0",
     "electron-builder": "^25.1.8",
