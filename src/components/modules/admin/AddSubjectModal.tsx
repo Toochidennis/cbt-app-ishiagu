@@ -2,10 +2,10 @@ import React from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { type CreateSubjectDto } from '@/types/admin/subject.api'
-import { type AddSubjectProps } from '@/types/admin/subject.ui'
+import { type SubjectModalProps } from '@/types/admin/subject.ui'
 import { subjectSchema } from '@/validations/subject.schema'
 
-const AddSubjectModal: React.FC<AddSubjectProps> = ({
+const AddSubjectModal: React.FC<SubjectModalProps> = ({
     showAddModal,
     setShowAddModal
 }) => {
