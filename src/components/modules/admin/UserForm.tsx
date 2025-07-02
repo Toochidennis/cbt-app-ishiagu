@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useForm, type Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { userSchema } from "@/validations/userSchema";
-import { type UserFormData, type AddUserFormProps } from "@/types/users";
+import { userSchema } from "@/validations/user.schema";
+import { type UserFormData, type AddUserFormProps } from "@/types/admin/users";
 
 const AddUserForm: React.FC<AddUserFormProps> = ({
     showAddModal,

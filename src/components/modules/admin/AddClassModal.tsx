@@ -1,8 +1,9 @@
 import React from 'react'
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { type AddClassProps, type ClassFormData } from "@/types/classes"
-import { classSchema } from '@/validations/classSchema';
+import { type AddClassProps } from "@/types/admin/class.ui"
+import { type CreateClassDto } from '@/types/admin/class.api';
+import { classSchema } from '@/validations/class.schema';
 
 const AddClassModal: React.FC<AddClassProps> = ({
     showAddModal,
@@ -14,11 +15,11 @@ const AddClassModal: React.FC<AddClassProps> = ({
         handleSubmit,
         formState: { errors },
         reset
-    } = useForm<ClassFormData>({
+    } = useForm<CreateClassDto>({
         resolver: yupResolver(classSchema),
     });
 
-    const onSubmit = (data: ClassFormData) => {
+    const onSubmit = (data: CreateClassDto) => {
         console.log(data);
 
         setShowAddModal((prev) => !prev);
@@ -32,7 +33,7 @@ const AddClassModal: React.FC<AddClassProps> = ({
                     <div className='fixed inset-0 bg-black opacity-50 z-40'></div>
 
                     {/** Modal */}
-                    <div className='relative z-50 inline-block align-bottom bg-white rounded-md shadow-xl text-left transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full'>
+                    <div className='relative z-50 inline-block align-bottom bg-white rounded-lg shadow-xl text-left transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full'>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <div className='bg-white px-4 pt-5 pb-4 sm:p-6'>
                                 <h3 className='text-lg leading-6 font-medium text-gray-900 mb-4'>
