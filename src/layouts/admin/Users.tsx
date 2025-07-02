@@ -1,8 +1,11 @@
 import React, { useState } from "react";
+import AddUserForm from "@/components/modules/admin/UserForm";
 
 const Users: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'teachers' | 'students'>('teachers');
+    const [showAddModal, setShowAddModal] = useState(false);
     // Mock data for admin dashboard
+
     const [teachers, setTeachers] = useState<any[]>([
         {
             id: 1,
@@ -141,7 +144,9 @@ const Users: React.FC = () => {
                     </p>
                 </div>
                 <div className="mt-4 sm:mt-0">
-                    <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none !rounded-button whitespace-nowrap cursor-pointer">
+                    <button
+                        onClick={() => setShowAddModal(true)}
+                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none !rounded-button whitespace-nowrap cursor-pointer">
                         <i className="fas fa-user-plus mr-2"></i>
                         Add New User
                     </button>
@@ -153,8 +158,8 @@ const Users: React.FC = () => {
                     <nav className="-mb-px flex" aria-label="Tabs">
                         <button
                             className={`w-1/2 py-4 px-1 text-center border-b-2 font-medium text-sm cursor-pointer ${activeTab === 'teachers'
-                                    ? 'border-blue-500 text-blue-600'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                ? 'border-blue-500 text-blue-600'
+                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                                 }`}
                             onClick={() => setActiveTab('teachers')}
                         >
@@ -162,8 +167,8 @@ const Users: React.FC = () => {
                         </button>
                         <button
                             className={`w-1/2 py-4 px-1 text-center border-b-2 font-medium text-sm cursor-pointer ${activeTab === 'students'
-                                    ? 'border-blue-500 text-blue-600'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                ? 'border-blue-500 text-blue-600'
+                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                                 }`}
                             onClick={() => setActiveTab('students')}
                         >
@@ -172,7 +177,7 @@ const Users: React.FC = () => {
                     </nav>
                 </div>
 
-                {/* ✅ Conditional title */}
+                {/* Conditional title */}
                 <div className="px-6 py-5 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between">
                     <h3 className="text-lg font-medium text-gray-800">
                         {activeTab === 'teachers' ? 'All Teachers' : 'All Students'}
@@ -198,85 +203,85 @@ const Users: React.FC = () => {
                     </div>
                 </div>
 
-                {/* ✅ Conditionally render either table */}
+                {/* Conditionally render either table */}
                 {activeTab === 'teachers' ? (
                     <div className="overflow-x-auto">
                         <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                            <tr>
-                                <th
-                                    scope="col"
-                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
-                                    Name
-                                </th>
-                                <th
-                                    scope="col"
-                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
-                                    Email
-                                </th>
-                                <th
-                                    scope="col"
-                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
-                                    Subjects
-                                </th>
-                                <th
-                                    scope="col"
-                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
-                                    Classes
-                                </th>
-                                <th
-                                    scope="col"
-                                    className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                            {teachers.map((teacher) => (
-                                <tr key={teacher.id} className="hover:bg-gray-50">
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="flex items-center">
-                                            <div className="h-10 w-10 flex-shrink-0">
-                                                <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                                    <i className="fas fa-user text-gray-500"></i>
-                                                </div>
-                                            </div>
-                                            <div className="ml-4">
-                                                <div className="text-sm font-medium text-gray-900">
-                                                    {teacher.name}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {teacher.email}
-                                    </td>
-                                    <td className="px-6 py-4 text-sm text-gray-500">
-                                        {teacher.subjects.join(", ")}
-                                    </td>
-                                    <td className="px-6 py-4 text-sm text-gray-500">
-                                        {teacher.classes.join(", ")}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <button className="text-blue-600 hover:text-blue-900 mr-3 cursor-pointer">
-                                            <i className="fas fa-edit"></i>
-                                        </button>
-                                        <button className="text-yellow-600 hover:text-yellow-900 mr-3 cursor-pointer">
-                                            <i className="fas fa-key"></i>
-                                        </button>
-                                        <button className="text-red-600 hover:text-red-900 cursor-pointer">
-                                            <i className="fas fa-trash-alt"></i>
-                                        </button>
-                                    </td>
+                            <thead className="bg-gray-50">
+                                <tr>
+                                    <th
+                                        scope="col"
+                                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                    >
+                                        Name
+                                    </th>
+                                    <th
+                                        scope="col"
+                                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                    >
+                                        Email
+                                    </th>
+                                    <th
+                                        scope="col"
+                                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                    >
+                                        Subjects
+                                    </th>
+                                    <th
+                                        scope="col"
+                                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                    >
+                                        Classes
+                                    </th>
+                                    <th
+                                        scope="col"
+                                        className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                    >
+                                        Actions
+                                    </th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                                {teachers.map((teacher) => (
+                                    <tr key={teacher.id} className="hover:bg-gray-50">
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="flex items-center">
+                                                <div className="h-10 w-10 flex-shrink-0">
+                                                    <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                                                        <i className="fas fa-user text-gray-500"></i>
+                                                    </div>
+                                                </div>
+                                                <div className="ml-4">
+                                                    <div className="text-sm font-medium text-gray-900">
+                                                        {teacher.name}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {teacher.email}
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-gray-500">
+                                            {teacher.subjects.join(", ")}
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-gray-500">
+                                            {teacher.classes.join(", ")}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <button className="text-blue-600 hover:text-blue-900 mr-3 cursor-pointer">
+                                                <i className="fas fa-edit"></i>
+                                            </button>
+                                            <button className="text-yellow-600 hover:text-yellow-900 mr-3 cursor-pointer">
+                                                <i className="fas fa-key"></i>
+                                            </button>
+                                            <button className="text-red-600 hover:text-red-900 cursor-pointer">
+                                                <i className="fas fa-trash-alt"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
@@ -294,19 +299,19 @@ const Users: React.FC = () => {
                                 {students.map((student) => (
                                     <tr key={student.id} className="hover:bg-gray-50">
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="flex items-center">
-                                            <div className="h-10 w-10 flex-shrink-0">
-                                                <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                                    <i className="fas fa-user text-gray-500"></i>
+                                            <div className="flex items-center">
+                                                <div className="h-10 w-10 flex-shrink-0">
+                                                    <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                                                        <i className="fas fa-user text-gray-500"></i>
+                                                    </div>
+                                                </div>
+                                                <div className="ml-4">
+                                                    <div className="text-sm font-medium text-gray-900">
+                                                        {student.name}
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div className="ml-4">
-                                                <div className="text-sm font-medium text-gray-900">
-                                                    {student.name}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
+                                        </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {student.email}
                                         </td>
@@ -375,8 +380,14 @@ const Users: React.FC = () => {
                         </div>
                     </div>
                 </div>
-
             </div>
+
+            {showAddModal && (
+                <AddUserForm
+                    showAddModal={showAddModal}
+                    setShowAddModal={setShowAddModal}
+                />
+            )}
         </>
     );
 };

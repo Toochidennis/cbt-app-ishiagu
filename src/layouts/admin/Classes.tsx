@@ -1,6 +1,10 @@
 import React, { useState } from "react";
+import AddClassModal from "@/components/modules/admin/AddClassModal";
 
 const Classes: React.FC = () => {
+
+    const [showAddModal, setShowAddModal] = useState(false);
+
     // Mock data for admin dashboard
     const [classes, setClasses] = useState<any[]>([
         {
@@ -47,135 +51,8 @@ const Classes: React.FC = () => {
         },
     ]);
 
-    const [teachers, setTeachers] = useState<any[]>([
-        {
-            id: 1,
-            name: "John Smith",
-            email: "john.smith@school.edu",
-            subjects: ["Mathematics"],
-            classes: ["Class 10A"],
-        },
-        {
-            id: 2,
-            name: "Mary Johnson",
-            email: "mary.johnson@school.edu",
-            subjects: ["Mathematics"],
-            classes: ["Class 11B"],
-        },
-        {
-            id: 3,
-            name: "Sarah Williams",
-            email: "sarah.williams@school.edu",
-            subjects: ["Chemistry"],
-            classes: ["Class 10B"],
-        },
-        {
-            id: 4,
-            name: "James Davis",
-            email: "james.davis@school.edu",
-            subjects: ["Chemistry"],
-            classes: ["Class 12B"],
-        },
-        {
-            id: 5,
-            name: "Jennifer Wilson",
-            email: "jennifer.wilson@school.edu",
-            subjects: ["Biology"],
-            classes: ["Class 11A"],
-        },
-        {
-            id: 6,
-            name: "Michael Taylor",
-            email: "michael.taylor@school.edu",
-            subjects: ["Computer Science"],
-            classes: ["Class 12C"],
-        },
-        {
-            id: 7,
-            name: "Robert Brown",
-            email: "robert.brown@school.edu",
-            subjects: ["Physics"],
-            classes: ["Class 10A", "Class 11B"],
-        },
-    ]);
-
-    const [students, setStudents] = useState<any[]>([
-        {
-            id: 1,
-            name: "Emma Thompson",
-            email: "emma.t@student.edu",
-            class: "Class 10A",
-            regNumber: "STD10001",
-        },
-        {
-            id: 2,
-            name: "Noah Garcia",
-            email: "noah.g@student.edu",
-            class: "Class 10A",
-            regNumber: "STD10002",
-        },
-        {
-            id: 3,
-            name: "Olivia Martinez",
-            email: "olivia.m@student.edu",
-            class: "Class 10B",
-            regNumber: "STD10003",
-        },
-        {
-            id: 4,
-            name: "Liam Robinson",
-            email: "liam.r@student.edu",
-            class: "Class 11A",
-            regNumber: "STD11001",
-        },
-        {
-            id: 5,
-            name: "Ava Clark",
-            email: "ava.c@student.edu",
-            class: "Class 11B",
-            regNumber: "STD11002",
-        },
-        {
-            id: 6,
-            name: "William Rodriguez",
-            email: "william.r@student.edu",
-            class: "Class 12B",
-            regNumber: "STD12001",
-        },
-        {
-            id: 7,
-            name: "Sophia Lee",
-            email: "sophia.l@student.edu",
-            class: "Class 12C",
-            regNumber: "STD12002",
-        },
-        {
-            id: 8,
-            name: "James White",
-            email: "james.w@student.edu",
-            class: "Class 10A",
-            regNumber: "STD10004",
-        },
-        {
-            id: 9,
-            name: "Charlotte King",
-            email: "charlotte.k@student.edu",
-            class: "Class 11A",
-            regNumber: "STD11003",
-        },
-        {
-            id: 10,
-            name: "Benjamin Wright",
-            email: "benjamin.w@student.edu",
-            class: "Class 12C",
-            regNumber: "STD12003",
-        },
-    ]);
-
-
-
     return (
-        <div>
+        <>
             <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h2 className="text-lg font-medium text-gray-700 mb-1">
@@ -185,8 +62,16 @@ const Classes: React.FC = () => {
                         Create and manage classes for your institution
                     </p>
                 </div>
-                <div className="mt-4 sm:mt-0">
-                    <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none !rounded-button whitespace-nowrap cursor-pointer">
+                <div className="mt-4 sm:mt-0 space-x-4">
+                <button
+                        onClick={() => setShowAddModal(true)}
+                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-blue-700 focus:outline-none !rounded-button whitespace-nowrap cursor-pointer">
+                        <i className="fas fa-tasks mr-2"></i>
+                        Assign Subjects
+                    </button>
+                    <button
+                        onClick={() => setShowAddModal(true)}
+                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none !rounded-button whitespace-nowrap cursor-pointer">
                         <i className="fas fa-plus mr-2"></i>
                         Add New Class
                     </button>
@@ -322,7 +207,15 @@ const Classes: React.FC = () => {
                     </div>
                 </div>
             </div>
-        </div>
+
+            {/** show add class modal */}
+            {showAddModal && (
+                <AddClassModal
+                    showAddModal={showAddModal}
+                    setShowAddModal={setShowAddModal}
+                />
+            )}
+        </>
     );
 };
 
