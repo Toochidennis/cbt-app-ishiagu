@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import AddUserForm from "@/components/modules/admin/UserForm";
+import AssignTeacherModal from "@/components/modules/admin/AssignTeacherModal";
 
 const Users: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'teachers' | 'students'>('teachers');
     const [showAddModal, setShowAddModal] = useState(false);
+    const [assignTeacher, setAssignTeacher] = useState(false);
     // Mock data for admin dashboard
 
     const [teachers, setTeachers] = useState<any[]>([
@@ -190,10 +192,20 @@ const Users: React.FC = () => {
                             </div>
                             <input
                                 type="text"
-                                className="focus:ring-blue-500 h-8 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
+                                className="focus:ring-blue-500 p-2 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
                                 placeholder={`Search ${activeTab}...`}
                             />
                         </div>
+                        {activeTab === 'teachers' && (
+                            <div className="ml-3">
+                            <button
+                                onClick={() => setAssignTeacher(true)}
+                                className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none !rounded-button whitespace-nowrap cursor-pointer">
+                                <i className="fas fa-tasks mr-2"></i>
+                                Assign
+                            </button>
+                        </div>
+                        )}
                         <div className="ml-3">
                             <button className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none !rounded-button whitespace-nowrap cursor-pointer">
                                 <i className="fas fa-filter mr-2"></i>
@@ -386,6 +398,13 @@ const Users: React.FC = () => {
                 <AddUserForm
                     showAddModal={showAddModal}
                     setShowAddModal={setShowAddModal}
+                />
+            )}
+
+            {assignTeacher && (
+                <AssignTeacherModal
+                    assignTeacher={assignTeacher}
+                    setAssignTeacher={setAssignTeacher}
                 />
             )}
         </>

@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import AddClassModal from "@/components/modules/admin/AddClassModal";
+import AssignSubjectToClassModal from "@/components/modules/admin/AssignSubjectToClassModal";
 
 const Classes: React.FC = () => {
 
     const [showAddModal, setShowAddModal] = useState(false);
+    const [assignSubject, setAssignSubject] = useState(false);
 
     // Mock data for admin dashboard
     const [classes, setClasses] = useState<any[]>([
@@ -63,8 +65,8 @@ const Classes: React.FC = () => {
                     </p>
                 </div>
                 <div className="mt-4 sm:mt-0 space-x-4">
-                <button
-                        onClick={() => setShowAddModal(true)}
+                    <button
+                        onClick={() => setAssignSubject(true)}
                         className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-blue-700 focus:outline-none !rounded-button whitespace-nowrap cursor-pointer">
                         <i className="fas fa-tasks mr-2"></i>
                         Assign Subjects
@@ -213,6 +215,13 @@ const Classes: React.FC = () => {
                 <AddClassModal
                     showAddModal={showAddModal}
                     setShowAddModal={setShowAddModal}
+                />
+            )}
+
+            {assignSubject && (
+                <AssignSubjectToClassModal
+                    assignSubject={assignSubject}
+                    setAssignSubject={setAssignSubject}
                 />
             )}
         </>
