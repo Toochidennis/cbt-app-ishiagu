@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useForm, type Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { userSchema } from "@/validations/user.schema";
-import { type UserFormData, type AddUserFormProps } from "@/types/admin/users";
+import { type UserFormData, type AddUserFormProps } from "@/types/admin/api/users";
 
 const AddUserForm: React.FC<AddUserFormProps> = ({
     showAddModal,

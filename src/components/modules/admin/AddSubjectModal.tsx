@@ -1,8 +1,8 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { type CreateSubjectDto } from '@/types/admin/subject.api'
-import { type SubjectModalProps } from '@/types/admin/subject.ui'
+import { type CreateSubjectDto } from '@/types/admin/api/subject'
+import { type SubjectModalProps } from '@/types/admin/ui/subject'
 import { subjectSchema } from '@/validations/subject.schema'
 
 const AddSubjectModal: React.FC<SubjectModalProps> = ({
@@ -39,29 +39,29 @@ const AddSubjectModal: React.FC<SubjectModalProps> = ({
                                     Add New Subject
                                 </h3>
                                 <div className='space-y-4'>
-                                <input
-                                    type="text"
-                                    placeholder="Enter subject code"
-                                    {...register("subject_code")}
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                />
-                                {errors.subject_code && (
-                                    <p className="mt-1 text-sm text-red-600">
-                                        {errors.subject_code.message}
-                                    </p>
-                                )}
+                                    <input
+                                        type="text"
+                                        placeholder="Enter subject code"
+                                        {...register("subject_code")}
+                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                    />
+                                    {errors.subject_code && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {errors.subject_code.message}
+                                        </p>
+                                    )}
 
-                                <input
-                                    type="text"
-                                    placeholder="Enter subject name"
-                                    {...register("subject_name")}
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                />
-                                {errors.subject_name && (
-                                    <p className="mt-1 text-sm text-red-600">
-                                        {errors.subject_name.message}
-                                    </p>
-                                )}
+                                    <input
+                                        type="text"
+                                        placeholder="Enter subject name"
+                                        {...register("subject_name")}
+                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                    />
+                                    {errors.subject_name && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {errors.subject_name.message}
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">

@@ -2,8 +2,8 @@ import React from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import Select from 'react-select'
-import { type AssignTeacherDto } from '@/types/admin/teacher.api'
-import { type AssignTeacherProps } from '@/types/admin/teacher.ui'
+import { type AssignTeacherDto } from '@/types/admin/api/teacher'
+import { type AssignTeacherProps } from '@/types/admin/ui/teacher'
 import { assignTeacherSchema } from '@/validations/teacher.schema'
 
 const AssignTeacherModal: React.FC<AssignTeacherProps> = ({

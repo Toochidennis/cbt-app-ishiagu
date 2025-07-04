@@ -1,203 +1,221 @@
-import React, { useState } from "react";
+import React from "react";
+import { useForm, Controller } from 'react-hook-form'
+import { yupResolver } from "@hookform/resolvers/yup";
+import { type CreateExamProps } from "@/types/admin/ui/exam";
+import { examSchema } from "@/validations/exam.schema";
+import { type CreateExamDto } from "@/types/admin/api/exam";
+import Select from 'react-select'
 
-interface Exam {
-    id: number;
-    name: string;
-    subject: string;
-    date: string;
-    time: string;
-    duration: string;
-    classes: string[];
-    status: "Upcoming" | "In Progress" | "Completed";
-}
 
-interface ViewExamModalProps {
-    showCreateModal: boolean;
-    setShowCreateModal: (val: boolean) => void;
-    subjects: string[];
-    classes: string[];
-    exams: Exam[];
-    setExams: (exams: Exam[]) => void;
-    newExam: Omit<Exam, "id" | "status">;
-    setNewExam: (exam: Omit<Exam, "id" | "status">) => void;
-    handleClassSelection: (className: string) => void;
-}
-
-const ViewExamModal: React.FC<ViewExamModalProps> = ({
+const CreateExamModal: React.FC<CreateExamProps> = ({
     showCreateModal,
     setShowCreateModal,
-    subjects,
-    classes,
-    exams,
-    setExams,
-    newExam,
-    setNewExam,
-    handleClassSelection,
 }) => {
-    const [formErrors, setFormErrors] = useState({
-        name: "",
-        subject: "",
-        date: "",
-        time: "",
-        duration: "",
-        classes: "",
-    });
 
-    const handleCreateExam = (e: React.FormEvent) => {
-        e.preventDefault();
-        const errors = {
-            name: !newExam.name ? "Exam name is required" : "",
-            subject: !newExam.subject ? "Subject is required" : "",
-            date: !newExam.date ? "Date is required" : "",
-            time: !newExam.time ? "Time is required" : "",
-            duration: !newExam.duration ? "Duration is required" : "",
-            classes:
-                newExam.classes.length === 0 ? "At least one class must be selected" : "",
-        };
-        setFormErrors(errors);
+    const {
+        register,
+        handleSubmit,
+        control,
+        formState: { errors, },
+        reset
+    } = useForm<CreateExamDto>({
+        resolver: yupResolver(examSchema)
+    })
 
-        if (!Object.values(errors).some((error) => error)) {
-            const newExamData: Exam = {
-                ...newExam,
-                id: exams.length + 1,
-                status: "Upcoming",
-            };
-            setExams([...exams, newExamData]);
-            setShowCreateModal(false);
-            setNewExam({ name: "", subject: "", date: "", time: "", duration: "", classes: [] });
-        }
+    const handleCreateExam = (data: CreateExamDto) => {
+        //  e.preventDefault();
+        console.log(data);
+        reset()
+
+        // onChange={(e) => {
+        //     const file = e.target.files?.[0];
+        //     field.onChange(file);
+        //     if (file) {
+        //         const reader = new FileReader();
+        //         reader.onload = (event) => {
+        //             try {
+        //                 const json = JSON.parse(event.target?.result as string);
+        //                 console.log("Parsed JSON:", json);
+        //                 // store to state if needed
+        //             } catch (error) {
+        //                 console.error("Invalid JSON file.");
+        //                 alert("Invalid JSON file.");
+        //             }
+        //         };
+        //         reader.readAsText(file);
+        //     }
+        // }}
     };
 
-    if (!showCreateModal) return null;
+    const subjectList = [
+        { value: 1, label: 'Mathematics' },
+        { value: 2, label: 'English' },
+        { value: 3, label: 'Physics' },
+    ]
+
+    const classList = [
+        { value: 1, label: 'JSS1' },
+        { value: 2, label: 'JSS2' },
+        { value: 3, label: 'JSS3' },
+        { value: 4, label: 'JSS3' },
+        { value: 5, label: 'JSS3' },
+        { value: 6, label: 'JSS3' },
+    ]
 
     return (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-            <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-                <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-                    <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-                </div>
-                <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
-                    &#8203;
-                </span>
-                <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                    <form onSubmit={handleCreateExam}>
-                        <div className="bg-white px-4 pt-5 pb-4 sm:p-6">
-                            <div className="mb-4">
-                                <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Create New Exam</h3>
-                                <div className="space-y-4">
-                                    <div>
-                                        <label htmlFor="name" className="block text-sm font-medium text-gray-700">Exam Name</label>
-                                        <input
-                                            type="text"
-                                            id="name"
-                                            value={newExam.name}
-                                            onChange={(e) => setNewExam({ ...newExam, name: e.target.value })}
-                                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                        />
-                                        {formErrors.name && <p className="mt-1 text-sm text-red-600">{formErrors.name}</p>}
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="subject" className="block text-sm font-medium text-gray-700">Subject</label>
-                                        <select
-                                            id="subject"
-                                            value={newExam.subject}
-                                            onChange={(e) => setNewExam({ ...newExam, subject: e.target.value })}
-                                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                        >
-                                            <option value="">Select Subject</option>
-                                            {subjects.filter(s => s !== "All").map((subject, i) => (
-                                                <option key={i} value={subject}>{subject}</option>
-                                            ))}
-                                        </select>
-                                        {formErrors.subject && <p className="mt-1 text-sm text-red-600">{formErrors.subject}</p>}
-                                    </div>
-
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <label htmlFor="date" className="block text-sm font-medium text-gray-700">Date</label>
-                                            <input
-                                                type="date"
-                                                id="date"
-                                                value={newExam.date}
-                                                onChange={(e) => setNewExam({ ...newExam, date: e.target.value })}
-                                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        <div className="fixed inset-0 z-50 flex items-center justify-center ">
+            <div className="fixed inset-0 bg-black opacity-50 z-40"></div>
+            <div className=" relative z-50 inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <form onSubmit={handleSubmit(handleCreateExam)}>
+                    <div className="bg-white px-4 pt-5 pb-4 sm:p-6 mb-4">
+                        <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Create New Exam</h3>
+                        <div className="space-y-4">
+                            <div>
+                                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Exam Name</label>
+                                <input
+                                    type="text"
+                                    placeholder="Enter exam name"
+                                    {...register('name')}
+                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                />
+                                {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label htmlFor="subject" className="block text-sm font-medium mb-1 text-gray-700">Subject</label>
+                                    <Controller
+                                        name="subject"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select
+                                                {...field}
+                                                options={subjectList}
+                                                menuPlacement="auto"
+                                                menuShouldScrollIntoView={true}
+                                                isClearable
+                                                classNamePrefix="react-select"
+                                                onChange={(val) => field.onChange(val || null)}
+                                                styles={{
+                                                    menu: (provided) => ({
+                                                        ...provided,
+                                                        maxHeight: 200,
+                                                        overflowY: "auto",
+                                                    }),
+                                                }}
                                             />
-                                            {formErrors.date && <p className="mt-1 text-sm text-red-600">{formErrors.date}</p>}
-                                        </div>
-                                        <div>
-                                            <label htmlFor="time" className="block text-sm font-medium text-gray-700">Time</label>
-                                            <input
-                                                type="time"
-                                                id="time"
-                                                value={newExam.time}
-                                                onChange={(e) => setNewExam({ ...newExam, time: e.target.value })}
-                                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                        )}
+                                    />
+                                    {errors.subject && <p className="mt-1 text-sm text-red-600">{errors.subject.message}</p>}
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Assign Class
+                                    </label>
+                                    <Controller
+                                        name="class"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select
+                                                {...field}
+                                                options={classList}
+                                                classNamePrefix="react-select"
+                                                menuPlacement="auto"
+                                                menuShouldScrollIntoView={true}
+                                                isClearable
+                                                onChange={(val) => field.onChange(val || null)}
+                                                styles={{
+                                                    menu: (provided) => ({
+                                                        ...provided,
+                                                        maxHeight: 200,
+                                                        overflowY: "auto",
+                                                    }),
+                                                }}
                                             />
-                                            {formErrors.time && <p className="mt-1 text-sm text-red-600">{formErrors.time}</p>}
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="duration" className="block text-sm font-medium text-gray-700">Duration</label>
-                                        <input
-                                            type="text"
-                                            id="duration"
-                                            placeholder="e.g. 2 hours, 30 minutes"
-                                            value={newExam.duration}
-                                            onChange={(e) => setNewExam({ ...newExam, duration: e.target.value })}
-                                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                        />
-                                        {formErrors.duration && <p className="mt-1 text-sm text-red-600">{formErrors.duration}</p>}
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">Assigned Classes</label>
-                                        <div className="max-h-40 overflow-y-auto border border-gray-300 rounded-md p-2">
-                                            {classes.filter(c => c !== "All").map((className, i) => (
-                                                <div key={i} className="flex items-center mb-2 last:mb-0">
-                                                    <input
-                                                        type="checkbox"
-                                                        id={`class-${i}`}
-                                                        checked={newExam.classes.includes(className)}
-                                                        onChange={() => handleClassSelection(className)}
-                                                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded cursor-pointer"
-                                                    />
-                                                    <label htmlFor={`class-${i}`} className="ml-2 text-sm text-gray-700 cursor-pointer">
-                                                        {className}
-                                                    </label>
-                                                </div>
-                                            ))}
-                                        </div>
-                                        {formErrors.classes && <p className="mt-1 text-sm text-red-600">{formErrors.classes}</p>}
-                                    </div>
+                                        )}
+                                    />
                                 </div>
                             </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label htmlFor="date" className="block text-sm font-medium text-gray-700">Date</label>
+                                    <input
+                                        type="date"
+                                        {...register("date")}
+                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                    />
+                                    {errors.date && <p className="mt-1 text-sm text-red-600">{errors.date.message}</p>}
+                                </div>
+                                <div>
+                                    <label htmlFor="time" className="block text-sm font-medium text-gray-700">Time</label>
+                                    <input
+                                        type="time"
+                                        {...register("time")}
+                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                    />
+                                    {errors.time && <p className="mt-1 text-sm text-red-600">{errors.time.message}</p>}
+                                </div>
+                            </div>
+
+                            <div>
+                                <label htmlFor="duration" className="block text-sm font-medium text-gray-700">Duration</label>
+                                <input
+                                    type="numeric"
+                                    placeholder="e.g. 2 hours, 30 minutes"
+                                    {...register("duration")}
+                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                />
+                                {errors.duration && <p className="mt-1 text-sm text-red-600">{errors.duration.message}</p>}
+                            </div>
+
+                            <div className="">
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Upload Questions
+                                </label>
+                                <Controller
+                                    name="questions_file"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <input
+                                            type="file"
+                                            accept=".json"
+                                            onChange={(e) => field.onChange(e.target.files?.[0])}
+                                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm text-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                                        />
+                                    )}
+                                />
+                                {errors.questions_file && (
+                                    <p className="mt-1 text-sm text-red-600">
+                                        {errors.questions_file.message}
+                                    </p>
+                                )}
+                            </div>
                         </div>
-                        <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                            <button
-                                type="submit"
-                                className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm cursor-pointer"
-                            >
-                                Create Exam
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setShowCreateModal(false);
-                                    setNewExam({ name: "", subject: "", date: "", time: "", duration: "", classes: [] });
-                                    setFormErrors({ name: "", subject: "", date: "", time: "", duration: "", classes: "" });
-                                }}
-                                className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm cursor-pointer"
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                    </div>
+
+                    <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <button
+                            type="submit"
+                            className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm cursor-pointer"
+                        >
+                            Create Exam
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setShowCreateModal(false);
+                                reset({ name: "" })
+                            }}
+                            className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm cursor-pointer"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     );
 };
 
-export default ViewExamModal;
+export default CreateExamModal;

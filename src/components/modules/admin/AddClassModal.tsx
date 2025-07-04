@@ -1,8 +1,8 @@
 import React from 'react'
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { type AddClassProps } from "@/types/admin/class.ui"
-import { type CreateClassDto } from '@/types/admin/class.api';
+import { type AddClassProps } from "@/types/admin/ui/class"
+import { type CreateClassDto } from '@/types/admin/api/class';
 import { classSchema } from '@/validations/class.schema';
 
 const AddClassModal: React.FC<AddClassProps> = ({

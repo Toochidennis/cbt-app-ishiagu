@@ -133,7 +133,6 @@ const Users: React.FC = () => {
         },
     ]);
 
-
     return (
         <>
             <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
@@ -198,13 +197,13 @@ const Users: React.FC = () => {
                         </div>
                         {activeTab === 'teachers' && (
                             <div className="ml-3">
-                            <button
-                                onClick={() => setAssignTeacher(true)}
-                                className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none !rounded-button whitespace-nowrap cursor-pointer">
-                                <i className="fas fa-tasks mr-2"></i>
-                                Assign
-                            </button>
-                        </div>
+                                <button
+                                    onClick={() => setAssignTeacher(true)}
+                                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none !rounded-button whitespace-nowrap cursor-pointer">
+                                    <i className="fas fa-tasks mr-2"></i>
+                                    Assign
+                                </button>
+                            </div>
                         )}
                         <div className="ml-3">
                             <button className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none !rounded-button whitespace-nowrap cursor-pointer">

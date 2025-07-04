@@ -2,8 +2,8 @@ import React from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import Select from 'react-select'
-import { type SubjectModalProps } from '@/types/admin/subject.ui'
-import { type AssignSubjectDto } from '@/types/admin/subject.api'
+import { type SubjectModalProps } from '@/types/admin/ui/subject'
+import { type AssignSubjectDto } from '@/types/admin/api/subject'
 import { assignSubjectSchema } from '@/validations/subject.schema'
 
 

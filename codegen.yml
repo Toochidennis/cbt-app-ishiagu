@@ -1,0 +1,7 @@
+# codegen.yml
+schema: "./src/graphql/schema.graphql"
+generates:
+  ./src/types/graphql.ts:
+    plugins:
+      - typescript
+      - typescript-operations
