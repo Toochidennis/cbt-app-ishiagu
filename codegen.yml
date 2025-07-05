@@ -1,7 +1,13 @@
-# codegen.yml
-schema: "./src/graphql/schema.graphql"
+schema:
+  -  https://lvmfvgcmadzkcxlrjoje.supabase.co/graphql/v1:
+      headers:
+        apiKey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx2bWZ2Z2NtYWR6a2N4bHJqb2plIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3MTY5OTEsImV4cCI6MjA2NzI5Mjk5MX0.cWDq8BAY2ApYS4yi_MGQiKDtvBwWF8nRJuQK_kVTfhI
+        Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx2bWZ2Z2NtYWR6a2N4bHJqb2plIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3MTY5OTEsImV4cCI6MjA2NzI5Mjk5MX0.cWDq8BAY2ApYS4yi_MGQiKDtvBwWF8nRJuQK_kVTfhI
+
+documents: "src/graphql/**/*.graphql"
 generates:
-  ./src/types/graphql.ts:
+  ./src/graphql/schema.graphql:
     plugins:
-      - typescript
-      - typescript-operations
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"

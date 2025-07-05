@@ -51,11 +51,10 @@ const Login: React.FC = () => {
                     <h1 className="text-3xl font-bold text-gray-800">
                         CBT Examination System
                     </h1>
-                    <p className="text-gray-600 mt-2">Computer-Based Testing Platform</p>
                 </div>
                 <div className="bg-white rounded-lg shadow-lg p-8">
                     <div className="flex text-3xl font-bold text-gray-700 justify-center mb-6">Login
-                    
+
                     </div>
                     <form onSubmit={handleLogin}>
                         <div className="mb-4">
