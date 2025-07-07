@@ -1,8 +1,5 @@
 {
   "files": [],
-  "exclude": [
-    "src/electron"
-  ],
   "references": [
     {
       "path": "./tsconfig.app.json"

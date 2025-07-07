@@ -21,7 +21,11 @@ export default defineConfig({
             input: {
               main: 'src/electron/main.ts',
               preload: 'src/electron/preload.cts'
-            }
+            },
+            output: {
+              format: 'cjs'
+            },
+            external: ['better-sqlite3']
           }
         }
       }

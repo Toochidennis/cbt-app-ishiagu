@@ -5,6 +5,7 @@
   "type": "module",
   "main": "dist-electron/main.js",
   "scripts": {
+    "copy-schema": "xcopy src\\electron\\services\\sqlite\\schema.sql dist-electron\\sqlite\\ /I /Y /S",
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
@@ -20,7 +21,18 @@
       "dist-electron"
     ],
     "extraResources": [
-      "dist/electron/preload.js"
+      {
+        "from": "src/electron/preload.cjs",
+        "to": "preload.js"
+      },
+      {
+        "from": "src/electron/services/schema.sql",
+        "to": "schema.sql"
+      },
+      {
+        "from": "src/electron/data/",
+        "to": "data/"
+      }
     ],
     "win": {
       "target": "nsis"

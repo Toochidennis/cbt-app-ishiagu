@@ -2,15 +2,15 @@ import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 
 const httpLink = createHttpLink({
-    uri: import.meta.env.BASE_URL,
+    uri: process.env.BASE_URL,
 });
 
 const authLink = setContext((_, { headers }) => {
     return {
         headers: {
             ...headers,
-            apiKey: import.meta.env.SUPERBASE_KEY,
-            Authorization: `Bearer ${import.meta.env.SUPERBASE_KEY}`,
+            apiKey: process.env.SUPERBASE_KEY,
+            Authorization: `Bearer ${process.env.SUPERBASE_KEY}`,
         },
     };
 });

@@ -2,12 +2,13 @@ import { app, BrowserWindow } from 'electron';
 import path from 'path';
 import { isDev } from './util';
 import { getPreloadPath } from './pathResolver';
-import { LocalDatabase } from '@/services/sqlite/Database';
+import { LocalDatabase } from './services/sqlite/Database';
 
 let mainWindow: BrowserWindow;
 let db: LocalDatabase
 
 app.on('ready', () => {
+    console.log(app.getAppPath()); 
     db = new LocalDatabase();
 
     mainWindow = new BrowserWindow({

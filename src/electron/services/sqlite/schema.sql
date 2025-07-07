@@ -1,8 +1,8 @@
 PRAGMA foreign_keys = ON;
 
 -- USERS TABLE
-CREATE TABLE IF NOT EXISTS TABLE
-    users (
+CREATE TABLE
+    IF NOT EXISTS users (
         id TEXT PRIMARY KEY,
         display_id INTEGER UNIQUE,
         reg_number TEXT,
@@ -25,8 +25,8 @@ CREATE TABLE IF NOT EXISTS TABLE
     );
 
 -- CLASSES TABLE
-CREATE TABLE IF NOT EXISTS TABLE
-    classes (
+CREATE TABLE
+    IF NOT EXISTS classes (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL UNIQUE,
         form_teacher TEXT,
@@ -35,8 +35,8 @@ CREATE TABLE IF NOT EXISTS TABLE
     );
 
 -- SUBJECTS TABLE
-CREATE TABLE IF NOT EXISTS TABLE
-    subjects (
+CREATE TABLE
+    IF NOT EXISTS subjects (
         id TEXT PRIMARY KEY,
         code TEXT NOT NULL UNIQUE,
         name TEXT NOT NULL UNIQUE,
@@ -44,8 +44,8 @@ CREATE TABLE IF NOT EXISTS TABLE
     );
 
 -- COURSE ASSIGNMENTS
-CREATE TABLE IF NOT EXISTS TABLE
-    course_assignments (
+CREATE TABLE
+    IF NOT EXISTS course_assignments (
         id TEXT PRIMARY KEY,
         staff_id TEXT,
         subject_id TEXT,
@@ -58,8 +58,8 @@ CREATE TABLE IF NOT EXISTS TABLE
     );
 
 -- COURSE REGISTRATIONS
-CREATE TABLE IF NOT EXISTS TABLE
-    course_registrations (
+CREATE TABLE
+    IF NOT EXISTS course_registrations (
         id TEXT PRIMARY KEY,
         student_id TEXT,
         subject_id TEXT,
@@ -72,8 +72,8 @@ CREATE TABLE IF NOT EXISTS TABLE
     );
 
 -- EXAM SCHEDULES
-CREATE TABLE IF NOT EXISTS TABLE
-    exam_schedules (
+CREATE TABLE
+    IF NOT EXISTS exam_schedules (
         id TEXT PRIMARY KEY,
         description TEXT NOT NULL,
         subject_id TEXT,
@@ -91,8 +91,8 @@ CREATE TABLE IF NOT EXISTS TABLE
     );
 
 -- QUESTIONS TABLE
-CREATE TABLE IF NOT EXISTS TABLE
-    questions (
+CREATE TABLE
+    IF NOT EXISTS questions (
         id TEXT PRIMARY KEY,
         exam_schedule_id TEXT,
         question_text TEXT NOT NULL,
@@ -106,8 +106,8 @@ CREATE TABLE IF NOT EXISTS TABLE
     );
 
 -- GRADES TABLE
-CREATE TABLE IF NOT EXISTS TABLE
-    grades (
+CREATE TABLE
+    IF NOT EXISTS grades (
         id TEXT PRIMARY KEY,
         min_score NUMERIC NOT NULL,
         max_score NUMERIC NOT NULL,
@@ -116,8 +116,8 @@ CREATE TABLE IF NOT EXISTS TABLE
     );
 
 -- RESULTS TABLE
-CREATE TABLE IF NOT EXISTS TABLE
-    results (
+CREATE TABLE
+    IF NOT EXISTS results (
         id TEXT PRIMARY KEY,
         student_id TEXT,
         subject_id TEXT,
@@ -140,8 +140,8 @@ CREATE TABLE IF NOT EXISTS TABLE
     );
 
 -- ASSESSMENTS TABLE
-CREATE TABLE IF NOT EXISTS TABLE
-    assessments (
+CREATE TABLE
+    IF NOT EXISTS assessments (
         id TEXT PRIMARY KEY,
         subject_id TEXT,
         class_id TEXT,
@@ -154,8 +154,8 @@ CREATE TABLE IF NOT EXISTS TABLE
     );
 
 -- SETTINGS TABLE
-CREATE TABLE IF NOT EXISTS TABLE
-    settings (
+CREATE TABLE
+    IF NOT EXISTS settings (
         id TEXT PRIMARY KEY,
         school_name TEXT,
         logo TEXT,
