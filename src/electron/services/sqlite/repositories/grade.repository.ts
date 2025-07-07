@@ -1,21 +1,27 @@
 import Database from "better-sqlite3";
+import { appToDb, dbToApp } from "../../../util/caseTransform";
+import { Grade } from "../models";
 
-export class GradeModel {
+export class GradeRepository {
     private db: Database.Database;
 
     constructor(db: Database.Database) {
         this.db = db;
     }
 
-    create(data: any) {
+    create(grade: Grade) {
+        const dbGrade = appToDb(grade);
         return this.db.prepare(`
             INSERT INTO grades (id, min_score, max_score, grade, remark)
             VALUES (@id, @min_score, @max_score, @grade, @remark)
-        `).run(data);
+        `).run(dbGrade);
     }
 
-    findAll() {
-        return this.db.prepare(`SELECT * FROM grades`).all();
+    findAll(): Grade[] {
+        const rows = this.db.prepare(`SELECT * FROM grades`)
+            .all() as Record<string, any>[];
+            
+        return rows.map(row => dbToApp<Grade>(row));
     }
 
     delete(id: string) {

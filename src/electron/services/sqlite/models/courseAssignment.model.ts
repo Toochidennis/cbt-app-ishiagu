@@ -4,4 +4,9 @@ export class CourseAssignment {
     subjectId?: string;
     classId?: string;
     createdAt?: string;
+    updatedAt?: string;
+
+    constructor(init?: Partial<CourseAssignment>) {
+        Object.assign(this, init);
+    }
 }

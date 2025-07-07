@@ -1,7 +1,7 @@
 
 import Database from "better-sqlite3";
 
-export class SubjectModel {
+export class SubjectRepository {
     private db: Database.Database;
 
     constructor(db: Database.Database) {

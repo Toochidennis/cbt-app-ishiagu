@@ -14,4 +14,9 @@ export class Result {
     approved!: number; // 0 or 1
     approvedAt?: string;
     createdAt?: string;
+    updatedAt?: string;
+
+    constructor(init?: Partial<Result>) {
+        Object.assign(this, init);
+    }
 }

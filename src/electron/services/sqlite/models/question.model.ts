@@ -8,4 +8,9 @@ export class Question {
     marks!: number;
     createdBy?: string;
     createdAt?: string;
+    updatedAt?: string;
+
+    constructor(init?: Partial<Question>) {
+        Object.assign(this, init);
+    }
 }

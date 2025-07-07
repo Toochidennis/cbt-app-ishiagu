@@ -41,7 +41,7 @@ export class LocalDatabase {
         this.db.exec(sql);
     }
 
-    get connection(): Database.Database {
+    getConnection(): Database.Database {
         return this.db;
     }
 

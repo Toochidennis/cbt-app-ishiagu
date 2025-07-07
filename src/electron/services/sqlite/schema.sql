@@ -4,7 +4,7 @@ PRAGMA foreign_keys = ON;
 CREATE TABLE
     IF NOT EXISTS users (
         id TEXT PRIMARY KEY,
-        display_id INTEGER UNIQUE,
+        display_id INTEGER,
         reg_number TEXT,
         role TEXT NOT NULL CHECK (role IN ('admin', 'staff', 'student')),
         surname TEXT NOT NULL,
@@ -21,6 +21,7 @@ CREATE TABLE
         password_hash TEXT NOT NULL,
         is_active INTEGER NOT NULL DEFAULT 1,
         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (class_id) REFERENCES classes (id)
     );
 
@@ -31,6 +32,7 @@ CREATE TABLE
         name TEXT NOT NULL UNIQUE,
         form_teacher TEXT,
         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (form_teacher) REFERENCES users (id)
     );
 
@@ -40,7 +42,8 @@ CREATE TABLE
         id TEXT PRIMARY KEY,
         code TEXT NOT NULL UNIQUE,
         name TEXT NOT NULL UNIQUE,
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT DEFAULT CURRENT_TIMESTAMP
     );
 
 -- COURSE ASSIGNMENTS
@@ -51,6 +54,7 @@ CREATE TABLE
         subject_id TEXT,
         class_id TEXT,
         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
         UNIQUE (staff_id, subject_id, class_id),
         FOREIGN KEY (staff_id) REFERENCES users (id),
         FOREIGN KEY (subject_id) REFERENCES subjects (id),
@@ -66,6 +70,7 @@ CREATE TABLE
         term INTEGER NOT NULL,
         year INTEGER NOT NULL,
         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
         UNIQUE (student_id, subject_id, term, year),
         FOREIGN KEY (student_id) REFERENCES users (id),
         FOREIGN KEY (subject_id) REFERENCES subjects (id)
@@ -84,6 +89,7 @@ CREATE TABLE
         term INTEGER NOT NULL,
         created_by TEXT,
         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
         UNIQUE (subject_id, class_id, term, year),
         FOREIGN KEY (subject_id) REFERENCES subjects (id),
         FOREIGN KEY (class_id) REFERENCES classes (id),
@@ -101,6 +107,7 @@ CREATE TABLE
         marks INTEGER DEFAULT 1,
         created_by TEXT,
         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (exam_schedule_id) REFERENCES exam_schedules (id),
         FOREIGN KEY (created_by) REFERENCES users (id)
     );
@@ -112,7 +119,9 @@ CREATE TABLE
         min_score NUMERIC NOT NULL,
         max_score NUMERIC NOT NULL,
         grade TEXT NOT NULL,
-        remark TEXT
+        remark TEXT,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
     );
 
 -- RESULTS TABLE
@@ -133,6 +142,7 @@ CREATE TABLE
         approved INTEGER DEFAULT 0,
         approved_at TEXT,
         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
         UNIQUE (student_id, subject_id, class_id, term, year),
         FOREIGN KEY (student_id) REFERENCES users (id),
         FOREIGN KEY (subject_id) REFERENCES subjects (id),
@@ -148,6 +158,7 @@ CREATE TABLE
         assessment_name TEXT NOT NULL,
         max_score NUMERIC NOT NULL,
         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
         UNIQUE (subject_id, class_id, assessment_name),
         FOREIGN KEY (subject_id) REFERENCES subjects (id),
         FOREIGN KEY (class_id) REFERENCES classes (id)
@@ -161,5 +172,6 @@ CREATE TABLE
         logo TEXT,
         term INTEGER NOT NULL,
         year INTEGER NOT NULL,
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
     );

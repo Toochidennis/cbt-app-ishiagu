@@ -5,4 +5,9 @@ export class Assessment {
     assessmentName!: string;
     maxScore!: number;
     createdAt?: string;
+    updatedAt?: string;
+
+    constructor(init?: Partial<Assessment>) {
+        Object.assign(this, init);
+    }
 }

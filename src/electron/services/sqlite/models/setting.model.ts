@@ -5,4 +5,9 @@ export class Setting {
     term!: number;
     year!: number;
     createdAt?: string;
+    updatedAt?: string;
+
+    constructor(init?: Partial<Setting>) {
+        Object.assign(this, init);
+    }
 }

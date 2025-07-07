@@ -3,13 +3,15 @@ import path from 'path';
 import { isDev } from './util/util';
 import { getPreloadPath } from './util/pathResolver';
 import { LocalDatabase } from './services/sqlite/Database';
+//import { seedSettings } from './services/sqlite/seed/seed';
 
 let mainWindow: BrowserWindow;
 let db: LocalDatabase
 
 app.on('ready', () => {
-    console.log(app.getAppPath());
     db = new LocalDatabase();
+
+    //seedSettings(db.getConnection());
 
     mainWindow = new BrowserWindow({
         webPreferences: {

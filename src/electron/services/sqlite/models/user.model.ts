@@ -17,4 +17,9 @@ export class User {
     passwordHash!: string;
     isActive!: number; // 0 or 1
     createdAt?: string;
+    updatedAt?: string;
+
+    constructor(init?: Partial<User>) {
+        Object.assign(this, init);
+    }
 }

@@ -1,8 +1,8 @@
 import Database from "better-sqlite3";
 import { Assessment } from '../models'
-import { appToDb, dbToApp } from "@/electron/util/caseTransform";
+import { appToDb, dbToApp } from "../../../util/caseTransform";
 
-export class AssessmentModel {
+export class AssessmentRepository {
     private db: Database.Database;
 
     constructor(db: Database.Database) {

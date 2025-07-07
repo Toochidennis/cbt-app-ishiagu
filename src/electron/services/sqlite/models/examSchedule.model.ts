@@ -9,4 +9,9 @@ export class ExamSchedule {
     term!: number;
     createdBy?: string;
     createdAt?: string;
+    updatedAt?: string;
+
+    constructor(init?: Partial<ExamSchedule>) {
+        Object.assign(this, init);
+    }
 }

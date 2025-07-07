@@ -5,4 +5,9 @@ export class CourseRegistration {
     term!: number;
     year!: number;
     createdAt?: string;
+    updatedAt?: string;
+
+    constructor(init?: Partial<CourseRegistration>) {
+        Object.assign(this, init);
+    }
 }
