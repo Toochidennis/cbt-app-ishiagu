@@ -2,7 +2,7 @@ import Database from "better-sqlite3";
 import path from "path";
 import fs from "fs";
 import { app } from 'electron';
-import { isDev } from "../../../electron/util";
+import { isDev } from "../../util/util";
 
 
 export class LocalDatabase {

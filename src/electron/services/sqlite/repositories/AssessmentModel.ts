@@ -1,4 +1,6 @@
 import Database from "better-sqlite3";
+import { Assessment } from '../models'
+import { appToDb, dbToApp } from "@/electron/util/caseTransform";
 
 export class AssessmentModel {
     private db: Database.Database;
@@ -7,7 +9,8 @@ export class AssessmentModel {
         this.db = db;
     }
 
-    create(data: any) {
+    create(assessment: Assessment) {
+        const dbAssessment = appToDb(assessment);
         return this.db.prepare(`
             INSERT INTO assessments (
                 id, subject_id, class_id,
@@ -17,14 +20,16 @@ export class AssessmentModel {
                 @id, @subject_id, @class_id,
                 @assessment_name, @max_score
             )
-        `).run(data);
+        `).run(dbAssessment);
     }
 
-    findByClassAndSubject(class_id: string, subject_id: string) {
-        return this.db.prepare(`
+    findByClassAndSubject(classId: string, subjectId: string): Assessment[] {
+        const rows = this.db.prepare(`
             SELECT * FROM assessments
-            WHERE class_id = ? AND subject_id = ?
-        `).all(class_id, subject_id);
+            WHERE class_id = @classId AND subject_id = @subjectId
+        `).all({ classId, subjectId }) as Record<string, any>[];
+
+        return rows.map(row => dbToApp<Assessment>(row));
     }
 
     delete(id: string) {
