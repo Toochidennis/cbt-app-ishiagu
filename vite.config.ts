@@ -20,7 +20,7 @@ export default defineConfig({
           rollupOptions: {
             input: {
               main: 'src/electron/main.ts',
-              preload: 'src/electron/preload.cts'
+              preload: 'src/electron/preload.ts'
             },
             output: {
               format: 'cjs'

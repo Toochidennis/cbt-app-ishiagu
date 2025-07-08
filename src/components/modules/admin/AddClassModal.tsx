@@ -4,6 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { type AddClassProps } from "@/types/admin/ui/class"
 import { type CreateClassDto } from '@/types/admin/api/class';
 import { classSchema } from '@/validations/class.schema';
+import { type IpcChannels } from '@/types/ipc/ipcTypes';
 
 const AddClassModal: React.FC<AddClassProps> = ({
     showAddModal,
@@ -24,6 +25,16 @@ const AddClassModal: React.FC<AddClassProps> = ({
 
         setShowAddModal((prev) => !prev);
     };
+
+    async function createGrade() {
+        const result = await window.api.invoke('grade:create', {
+            grade: 'A+',
+            minScore: 95,
+            maxScore: 100,
+            remark: 'Distinction',
+        });
+        console.log(result.id, result.changes);
+    }
 
     return (
         <>
@@ -75,7 +86,7 @@ const AddClassModal: React.FC<AddClassProps> = ({
                 </div>
             )}
         </>
-    )
+    );
 }
 
 export default AddClassModal

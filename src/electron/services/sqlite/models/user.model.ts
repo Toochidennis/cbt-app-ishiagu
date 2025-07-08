@@ -1,6 +1,6 @@
 export class User {
     id!: string;
-    displayId!: number;
+    displayId?: number;
     regNumber!: string;
     role!: 'admin' | 'staff' | 'student';
     surname!: string;
@@ -15,7 +15,7 @@ export class User {
     address?: string;
     username!: string;
     passwordHash!: string;
-    isActive!: number; // 0 or 1
+    isActive?: number; // 0 or 1
     createdAt?: string;
     updatedAt?: string;
 

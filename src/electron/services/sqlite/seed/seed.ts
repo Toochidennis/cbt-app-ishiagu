@@ -73,6 +73,33 @@ const assessmentData = [
     }
 ];
 
+const classData = [
+    {
+        id: uuid(),
+        name: 'JSS1',
+    },
+    {
+        id: uuid(),
+        name: 'JSS2',
+    },
+    {
+        id: uuid(),
+        name: 'JSS1',
+    },
+    {
+        id: uuid(),
+        name: 'JSS1',
+    },
+    {
+        id: uuid(),
+        name: 'JSS1',
+    },
+    {
+        id: uuid(),
+        name: 'JSS1',
+    },
+]
+
 export function seedSettings(db: Database.Database) {
     const gradeRepo = new GradeRepository(db);
     const assessmentRepo = new AssessmentRepository(db);
