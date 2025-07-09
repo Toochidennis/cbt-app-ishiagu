@@ -743,13 +743,6 @@ const Exams: React.FC = () => {
         <CreateExamModal
           showCreateModal={showCreateModal}
           setShowCreateModal={setShowCreateModal}
-          subjects={subjects}
-          classes={classes}
-          exams={exams}
-          setExams={setExams}
-          newExam={newExam}
-          setNewExam={setNewExam}
-          handleClassSelection={handleClassSelection}
         />
       )}
 

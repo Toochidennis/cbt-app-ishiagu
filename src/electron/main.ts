@@ -4,7 +4,7 @@ import { v4 as uuid } from 'uuid';
 import { isDev } from './util/util';
 import { getPreloadPath } from './util/pathResolver';
 import { LocalDatabase } from './services/sqlite/Database';
-import { type IpcChannels } from '../types/ipc/ipcTypes';
+import { type CreateSubject, type IpcChannels } from '../types/ipc/ipcTypes';
 import {
     ClassRepository,
     CourseAssignmentRepository,
@@ -32,7 +32,6 @@ let questionRepo: QuestionRepository;
 let subjectRepo: SubjectRepository;
 let userRepo: UserRepository;
 let resultRepo: ResultRepository;
-
 
 app.on('ready', () => {
     db = new LocalDatabase();
@@ -86,6 +85,10 @@ function exposeIpcHandlers() {
             const result = classRepo.create(model);
             return { id: model.id, changes: result.changes };
         },
+        'class:get': async () => {
+            const result = classRepo.findAll();
+            return { data: result, count: result.length };
+        },
         'course-assignment:create': async (_e, data) => {
             const model = new CourseAssignment({ id: uuid(), ...data, updatedAt: new Date().toISOString() });
             const result = courseAssignmentRepo.create(model);
@@ -110,6 +113,10 @@ function exposeIpcHandlers() {
             const model = new Subject({ id: uuid(), ...data, updatedAt: new Date().toISOString() });
             const result = subjectRepo.create(model);
             return { id: model.id, changes: result.changes };
+        },
+        'subject:get': async () => {
+            const result = subjectRepo.findAll();
+            return { data: result, count: result.length };
         },
         'user:create': async (_e, data) => {
             const model = new User({ id: uuid(), ...data, updatedAt: new Date().toISOString() });

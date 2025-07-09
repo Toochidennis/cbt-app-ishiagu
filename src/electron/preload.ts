@@ -1,4 +1,4 @@
-import { ipcRenderer, contextBridge } from "electron";
+const { ipcRenderer, contextBridge } = require( "electron");
 import { type IpcChannels } from "../types/ipc/ipcTypes";
 
 const api = {

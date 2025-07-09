@@ -22,13 +22,11 @@ export default defineConfig({
               main: 'src/electron/main.ts',
               preload: 'src/electron/preload.ts'
             },
-            output: {
-              format: 'cjs'
-            },
-            external: ['better-sqlite3']
+            external: ['electron','better-sqlite3']
           }
-        }
-      }
+        },
+        configFile: 'src/electron/tsconfig.electron.json'
+      },
     })
   ],
   resolve: {

@@ -11,7 +11,7 @@ export const assignSubjectSchema = yup.object().shape({
         .min(1, 'Select at least one class')
         .of(
             yup.object({
-                value: yup.number().required(),
+                value: yup.string().required(),
                 label: yup.string().required()
             })
         )
@@ -21,7 +21,7 @@ export const assignSubjectSchema = yup.object().shape({
         .min(1, 'Select at least one subject')
         .of(
             yup.object({
-                value: yup.number().required(),
+                value: yup.string().required(),
                 label: yup.string().required()
             })
         )

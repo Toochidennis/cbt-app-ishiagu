@@ -1,0 +1,11 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "module": "nodenext",
+        "target": "esnext",
+        "outDir": "../.. /dist-electron",
+        "isolatedModules": false,
+        "strict": true,
+        "skipLibCheck": true
+    }
+}

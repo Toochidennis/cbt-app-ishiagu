@@ -122,6 +122,11 @@ export interface CreateResult {
     changes: number;
 }
 
+export interface GetResult<T> {
+    data: T | T[];
+    count: number;
+}
+
 /**
  * Map of channel → input and output types
  */
@@ -134,6 +139,11 @@ export interface IpcChannels {
     'class:create': {
         input: CreateClass;
         result: CreateResult;
+    };
+
+    'class:get': {
+        input?: Partial<CreateClass>;
+        result: GetResult<CreateClass>;
     };
 
     'course-assignment:create': {
@@ -164,6 +174,11 @@ export interface IpcChannels {
     'subject:create': {
         input: CreateSubject;
         result: CreateResult;
+    };
+
+    'subject:get': {
+        input?: Partial<CreateSubject>;
+        result: GetResult<CreateSubject>;
     };
 
     'user:create': {

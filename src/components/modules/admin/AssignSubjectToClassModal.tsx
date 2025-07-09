@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import Select from 'react-select'
+import Select, { type OptionsOrGroups } from 'react-select'
 import { type SubjectModalProps } from '@/types/admin/ui/subject'
 import { type AssignSubjectDto } from '@/types/admin/api/subject'
 import { assignSubjectSchema } from '@/validations/subject.schema'
+import type { SelectOption } from '@/types/shared'
 
 
 const AssignSubjectToClassModal: React.FC<SubjectModalProps> = ({
@@ -24,20 +25,49 @@ const AssignSubjectToClassModal: React.FC<SubjectModalProps> = ({
         console.log(data)
     }
 
-    const classesList = [
-        { value: 1, label: 'JSS1' },
-        { value: 2, label: 'JSS2' },
-        { value: 3, label: 'JSS3' },
-        { value: 4, label: 'JSS3' },
-        { value: 5, label: 'JSS3' },
-        { value: 6, label: 'JSS3' },
-    ]
+    const [subjectsList, setSubjectsList] = React.useState<SelectOption[]>([]);
+    const [classesList, setClassesList] = React.useState<SelectOption[]>([]);
 
-    const subjectsList = [
-        { value: 1, label: 'Mathematics' },
-        { value: 2, label: 'English' },
-        { value: 3, label: 'Physics' },
-    ]
+    async function getSubjects() {
+        try {
+            const { data, count } = await window.api.invoke('subject:get');
+
+            if (Array.isArray(data)) {
+                let subjects = data.map(subject => ({
+                    value: subject.id ?? '',
+                    label: subject.name
+                }));
+                setSubjectsList(subjects);
+                console.log(subjectsList);
+            }
+        } catch (error) {
+            console.error("Failed to load subjects", error);
+        }
+    }
+
+    async function getClasses() {
+        try{
+            const {data, count} = await window.api.invoke('class:get')
+
+            if (Array.isArray(data)) {
+                let classes = data.map(cls => ({
+                    value: cls.id ?? '',
+                    label: cls.name
+                }));
+                setClassesList(classes);
+                console.log(classes);
+            }
+
+        }catch(error){
+            console.error("Failed to load subjects", error);
+        }
+    }
+
+    useEffect(() => {
+        getClasses();
+        getSubjects();
+    }, []);
+
 
     return (
         <>
