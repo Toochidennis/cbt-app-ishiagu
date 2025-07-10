@@ -1,7 +1,6 @@
 import React from "react";
 
 const StudentDashboard: React.FC = () => {
-    // Mock exam data
     const exams = [
         {
             id: 1,
@@ -164,7 +163,7 @@ const StudentDashboard: React.FC = () => {
                                     <div className="flex items-center">
                                         <span
                                             className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium mr-4
-${exam.status === "In Progress"
+                                                    ${exam.status === "In Progress"
                                                     ? "bg-green-100 text-green-800"
                                                     : exam.status === "Upcoming"
                                                         ? "bg-orange-100 text-orange-800"

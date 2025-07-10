@@ -17,14 +17,12 @@ export class SettingRepository {
         `).run(dbSetting);
     }
 
-    getCurrent(): Setting | null {
+    getCurrent(): Setting {
         const row = this.db.prepare(
             `SELECT * FROM settings 
                 ORDER BY created_at DESC
                 LIMIT 1`
         ).get() as Record<string, any>;
-
-        if (!row) return null;
 
         return dbToApp<Setting>(row);
     }

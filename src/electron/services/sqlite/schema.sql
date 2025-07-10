@@ -175,3 +175,16 @@ CREATE TABLE
         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
         updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
     );
+
+-- EXAM ATTEMPTS
+CREATE TABLE IF NOT EXISTS exam_attempts (
+    id TEXT PRIMARY KEY,
+    exam_schedule_id TEXT NOT NULL,
+    student_id TEXT NOT NULL,
+    status INTEGER NOT NULL DEFAULT 1,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (exam_schedule_id, student_id),
+    FOREIGN KEY (exam_schedule_id) REFERENCES exam_schedules (id),
+    FOREIGN KEY (student_id) REFERENCES users (id)
+);

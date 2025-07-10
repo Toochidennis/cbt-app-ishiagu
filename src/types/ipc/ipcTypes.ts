@@ -117,6 +117,26 @@ export interface CreateUser {
     updatedAt?: string;
 }
 
+export interface CreateExamAttempt {
+    id?: string;
+    examScheduleId: string;
+    studentId: string;
+    status: 1 | 0;
+    createdAt?: string;
+    updatedAt?: string;
+}
+
+export interface CreateSetting {
+    id?: string;
+    schoolName: string;
+    logo?: string;
+    term: number;
+    year: number;
+    createdAt?: string;
+    updatedAt?: string;
+}
+
+
 export interface CreateResult {
     id: string;
     changes: number;
@@ -125,6 +145,7 @@ export interface CreateResult {
 export interface GetResult<T> {
     data: T | T[];
     count?: number;
+    error?: string;
 }
 
 /**
@@ -200,8 +221,18 @@ export interface IpcChannels {
         result: GetResult<CreateUser[]>;
     };
 
+    'user:login': {
+        input: { username: string, password: string };
+        result: GetResult<CreateUser>;
+    };
+
     'result:create': {
         input: CreateResults;
         result: CreateResult;
+    };
+
+    'setting:get': {
+        input: CreateSetting;
+        result: GetResult<CreateSetting>;
     };
 }

@@ -61,7 +61,6 @@ export class UserRepository {
         insertMany(users);
     }
 
-
     findByRole(role: string): User[] {
         const rows = this.db.prepare(`SELECT * FROM users WHERE role = ?`)
             .all(role) as Record<string, any>[];
@@ -74,6 +73,19 @@ export class UserRepository {
             .all(class_id) as Record<string, any>[];
 
         return rows.map(row => dbToApp<User>(row));
+    }
+
+    findByUsername(username: string): User {
+        const row = this.db.prepare(`
+                SELECT 
+                    id, username, class_id, role, is_active
+                FROM
+                    users 
+                WHERE 
+                    username = @username
+            `).get({ username }) as Record<string, any>;
+
+        return dbToApp<User>(row);
     }
 
     update(id: string, data: Partial<User>) {

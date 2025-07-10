@@ -153,11 +153,24 @@ function exposeIpcHandlers() {
             const result = userRepo.findByClassId(classId);
             return { data: result };
         },
+        'user:login': async (_e,  {username, password}) => {
+            const user = userRepo.findByUsername(username);
+            if (!user) return {data: [], error: 'User not found'}
+
+            const isValid = password === user.passwordHash;
+            if (!isValid) return { data: [], error: "Invalid password" };
+            
+            return { data: user };
+        },
         'result:create': async (_e, data) => {
-            const model = new Result({ id: uuid(), ...data, updatedAt: now });
+            const model = new Result({ id: uuid(), ...data});
             const result = resultRepo.create(model);
             return { id: model.id, changes: result.changes };
-        }
+        },
+        'setting:get': async () => {
+            const result = settingRepo.getCurrent();
+            return { data: result };
+        },
     };
 
     for (const [channel, handler] of Object.entries(channels)) {

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useAuthStore } from "@/states/AuthStore";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import type { CreateSetting, CreateUser } from "@/types/ipc/ipcTypes";
 
 
 const Login: React.FC = () => {
@@ -11,21 +13,45 @@ const Login: React.FC = () => {
     const navigate = useNavigate();
 
     // Handle login
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // In a real app, replace this with API or Supabase call.
-        if (username && password) {
-            // For demo, simulate roles:
-            let userRole: "admin" | "staff" | "student" = "student";
+        // Sanitize inputs
+        const trimmedUsername = username.trim();
+        const trimmedPassword = password.trim();
 
-            // Dummy logic:
-            if (username.startsWith("admin")) userRole = "admin";
-            else if (username.startsWith("staff")) userRole = "staff";
+        if (!trimmedUsername || !trimmedPassword) {
+            toast.error("Username and password are required.");
+            return;
+        }
 
-            login(userRole);
-            console.log(userRole);
-            // Redirect based on role:
+        const toastId = toast.loading("Logging in...");
+
+        try {
+            const { data: user, error } = await window.api.invoke('user:login', {
+                username: trimmedUsername,
+                password: trimmedPassword
+            });
+
+            if (error || !user) {
+                toast.update(toastId, {
+                    render: error || "Invalid credentials.",
+                    type: "error",
+                    isLoading: false,
+                    autoClose: 3000
+                });
+                return;
+            }
+
+            const { data: settings } = await window.api.invoke('setting:get');
+
+            useAuthStore.getState().setUser(user as CreateUser);
+            useAuthStore.getState().setSettings(settings as CreateSetting);
+
+            const userRole = user.role as "admin" | "staff" | "student";
+            login(userRole); // your custom auth handler
+
+            // Navigation based on role
             switch (userRole) {
                 case "admin":
                     navigate("/", { replace: true });
@@ -35,13 +61,30 @@ const Login: React.FC = () => {
                     break;
                 case "student":
                     navigate("/student", { replace: true });
-                    console.log(userRole);
                     break;
                 default:
                     navigate("/unauthorized");
+                    break;
             }
+
+            toast.update(toastId, {
+                render: "Login successful!",
+                type: "success",
+                isLoading: false,
+                autoClose: 2000
+            });
+
+        } catch (err) {
+            console.error("Login error:", err);
+            toast.update(toastId, {
+                render: "An unexpected error occurred.",
+                type: "error",
+                isLoading: false,
+                autoClose: 3000
+            });
         }
     };
+
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center p-4">

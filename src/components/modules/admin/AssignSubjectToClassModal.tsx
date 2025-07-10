@@ -111,7 +111,6 @@ const AssignSubjectToClassModal: React.FC<SubjectModalProps> = ({
     };
 
 
-
     return (
         <>
             {assignSubject && (

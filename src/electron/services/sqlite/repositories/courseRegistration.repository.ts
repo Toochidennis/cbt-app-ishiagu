@@ -12,7 +12,7 @@ export class CourseRegistrationRepository {
     create(courseReg: CourseRegistration) {
         const dbCourseReg = appToDb(courseReg);
         return this.db.prepare(`
-            INSERT INTO course_registrations (
+            INSERT OR IGNORE INTO course_registrations (
                 id, student_id, subject_id, term, year
             )
             VALUES (
@@ -23,7 +23,7 @@ export class CourseRegistrationRepository {
 
     createMany(courseRegs: CourseRegistration[]) {
         const insert = this.db.prepare(`
-            INSERT INTO course_registrations (
+            INSERT OR IGNORE INTO course_registrations (
                 id, student_id, subject_id, term, year
             )
             VALUES (
