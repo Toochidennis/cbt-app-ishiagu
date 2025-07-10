@@ -1,6 +1,6 @@
 
 export class Question {
-    id!: string;
+    id?: string;
     examScheduleId?: string;
     questionText!: string;
     options!: string;

@@ -34,6 +34,34 @@ export class UserRepository {
         `).run(dbUser);
     }
 
+    createMany(users: User[]) {
+        const insert = this.db.prepare(`
+            INSERT INTO users (
+                id, display_id, reg_number, role,
+                surname, first_name, middle_name,
+                class_id, gender, date_of_birth,
+                contact, state, lga, address,
+                username, password_hash, is_active
+            )
+            VALUES (
+                @id, @display_id, @reg_number, @role,
+                @surname, @first_name, @middle_name,
+                @class_id, @gender, @date_of_birth,
+                @contact, @state, @lga, @address,
+                @username, @password_hash, @is_active
+            )
+        `);
+
+        const insertMany = this.db.transaction((users: User[]) => {
+            for (const user of users) {
+                insert.run(appToDb(user));
+            }
+        });
+
+        insertMany(users);
+    }
+
+
     findByRole(role: string): User[] {
         const rows = this.db.prepare(`SELECT * FROM users WHERE role = ?`)
             .all(role) as Record<string, any>[];

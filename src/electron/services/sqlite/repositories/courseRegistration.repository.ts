@@ -1,4 +1,6 @@
 import Database from "better-sqlite3";
+import type { CourseRegistration } from "../models";
+import { appToDb } from "../../../../electron/util/caseTransform";
 
 export class CourseRegistrationRepository {
     private db: Database.Database;
@@ -7,11 +9,44 @@ export class CourseRegistrationRepository {
         this.db = db;
     }
 
-    create(data:any) {
+    create(courseReg: CourseRegistration) {
+        const dbCourseReg = appToDb(courseReg);
         return this.db.prepare(`
-        INSERT INTO course_registrations (id, student_id, subject_id, term, year)
-        VALUES (@id, @student_id, @subject_id, @term, @year)
-        `).run(data);
+            INSERT INTO course_registrations (
+                id, student_id, subject_id, term, year
+            )
+            VALUES (
+                @id, @student_id, @subject_id, @term, @year
+            )
+        `).run(dbCourseReg);
+    }
+
+    createMany(courseRegs: CourseRegistration[]) {
+        const insert = this.db.prepare(`
+            INSERT INTO course_registrations (
+                id, student_id, subject_id, term, year
+            )
+            VALUES (
+                @id, @student_id, @subject_id, @term, @year
+            )
+        `);
+
+        const insertMany = this.db.transaction((regs: CourseRegistration[]) => {
+            const results: { id: string; changes: number }[] = [];
+
+            for (const reg of regs) {
+                const dbReg = appToDb(reg);
+                const result = insert.run(dbReg);
+                results.push({
+                    id: dbReg.id,
+                    changes: result.changes,
+                });
+            }
+
+            return results;
+        });
+
+        return insertMany(courseRegs);
     }
 
     findAll() {

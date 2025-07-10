@@ -4,7 +4,7 @@ export const examSchema = yup.object().shape({
     name: yup.string().required('Exam name is required'),
     subject: yup
         .object({
-            value: yup.number().required(),
+            value: yup.string().required(),
             label: yup.string().required()
         })
         .nullable()
@@ -17,7 +17,7 @@ export const examSchema = yup.object().shape({
     duration: yup.number().required('Duration is required'),
     class: yup
         .object({
-            value: yup.number().required(),
+            value: yup.string().required(),
             label: yup.string().required()
         })
         .nullable()

@@ -4,7 +4,7 @@ import { v4 as uuid } from 'uuid';
 import { isDev } from './util/util';
 import { getPreloadPath } from './util/pathResolver';
 import { LocalDatabase } from './services/sqlite/Database';
-import { type CreateSubject, type IpcChannels } from '../types/ipc/ipcTypes';
+import { type CreateQuestion, type CreateSubject, type IpcChannels } from '../types/ipc/ipcTypes';
 import {
     ClassRepository,
     CourseAssignmentRepository,
@@ -13,12 +13,13 @@ import {
     QuestionRepository,
     ResultRepository,
     SubjectRepository,
-    UserRepository
+    UserRepository,
+    SettingRepository,
 } from './services/sqlite/repositories';
 
 import {
     Class, CourseAssignment, CourseRegistration, ExamSchedule,
-    Question, Result, Subject, User
+    Question, Result, Subject, User, Setting,
 } from './services/sqlite/models';
 //import { seedSettings } from './services/sqlite/seed/seed';
 
@@ -32,6 +33,8 @@ let questionRepo: QuestionRepository;
 let subjectRepo: SubjectRepository;
 let userRepo: UserRepository;
 let resultRepo: ResultRepository;
+let settingRepo: SettingRepository
+const now = new Date().toISOString();
 
 app.on('ready', () => {
     db = new LocalDatabase();
@@ -71,6 +74,7 @@ function initRepos() {
     subjectRepo = new SubjectRepository(connection);
     userRepo = new UserRepository(connection);
     resultRepo = new ResultRepository(connection);
+    settingRepo = new SettingRepository(connection);
 }
 
 function exposeIpcHandlers() {
@@ -81,7 +85,7 @@ function exposeIpcHandlers() {
         ) => Promise<IpcChannels[K]['result']>
     }> = {
         'class:create': async (_e, data) => {
-            const model = new Class({ id: uuid(), ...data, updatedAt: new Date().toISOString() });
+            const model = new Class({ id: uuid(), ...data, updatedAt: now });
             const result = classRepo.create(model);
             return { id: model.id, changes: result.changes };
         },
@@ -90,27 +94,49 @@ function exposeIpcHandlers() {
             return { data: result, count: result.length };
         },
         'course-assignment:create': async (_e, data) => {
-            const model = new CourseAssignment({ id: uuid(), ...data, updatedAt: new Date().toISOString() });
+            const model = new CourseAssignment({ id: uuid(), ...data, updatedAt: now });
             const result = courseAssignmentRepo.create(model);
             return { id: model.id, changes: result.changes };
         },
         'course-registration:create': async (_e, data) => {
-            const model = new CourseRegistration({ id: uuid(), ...data, updatedAt: new Date().toISOString() });
+            const model = new CourseRegistration({ id: uuid(), ...data, updatedAt: now });
             const result = courseRegRepo.create(model);
-            return { id: model.id, changes: result.changes };
+            return { id: model.id!, changes: result.changes };
+        },
+        'course-registration:create-many': async (_e, data: CourseRegistration[]) => {
+            const models = data.map(item => new CourseRegistration({
+                id: uuid(),
+                ...item,
+                updatedAt: now
+            }));
+
+            const results = courseRegRepo.createMany(models);
+
+            return { id: results[0].id, changes: results[0].changes };
         },
         'exam-schedule:create': async (_e, data) => {
-            const model = new ExamSchedule({ id: uuid(), ...data, updatedAt: new Date().toISOString() });
+            const model = new ExamSchedule({ id: uuid(), ...data, updatedAt: now });
             const result = examScheduleRepo.create(model);
-            return { id: model.id, changes: result.changes };
+            return { id: model.id!, changes: result.changes };
         },
         'question:create': async (_e, data) => {
-            const model = new Question({ id: uuid(), ...data, updatedAt: new Date().toISOString() });
+            const model = new Question({ id: uuid(), ...data, updatedAt: now });
             const result = questionRepo.create(model);
-            return { id: model.id, changes: result.changes };
+            return { id: model.id!, changes: result.changes };
+        },
+        'question:create-many': async (_e, data: CreateQuestion[]) => {
+            const models = data.map(question => new Question({
+                id: uuid(),
+                ...question,
+                updatedAt: now
+            }));
+
+            const results = questionRepo.createMany(models);
+
+            return { id: results[0].id, changes: results[0].changes };
         },
         'subject:create': async (_e, data) => {
-            const model = new Subject({ id: uuid(), ...data, updatedAt: new Date().toISOString() });
+            const model = new Subject({ id: uuid(), ...data, updatedAt: now });
             const result = subjectRepo.create(model);
             return { id: model.id, changes: result.changes };
         },
@@ -119,7 +145,7 @@ function exposeIpcHandlers() {
             return { data: result, count: result.length };
         },
         'user:create': async (_e, data) => {
-            const model = new User({ id: uuid(), ...data, updatedAt: new Date().toISOString() });
+            const model = new User({ id: uuid(), ...data, updatedAt: now });
             const result = userRepo.create(model);
             return { id: model.id!, changes: result.changes };
         },
@@ -128,7 +154,7 @@ function exposeIpcHandlers() {
             return { data: result };
         },
         'result:create': async (_e, data) => {
-            const model = new Result({ id: uuid(), ...data, updatedAt: new Date().toISOString() });
+            const model = new Result({ id: uuid(), ...data, updatedAt: now });
             const result = resultRepo.create(model);
             return { id: model.id, changes: result.changes };
         }

@@ -1,5 +1,5 @@
 export class ExamSchedule {
-    id!: string;
+    id?: string;
     description!: string;
     subjectId?: string;
     classId?: string;

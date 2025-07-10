@@ -6,6 +6,8 @@ import { type SubjectModalProps } from '@/types/admin/ui/subject'
 import { type AssignSubjectDto } from '@/types/admin/api/subject'
 import { assignSubjectSchema } from '@/validations/subject.schema'
 import type { SelectOption } from '@/types/shared'
+import type { CreateCourseRegistration } from '@/types/ipc/ipcTypes'
+import { toast } from 'react-toastify'
 
 
 
@@ -42,8 +44,8 @@ const AssignSubjectToClassModal: React.FC<SubjectModalProps> = ({
     }
 
     async function getClasses() {
-        try{
-            const {data} = await window.api.invoke('class:get')
+        try {
+            const { data } = await window.api.invoke('class:get')
 
             if (Array.isArray(data)) {
                 let classes = data.map(cls => ({
@@ -52,7 +54,7 @@ const AssignSubjectToClassModal: React.FC<SubjectModalProps> = ({
                 }));
                 setClassesList(classes);
             }
-        }catch(error){
+        } catch (error) {
             console.error("Failed to load subjects", error);
         }
     }
@@ -62,14 +64,52 @@ const AssignSubjectToClassModal: React.FC<SubjectModalProps> = ({
         getSubjects();
     }, []);
 
-
     const onSubmit = async (input: AssignSubjectDto) => {
-        console.log(input);
-        for(const cls of input.classes){
-            const {data} = await window.api.invoke('user:get', cls.value )
-            console.log(data);
+        const classes = input.classes;
+        const subjects = input.subjects;
+
+        const toastId = toast.loading('Assigning courses to classes...');
+        try {
+            const courseRegs: CreateCourseRegistration[] = [];
+
+            for (const cls of classes) {
+                const { data: students } = await window.api.invoke('user:get', cls.value);
+                console.log('Fetched students for class', cls.label, students);
+
+                for (const subject of subjects) {
+                    for (const student of students) {
+                        courseRegs.push({
+                            studentId: student.id,
+                            subjectId: subject.value,
+                            term: 3,
+                            year: 2025,
+                        });
+                    }
+                }
+            }
+
+            if (courseRegs.length > 0) {
+                const results = await window.api.invoke('course-registration:create-many', courseRegs);
+                console.log('Batch insert results:', results);
+            }
+
+            toast.update(toastId, {
+                render: "All subject(s) assigned to class(es) successfully!",
+                type: "success",
+                isLoading: false,
+                autoClose: 3000,
+            });
+        } catch (error) {
+            console.error("Error assigning subjects:", error);
+            toast.update(toastId, {
+                render: "Error assigning subjects to class!",
+                type: "error",
+                isLoading: false,
+                autoClose: 3000,
+            });
         }
-    }
+    };
+
 
 
     return (

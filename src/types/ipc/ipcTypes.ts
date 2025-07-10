@@ -57,8 +57,8 @@ export interface CreateCourseRegistration {
 export interface CreateExamSchedule {
     id?: string;
     description: string;
-    subjectId?: string;
-    classId?: string;
+    subjectId: string;
+    classId: string;
     examDate: string;
     durationMinutes: number;
     year: number;
@@ -156,6 +156,11 @@ export interface IpcChannels {
         result: CreateResult;
     };
 
+    'course-registration:create-many': {
+        input: CreateCourseRegistration[];
+        result: CreateResult;
+    };
+
     'exam-schedule:create': {
         input: CreateExamSchedule;
         result: CreateResult;
@@ -168,6 +173,10 @@ export interface IpcChannels {
 
     'question:create': {
         input: CreateQuestion;
+        result: CreateResult;
+    };
+    'question:create-many': {
+        input: CreateQuestion[];
         result: CreateResult;
     };
 

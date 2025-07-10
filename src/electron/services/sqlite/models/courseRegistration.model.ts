@@ -1,5 +1,5 @@
 export class CourseRegistration {
-    id!: string;
+    id?: string;
     studentId!: string;
     subjectId!: string;
     term!: number;

@@ -1,4 +1,6 @@
 import Database from "better-sqlite3";
+import { ExamSchedule } from "../models";
+import { appToDb } from "../../../../electron/util/caseTransform";
 
 export class ExamScheduleRepository {
     private db: Database.Database;
@@ -7,7 +9,8 @@ export class ExamScheduleRepository {
         this.db = db;
     }
 
-    create(data: any) {
+    create(examSchedule: ExamSchedule) {
+        const dbExamSchedule = appToDb(examSchedule);
         return this.db.prepare(`
             INSERT INTO exam_schedules (
             id, description, subject_id, class_id, exam_date,
@@ -16,8 +19,9 @@ export class ExamScheduleRepository {
             @id, @description, @subject_id, @class_id, @exam_date,
             @duration_minutes, @year, @term, @created_by
             )
-        `).run(data);
+        `).run(dbExamSchedule);
     }
+
 
     findAll() {
         return this.db.prepare(`SELECT * FROM exam_schedules`).all();
