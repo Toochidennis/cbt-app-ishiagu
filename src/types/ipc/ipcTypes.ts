@@ -112,7 +112,7 @@ export interface CreateUser {
     address?: string;
     username: string;
     passwordHash: string;
-    isActive?: number; // 0 or 1
+    isActive: 1 | 0; // 0 or 1
     createdAt?: string;
     updatedAt?: string;
 }
@@ -124,7 +124,7 @@ export interface CreateResult {
 
 export interface GetResult<T> {
     data: T | T[];
-    count: number;
+    count?: number;
 }
 
 /**
@@ -184,6 +184,11 @@ export interface IpcChannels {
     'user:create': {
         input: CreateUser;
         result: CreateResult;
+    };
+
+    'user:get': {
+        input: string;
+        result: GetResult<CreateUser[]>;
     };
 
     'result:create': {

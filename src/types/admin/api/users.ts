@@ -1,9 +1,10 @@
 export interface UserFormData {
+    id?: string;
     surname: string;
-    middle_name?: string | null;
-    first_name: string;
+    middleName?: string | null;
+    firstName: string;
     gender: "Male" | "Female";
-    date_of_birth?: string | null;
+    dateOfBirth?: string | null;
     contact?: string | null;
     role: "Admin" | "Staff" | "Student";
     class?: string | null;
@@ -11,6 +12,7 @@ export interface UserFormData {
     state: string;
     lga?: string | null;
     city?: string | null;
+    usersFile: File;
 }
 
 export interface AddUserFormProps {

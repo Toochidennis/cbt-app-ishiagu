@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { useForm, type Resolver } from "react-hook-form";
+import { Controller, useForm, type Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { toast } from "react-toastify";
 import { userSchema } from "@/validations/user.schema";
 import { type UserFormData, type AddUserFormProps } from "@/types/admin/api/users";
+import { type CreateUser } from "@/types/ipc/ipcTypes";
 
 const AddUserForm: React.FC<AddUserFormProps> = ({
     showAddModal,
@@ -10,6 +12,7 @@ const AddUserForm: React.FC<AddUserFormProps> = ({
 }) => {
     const {
         register,
+        control,
         handleSubmit,
         formState: { errors },
         reset,
@@ -28,18 +31,71 @@ const AddUserForm: React.FC<AddUserFormProps> = ({
 
     const [users, setUsers] = useState([{}])
 
+    function generatePassword(name: string): string {
+        const cleanedName = name.replace(/\s/g, '');
+        const prefix = cleanedName.length >= 5 ? cleanedName.substring(0, 5) : cleanedName;
+        const randomNumbers = Math.floor(1000 + Math.random() * 9000);
+        return prefix + randomNumbers;
+    }
+
     const onSubmit = (data: UserFormData) => {
-        const userInitials = `${data.first_name[0] || ""}${data.surname[0] || ""}`.toUpperCase();
-        const newUserData = {
-            ...data,
-            id: users.length + 1,
-            avatar: userInitials,
-        };
-
         console.log(data);
+        const file: File = data.usersFile;
+        
+        console.log(file);
+        if (file) {
+            const toastId = toast.loading('Inserting users...')
+            const reader = new FileReader();
 
-        setUsers([...users, newUserData]);
-        setShowAddModal(false);
+            reader.onload = async (event) => {
+                try {
+                    const json = JSON.parse(event.target?.result as string);
+                    // console.log("Parsed JSON:", json);
+
+                    let count = 0;
+                    for (const user of json) {
+                        const plainPassword = generatePassword(user.surname);
+
+                        const createUser: CreateUser = {
+                            regNumber: user.reg_number,
+                            role: "student",
+                            surname: user.surname,
+                            firstName: user.firstname,
+                            middleName: user.middlename,
+                            classId: user.class_id,
+                            gender: "male",
+                            username: user.reg_number,
+                            passwordHash: plainPassword,
+                            isActive: 1
+                        }
+
+                        const { id, changes } = await window.api.invoke('user:create', createUser);
+                        console.log('Inserted user at ', id, ' ', changes);
+                        if (id) {
+                            count++;
+                        }
+                    }
+                    if (count === json.length) {
+                        toast.update(toastId, {
+                            render: "All users inserted successfully!",
+                            type: "success",
+                            isLoading: false,
+                            autoClose: 3000,
+                        });
+                    }
+                } catch (error) {
+                    console.error("Invalid JSON file." , error);
+                    toast.update(toastId, {
+                        render: "Error inserting users!",
+                        type: "error",
+                        isLoading: false,
+                        autoClose: 3000,
+                    });
+                }
+            };
+            reader.readAsText(file);
+        }
+        // setShowAddModal(false);
         reset();
     };
 
@@ -84,12 +140,12 @@ const AddUserForm: React.FC<AddUserFormProps> = ({
                                         <input
                                             type="text"
                                             placeholder="Enter first name"
-                                            {...register("first_name")}
+                                            {...register("firstName")}
                                             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                         />
-                                        {errors.first_name && (
+                                        {errors.firstName && (
                                             <p className="mt-1 text-sm text-red-600">
-                                                {errors.first_name.message}
+                                                {errors.firstName.message}
                                             </p>
                                         )}
                                     </div>
@@ -102,7 +158,7 @@ const AddUserForm: React.FC<AddUserFormProps> = ({
                                         <input
                                             type="text"
                                             placeholder="Enter middle name"
-                                            {...register("middle_name")}
+                                            {...register("middleName")}
                                             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                         />
                                     </div>
@@ -134,7 +190,7 @@ const AddUserForm: React.FC<AddUserFormProps> = ({
                                         </label>
                                         <input
                                             type="date"
-                                            {...register("date_of_birth")}
+                                            {...register("dateOfBirth")}
                                             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                         />
                                     </div>
@@ -254,6 +310,29 @@ const AddUserForm: React.FC<AddUserFormProps> = ({
                                             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                         />
                                     </div>
+                                </div>
+
+                                <div className="">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Upload Questions
+                                    </label>
+                                    <Controller
+                                        name="usersFile"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <input
+                                                type="file"
+                                                accept=".json"
+                                                onChange={(e) => field.onChange(e.target.files?.[0])}
+                                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm text-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                                            />
+                                        )}
+                                    />
+                                    {errors.usersFile && (
+                                        <p className="mt-1 text-sm text-red-600">
+                                            {errors.usersFile.message}
+                                        </p>
+                                    )}
                                 </div>
                             </div>
 

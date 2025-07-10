@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import '@fortawesome/fontawesome-free/css/all.min.css'
 import Layout from '@/components/modules/admin/Layout'
 import Dashboard from '@/layouts/admin/Dashboard'
@@ -14,9 +16,12 @@ import StudentDashboard from '@/layouts/student/Dashboard'
 import ProtectedRoute from '@/states/ProtectedRoute'
 
 
+
 function App() {
   return (
     <BrowserRouter>
+    <ToastContainer />
+    
       <Routes>
         {/* Login route is public*/}
         <Route path='/login' element={<Login />} />

@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import Select, { type OptionsOrGroups } from 'react-select'
+import Select from 'react-select'
 import { type SubjectModalProps } from '@/types/admin/ui/subject'
 import { type AssignSubjectDto } from '@/types/admin/api/subject'
 import { assignSubjectSchema } from '@/validations/subject.schema'
 import type { SelectOption } from '@/types/shared'
+
 
 
 const AssignSubjectToClassModal: React.FC<SubjectModalProps> = ({
@@ -21,16 +22,12 @@ const AssignSubjectToClassModal: React.FC<SubjectModalProps> = ({
         resolver: yupResolver(assignSubjectSchema)
     })
 
-    const onSubmit = (data: AssignSubjectDto) => {
-        console.log(data)
-    }
-
     const [subjectsList, setSubjectsList] = React.useState<SelectOption[]>([]);
     const [classesList, setClassesList] = React.useState<SelectOption[]>([]);
 
     async function getSubjects() {
         try {
-            const { data, count } = await window.api.invoke('subject:get');
+            const { data } = await window.api.invoke('subject:get');
 
             if (Array.isArray(data)) {
                 let subjects = data.map(subject => ({
@@ -38,7 +35,6 @@ const AssignSubjectToClassModal: React.FC<SubjectModalProps> = ({
                     label: subject.name
                 }));
                 setSubjectsList(subjects);
-                console.log(subjectsList);
             }
         } catch (error) {
             console.error("Failed to load subjects", error);
@@ -47,7 +43,7 @@ const AssignSubjectToClassModal: React.FC<SubjectModalProps> = ({
 
     async function getClasses() {
         try{
-            const {data, count} = await window.api.invoke('class:get')
+            const {data} = await window.api.invoke('class:get')
 
             if (Array.isArray(data)) {
                 let classes = data.map(cls => ({
@@ -55,9 +51,7 @@ const AssignSubjectToClassModal: React.FC<SubjectModalProps> = ({
                     label: cls.name
                 }));
                 setClassesList(classes);
-                console.log(classes);
             }
-
         }catch(error){
             console.error("Failed to load subjects", error);
         }
@@ -67,6 +61,15 @@ const AssignSubjectToClassModal: React.FC<SubjectModalProps> = ({
         getClasses();
         getSubjects();
     }, []);
+
+
+    const onSubmit = async (input: AssignSubjectDto) => {
+        console.log(input);
+        for(const cls of input.classes){
+            const {data} = await window.api.invoke('user:get', cls.value )
+            console.log(data);
+        }
+    }
 
 
     return (

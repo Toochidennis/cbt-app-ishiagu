@@ -23,9 +23,7 @@ const CreateExamModal: React.FC<CreateExamProps> = ({
     })
 
     const handleCreateExam = (data: CreateExamDto) => {
-        //  e.preventDefault();
         console.log(data);
-        reset()
 
         // onChange={(e) => {
         //     const file = e.target.files?.[0];
@@ -45,6 +43,7 @@ const CreateExamModal: React.FC<CreateExamProps> = ({
         //         reader.readAsText(file);
         //     }
         // }}
+        reset()
     };
 
     const subjectList = [
@@ -90,18 +89,18 @@ const CreateExamModal: React.FC<CreateExamProps> = ({
                                             <Select
                                                 {...field}
                                                 options={subjectList}
-                                                menuPlacement="auto"
-                                                menuShouldScrollIntoView={true}
-                                                isClearable
+                                               // menuPlacement="auto"
+                                               // menuShouldScrollIntoView={true}
+                                              //  isClearable
                                                 classNamePrefix="react-select"
                                                 onChange={(val) => field.onChange(val || null)}
-                                                styles={{
-                                                    menu: (provided) => ({
-                                                        ...provided,
-                                                        maxHeight: 200,
-                                                        overflowY: "auto",
-                                                    }),
-                                                }}
+                                                // styles={{
+                                                //     menu: (provided) => ({
+                                                //         ...provided,
+                                                //         maxHeight: 200,
+                                                //         overflowY: "auto",
+                                                //     }),
+                                                // }}
                                             />
                                         )}
                                     />
@@ -120,17 +119,17 @@ const CreateExamModal: React.FC<CreateExamProps> = ({
                                                 {...field}
                                                 options={classList}
                                                 classNamePrefix="react-select"
-                                                menuPlacement="auto"
-                                                menuShouldScrollIntoView={true}
+                                               // menuPlacement="auto"
+                                               // menuShouldScrollIntoView={true}
                                                 isClearable
                                                 onChange={(val) => field.onChange(val || null)}
-                                                styles={{
-                                                    menu: (provided) => ({
-                                                        ...provided,
-                                                        maxHeight: 200,
-                                                        overflowY: "auto",
-                                                    }),
-                                                }}
+                                                // styles={{
+                                                //     menu: (provided) => ({
+                                                //         ...provided,
+                                                //         maxHeight: 200,
+                                                //         overflowY: "auto",
+                                                //     }),
+                                                // }}
                                             />
                                         )}
                                     />

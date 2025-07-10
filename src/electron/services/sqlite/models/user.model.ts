@@ -1,13 +1,13 @@
 export class User {
-    id!: string;
+    id?: string;
     displayId?: number;
     regNumber!: string;
     role!: 'admin' | 'staff' | 'student';
     surname!: string;
     firstName!: string;
     middleName?: string;
-    classId?: string;
-    gender?: 'male' | 'female';
+    classId!: string;
+    gender!: 'male' | 'female';
     dateOfBirth?: string;
     contact?: string;
     state?: string;
@@ -15,7 +15,7 @@ export class User {
     address?: string;
     username!: string;
     passwordHash!: string;
-    isActive?: number; // 0 or 1
+    isActive!: 1 | 0; // 0 or 1
     createdAt?: string;
     updatedAt?: string;
 

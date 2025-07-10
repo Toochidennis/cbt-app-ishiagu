@@ -121,7 +121,11 @@ function exposeIpcHandlers() {
         'user:create': async (_e, data) => {
             const model = new User({ id: uuid(), ...data, updatedAt: new Date().toISOString() });
             const result = userRepo.create(model);
-            return { id: model.id, changes: result.changes };
+            return { id: model.id!, changes: result.changes };
+        },
+        'user:get': async (_e, classId) => {
+            const result = userRepo.findByClassId(classId);
+            return { data: result };
         },
         'result:create': async (_e, data) => {
             const model = new Result({ id: uuid(), ...data, updatedAt: new Date().toISOString() });
