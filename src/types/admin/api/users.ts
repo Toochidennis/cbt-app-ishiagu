@@ -1,3 +1,5 @@
+import type { SelectOption } from "@/types/shared";
+
 export interface UserFormData {
     id?: string;
     surname: string;
@@ -7,7 +9,7 @@ export interface UserFormData {
     dateOfBirth?: string | null;
     contact?: string | null;
     role: "Admin" | "Staff" | "Student";
-    class?: string | null;
+    classes: SelectOption[];
     address?: string | null;
     state: string;
     lga?: string | null;

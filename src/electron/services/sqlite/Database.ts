@@ -37,7 +37,6 @@ export class LocalDatabase {
             throw new Error(`Schema file not found: ${schemaPath}`);
         }
 
-        console.log(schemaPath);
         const sql = fs.readFileSync(schemaPath, "utf-8");
         this.db.exec(sql);
     }

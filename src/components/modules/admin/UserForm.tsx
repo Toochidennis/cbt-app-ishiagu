@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Controller, useForm, type Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import Select from 'react-select'
 import { toast } from "react-toastify";
 import { userSchema } from "@/validations/user.schema";
 import { type UserFormData, type AddUserFormProps } from "@/types/admin/api/users";
 import { type CreateUser } from "@/types/ipc/ipcTypes";
+import type { SelectOption } from "@/types/shared";
 
 const AddUserForm: React.FC<AddUserFormProps> = ({
     showAddModal,
@@ -21,15 +23,28 @@ const AddUserForm: React.FC<AddUserFormProps> = ({
         resolver: yupResolver(userSchema) as Resolver<UserFormData>,
     });
 
+    const [classesList, setClassesList] = useState<SelectOption[]>([]);
     const role = watch('role');
 
-    const classesList = [
-        { id: 1, name: 'JSS1' },
-        { id: 2, name: 'JSS2' },
-        { id: 3, name: 'JSS3' },
-    ]
+    async function getClasses() {
+        try {
+            const { data } = await window.api.invoke('class:get')
 
-    const [users, setUsers] = useState([{}])
+            if (Array.isArray(data)) {
+                let classes = data.map(cls => ({
+                    value: cls.id ?? '',
+                    label: cls.name
+                }));
+                setClassesList(classes);
+            }
+        } catch (error) {
+            console.error("Failed to load subjects", error);
+        }
+    }
+
+    useEffect(() => {
+        getClasses();
+    }, []);
 
     function generatePassword(name: string): string {
         const cleanedName = name.replace(/\s/g, '');
@@ -41,63 +56,61 @@ const AddUserForm: React.FC<AddUserFormProps> = ({
     const onSubmit = (data: UserFormData) => {
         console.log(data);
         const file: File = data.usersFile;
-        
-        console.log(file);
-        if (file) {
-            const toastId = toast.loading('Inserting users...')
-            const reader = new FileReader();
+    
+        // if (file) {
+        //     const toastId = toast.loading('Inserting users...');
+        //     const reader = new FileReader();
+    
+        //     reader.onload = async (event) => {
+        //         try {
+        //             const json = JSON.parse(event.target?.result as string);
+    
+        //             const users: CreateUser[] = [];
+    
+        //             for (const user of json) {
+        //                 const plainPassword = generatePassword(user.surname);
+    
+        //                 const createUser: CreateUser = {
+        //                     regNumber: user.reg_number,
+        //                     role: "student",
+        //                     surname: user.surname,
+        //                     firstName: user.firstname,
+        //                     middleName: user.middlename,
+        //                     classId: user.class_id,
+        //                     gender: "male",
+        //                     username: user.reg_number,
+        //                     passwordHash: plainPassword,
+        //                     isActive: 1
+        //                 };
 
-            reader.onload = async (event) => {
-                try {
-                    const json = JSON.parse(event.target?.result as string);
-                    // console.log("Parsed JSON:", json);
+        //                 users.push(createUser);
+        //             }
 
-                    let count = 0;
-                    for (const user of json) {
-                        const plainPassword = generatePassword(user.surname);
+        //             const { id } = await window.api.invoke('user:create-many', users);
 
-                        const createUser: CreateUser = {
-                            regNumber: user.reg_number,
-                            role: "student",
-                            surname: user.surname,
-                            firstName: user.firstname,
-                            middleName: user.middlename,
-                            classId: user.class_id,
-                            gender: "male",
-                            username: user.reg_number,
-                            passwordHash: plainPassword,
-                            isActive: 1
-                        }
+        //             toast.update(toastId, {
+        //                 render: `${id} user(s) inserted.`,
+        //                 type: "success",
+        //                 isLoading: false,
+        //                 autoClose: 3000,
+        //             });
 
-                        const { id, changes } = await window.api.invoke('user:create', createUser);
-                        console.log('Inserted user at ', id, ' ', changes);
-                        if (id) {
-                            count++;
-                        }
-                    }
-                    if (count === json.length) {
-                        toast.update(toastId, {
-                            render: "All users inserted successfully!",
-                            type: "success",
-                            isLoading: false,
-                            autoClose: 3000,
-                        });
-                    }
-                } catch (error) {
-                    console.error("Invalid JSON file." , error);
-                    toast.update(toastId, {
-                        render: "Error inserting users!",
-                        type: "error",
-                        isLoading: false,
-                        autoClose: 3000,
-                    });
-                }
-            };
-            reader.readAsText(file);
-        }
-        // setShowAddModal(false);
+        //         } catch (error) {
+        //             console.error("Invalid JSON file.", error);
+        //             toast.update(toastId, {
+        //                 render: "Error inserting users!",
+        //                 type: "error",
+        //                 isLoading: false,
+        //                 autoClose: 3000,
+        //             });
+        //         }
+        //     };
+    
+        //     reader.readAsText(file);
+        // }
+    
         reset();
-    };
+    };    
 
     return (
         <>
@@ -234,26 +247,21 @@ const AddUserForm: React.FC<AddUserFormProps> = ({
                                         <label className="block text-sm font-medium text-gray-700">
                                             Class
                                         </label>
-                                        <select
-                                            {...register("class")}
-                                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                        >
-                                            <option value="">Select Class</option>
-                                            {role === "Student" && (
-                                                classesList.map((cls) => (
-                                                    <option key={cls.id} value={cls.name}>
-                                                        {cls.name}
-                                                    </option>
-                                                ))
+                                        {role === "Student" && (
+                                            <Controller
+                                                name='classes'
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <Select
+                                                        {...field}
+                                                        options={classesList}
+                                                        classNamePrefix='react-select'
+                                                        onChange={(val) => field.onChange(val)}
+                                                    />
+                                                )} />
                                             )}
-                                        </select>
-                                        {errors.class && (
-                                            <p className="mt-1 text-sm text-red-600">
-                                                {errors.class.message}
-                                            </p>
-                                        )}
+                                            {errors.classes && <p className="text-sm text-red-600 mt-1">{errors.classes.message}</p>}
                                     </div>
-
                                     {/* State */}
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700">
@@ -311,7 +319,6 @@ const AddUserForm: React.FC<AddUserFormProps> = ({
                                         />
                                     </div>
                                 </div>
-
                                 <div className="">
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Upload Questions

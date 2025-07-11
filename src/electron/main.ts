@@ -4,7 +4,7 @@ import { v4 as uuid } from 'uuid';
 import { isDev } from './util/util';
 import { getPreloadPath } from './util/pathResolver';
 import { LocalDatabase } from './services/sqlite/Database';
-import { type CreateExamAttempt, type CreateExamSchedule, type CreateQuestion, type IpcChannels } from '../types/ipc/ipcTypes';
+import { type CreateExamAttempt, type CreateExamSchedule, type CreateQuestion, type CreateUser, type IpcChannels } from '../types/ipc/ipcTypes';
 import {
     ClassRepository,
     CourseAssignmentRepository,
@@ -156,6 +156,16 @@ function exposeIpcHandlers() {
             const model = new User({ id: uuid(), ...data, updatedAt: now });
             const result = userRepo.create(model);
             return { id: model.id!, changes: result.changes };
+        },
+        'user:create-many': async (_e, data: CreateUser[]) => {
+            const models = data.map(item => new User({
+                id: uuid(),
+                ...item
+            }));
+
+            const results = userRepo.createMany(models);
+
+            return { id: `${results.length}`, changes: results[0].changes };
         },
         'user:get': async (_e, classId) => {
             const result = userRepo.findByClassId(classId);

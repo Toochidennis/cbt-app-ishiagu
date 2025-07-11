@@ -53,12 +53,21 @@ export class UserRepository {
         `);
 
         const insertMany = this.db.transaction((users: User[]) => {
+            const results: { id: string; changes: number }[] = [];
+
             for (const user of users) {
-                insert.run(appToDb(user));
+                const dbUser = appToDb(user);
+                const result = insert.run(dbUser);
+                results.push({
+                    id: dbUser.id,
+                    changes: result.changes,
+                });
             }
+
+            return results;
         });
 
-        insertMany(users);
+        return insertMany(users);
     }
 
     findByRole(role: string): User[] {

@@ -39,6 +39,7 @@ const StudentDashboard: React.FC = () => {
 
     const user = useAuthStore((state) => state.user);
     const settings = useAuthStore((state) => state.settings);
+    const logout = useAuthStore((state) => state.logout);
 
     // Student Details
     const studentName = `${user?.surname} ${user?.middleName} ${user?.firstName}`;
@@ -53,6 +54,7 @@ const StudentDashboard: React.FC = () => {
             term: settings.term,
             year: settings.year,
         });
+        console.log('Schedules ', examSchedules);
 
         if (!examSchedules) return {
             total: 0, completed: 0, missed: 0, upcoming: 0, inProgress: 0
@@ -113,7 +115,7 @@ const StudentDashboard: React.FC = () => {
                 examScheduleId: schedule.id,
             });
 
-            const start = dayjs(schedule.startTime);
+            const start = dayjs(schedule.examDate);
             const end = dayjs(schedule.endTime);
             const durationMinutes = end.diff(start, "minute");
 
@@ -174,10 +176,7 @@ const StudentDashboard: React.FC = () => {
                         </div>
                         <div className="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center text-white">
                             <span className="text-sm font-medium">
-                                {studentName
-                                    .split(" ")
-                                    .map((n) => n[0])
-                                    .join("")}
+                                {studentName[0]}
                             </span>
                         </div>
                     </div>
