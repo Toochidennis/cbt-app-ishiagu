@@ -4,7 +4,7 @@ import { v4 as uuid } from 'uuid';
 import { isDev } from './util/util';
 import { getPreloadPath } from './util/pathResolver';
 import { LocalDatabase } from './services/sqlite/Database';
-import { type CreateQuestion, type CreateSubject, type IpcChannels } from '../types/ipc/ipcTypes';
+import { type CreateExamAttempt, type CreateExamSchedule, type CreateQuestion, type IpcChannels } from '../types/ipc/ipcTypes';
 import {
     ClassRepository,
     CourseAssignmentRepository,
@@ -19,8 +19,9 @@ import {
 
 import {
     Class, CourseAssignment, CourseRegistration, ExamSchedule,
-    Question, Result, Subject, User, Setting,
+    Question, Result, Subject, User,
 } from './services/sqlite/models';
+import { ExamAttemptRepository } from './services/sqlite/repositories/examAttempt.repository';
 //import { seedSettings } from './services/sqlite/seed/seed';
 
 let mainWindow: BrowserWindow;
@@ -33,7 +34,9 @@ let questionRepo: QuestionRepository;
 let subjectRepo: SubjectRepository;
 let userRepo: UserRepository;
 let resultRepo: ResultRepository;
-let settingRepo: SettingRepository
+let settingRepo: SettingRepository;
+let examAttemptRepo: ExamAttemptRepository;
+
 const now = new Date().toISOString();
 
 app.on('ready', () => {
@@ -75,6 +78,7 @@ function initRepos() {
     userRepo = new UserRepository(connection);
     resultRepo = new ResultRepository(connection);
     settingRepo = new SettingRepository(connection);
+    examAttemptRepo = new ExamAttemptRepository(connection);
 }
 
 function exposeIpcHandlers() {
@@ -119,6 +123,10 @@ function exposeIpcHandlers() {
             const result = examScheduleRepo.create(model);
             return { id: model.id!, changes: result.changes };
         },
+        'exam-schedule:get': async (_e,  {classId, term, year}) => {
+            const result = examScheduleRepo.findBySession(classId, term, year);
+            return { data: result };
+        },
         'question:create': async (_e, data) => {
             const model = new Question({ id: uuid(), ...data, updatedAt: now });
             const result = questionRepo.create(model);
@@ -153,22 +161,26 @@ function exposeIpcHandlers() {
             const result = userRepo.findByClassId(classId);
             return { data: result };
         },
-        'user:login': async (_e,  {username, password}) => {
+        'user:login': async (_e, { username, password }) => {
             const user = userRepo.findByUsername(username);
-            if (!user) return {data: [], error: 'User not found'}
+            if (!user) return { data: [], error: 'User not found' }
 
             const isValid = password === user.passwordHash;
             if (!isValid) return { data: [], error: "Invalid password" };
-            
+
             return { data: user };
         },
         'result:create': async (_e, data) => {
-            const model = new Result({ id: uuid(), ...data});
+            const model = new Result({ id: uuid(), ...data });
             const result = resultRepo.create(model);
             return { id: model.id, changes: result.changes };
         },
         'setting:get': async () => {
             const result = settingRepo.getCurrent();
+            return { data: result };
+        },
+        'exam-attempt:get': async (_e, {studentId, examScheduleId}) => {
+            const result = examAttemptRepo.findAttemptById(examScheduleId, studentId);
             return { data: result };
         },
     };

@@ -47,7 +47,7 @@ const Login: React.FC = () => {
 
             useAuthStore.getState().setUser(user as CreateUser);
             useAuthStore.getState().setSettings(settings as CreateSetting);
-
+            
             const userRole = user.role as "admin" | "staff" | "student";
             login(userRole); // your custom auth handler
 

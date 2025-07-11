@@ -10,3 +10,4 @@ export * from  './setting.model';
 export * from  './subject.model';
 export * from  './user.model';
 export * from './examAttempt.model'
+export * from './examScheduleWithSubject.model'

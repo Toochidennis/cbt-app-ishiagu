@@ -1,6 +1,6 @@
 import Database from "better-sqlite3";
-import { ExamSchedule } from "../models";
-import { appToDb } from "../../../../electron/util/caseTransform";
+import { ExamSchedule, ExamScheduleWithSubject } from "../models";
+import { appToDb, dbToApp } from "../../../../electron/util/caseTransform";
 
 export class ExamScheduleRepository {
     private db: Database.Database;
@@ -22,16 +22,31 @@ export class ExamScheduleRepository {
         `).run(dbExamSchedule);
     }
 
-
     findAll() {
-        return this.db.prepare(`SELECT * FROM exam_schedules`).all();
+        return this.db.prepare(`SELECT * FROM exam_schedules`)
+            .all();
+    }
+
+    findBySession(classId: string, term: number, year: number): ExamScheduleWithSubject[] {
+        const rows = this.db.prepare(`
+            SELECT 
+                e.*, s.name AS subject_name
+            FROM exam_schedules e
+                INNER JOIN subjects s ON e.subject_id = s.id
+            WHERE
+                class_id = @classId AND term = @term AND year = @year
+            `).all({ classId, term, year }) as Record<string, any>[];
+
+        return rows.map(row => dbToApp<ExamScheduleWithSubject>(row));
     }
 
     findByClass(class_id: string) {
-        return this.db.prepare(`SELECT * FROM exam_schedules WHERE class_id = ?`).all(class_id);
+        return this.db.prepare(`SELECT * FROM exam_schedules WHERE class_id = ?`)
+            .all(class_id);
     }
 
     delete(id: string) {
-        return this.db.prepare(`DELETE FROM exam_schedules WHERE id = ?`).run(id);
+        return this.db.prepare(`DELETE FROM exam_schedules WHERE id = ?`)
+            .run(id);
     }
 }

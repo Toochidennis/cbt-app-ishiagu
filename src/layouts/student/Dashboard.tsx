@@ -1,59 +1,160 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import dayjs from "dayjs";
+import { useAuthStore } from "@/states/AuthStore";
+import type { CreateExamScheduleWithSubject, CreateSetting, CreateUser } from "@/types/ipc/ipcTypes";
+import duration from "dayjs/plugin/duration";
+dayjs.extend(duration);
+
+interface ExamHistoryItem {
+    id: string;
+    subject: string;
+    title: string;
+    date: string;
+    time: string;
+    duration: string;
+    status: "Completed" | "Missed" | "In Progress" | "Upcoming";
+}
+
+interface ExamWithStatus extends CreateExamScheduleWithSubject {
+    status: "Completed" | "Missed" | "In Progress" | "Upcoming";
+}
+
+interface ExamStats {
+    total: number;
+    completed: number;
+    missed: number;
+    upcoming: number;
+    inProgress: number;
+}
 
 const StudentDashboard: React.FC = () => {
-    const exams = [
-        {
-            id: 1,
-            subject: "Mathematics",
-            title: "Calculus Mid-term Examination",
-            date: "2025-07-02",
-            time: "10:00 AM",
-            duration: "60 minutes",
-            status: "In Progress",
-        },
-        {
-            id: 2,
-            subject: "Physics",
-            title: "Mechanics Final Examination",
-            date: "2025-07-05",
-            time: "2:00 PM",
-            duration: "90 minutes",
-            status: "Upcoming",
-        },
-        {
-            id: 3,
-            subject: "Computer Science",
-            title: "Data Structures Quiz",
-            date: "2025-06-25",
-            time: "9:00 AM",
-            duration: "45 minutes",
-            status: "Completed",
-        },
-        {
-            id: 4,
-            subject: "English Literature",
-            title: "Poetry Analysis Test",
-            date: "2025-07-10",
-            time: "11:30 AM",
-            duration: "60 minutes",
-            status: "Upcoming",
-        },
-    ];
+    const [examHistory, setExamHistory] = useState<ExamHistoryItem[]>([]);
+    const [examStats, setExamStats] = useState<ExamStats>({
+        total: 0,
+        completed: 0,
+        missed: 0,
+        upcoming: 0,
+        inProgress: 0,
+    });
 
-    // Start exam
-    const startExam = (exam: any) => {
+    const user = useAuthStore((state) => state.user);
+    const settings = useAuthStore((state) => state.settings);
 
+    // Student Details
+    const studentName = `${user?.surname} ${user?.middleName} ${user?.firstName}`;
+    const studentId = user?.username
+
+    // Fetch stats
+    async function getExamSchedulesAndStats(user: CreateUser, settings: CreateSetting): Promise<ExamStats> {
+        const now = dayjs();
+
+        const { data: examSchedules } = await window.api.invoke("exam-schedule:get", {
+            classId: user.classId,
+            term: settings.term,
+            year: settings.year,
+        });
+
+        if (!examSchedules) return {
+            total: 0, completed: 0, missed: 0, upcoming: 0, inProgress: 0
+        };
+
+        const exams: ExamWithStatus[] = [];
+
+        for (const schedule of examSchedules) {
+            const { data: attempt } = await window.api.invoke("exam-attempt:get", {
+                studentId: user.id!,
+                examScheduleId: schedule.id,
+            });
+
+            const start = dayjs(schedule.startTime);
+            const end = dayjs(schedule.endTime);
+
+            let status: ExamWithStatus["status"];
+
+            if (attempt?.status === 1 || attempt?.status === "completed") {
+                status = "Completed";
+            } else if (now.isBefore(start)) {
+                status = "Upcoming";
+            } else if (now.isAfter(end)) {
+                status = "Missed";
+            } else {
+                status = "In Progress";
+            }
+
+            exams.push({ ...schedule, status });
+        }
+
+        return {
+            total: exams.length,
+            completed: exams.filter((e) => e.status === "Completed").length,
+            missed: exams.filter((e) => e.status === "Missed").length,
+            upcoming: exams.filter((e) => e.status === "Upcoming").length,
+            inProgress: exams.filter((e) => e.status === "In Progress").length,
+        };
+    }
+
+    // Fetch exam history
+    async function getExamHistory(user: CreateUser, settings: CreateSetting): Promise<ExamHistoryItem[]> {
+        const now = dayjs();
+
+        const { data: examSchedules } = await window.api.invoke("exam-schedule:get", {
+            classId: user.classId,
+            term: settings.term,
+            year: settings.year,
+        });
+
+        if (!examSchedules) return [];
+
+        const history: ExamHistoryItem[] = [];
+
+        for (const schedule of examSchedules) {
+            const { data: attempt } = await window.api.invoke("exam-attempt:get", {
+                studentId: user.id!,
+                examScheduleId: schedule.id,
+            });
+
+            const start = dayjs(schedule.startTime);
+            const end = dayjs(schedule.endTime);
+            const durationMinutes = end.diff(start, "minute");
+
+            let status: ExamHistoryItem["status"];
+            if (attempt?.status === 1 || attempt?.status === "completed") {
+                status = "Completed";
+            } else if (now.isBefore(start)) {
+                status = "Upcoming";
+            } else if (now.isAfter(end)) {
+                status = "Missed";
+            } else {
+                status = "In Progress";
+            }
+
+            history.push({
+                id: schedule.id,
+                subject: schedule.subjectName,
+                title: schedule.description,
+                date: start.format("YYYY-MM-DD"),
+                time: start.format("h:mm A"),
+                duration: `${durationMinutes} minutes`,
+                status,
+            });
+        }
+
+        return history;
+    }
+
+    // On load
+    useEffect(() => {
+        if (user && settings) {
+            getExamSchedulesAndStats(user, settings).then(setExamStats);
+            getExamHistory(user, settings).then(setExamHistory);
+        }
+    }, [user, settings]);
+
+    // Placeholder for launching an exam
+    const startExam = (exam: ExamHistoryItem) => {
+        console.log("Start exam:", exam.id);
     };
 
-    const studentName = 'Toochi Dennis';
-
-    // Calculate exam stats
-    const examStats = {
-        total: exams.length,
-        completed: exams.filter((exam) => exam.status === "Completed").length,
-        upcoming: exams.filter((exam) => exam.status === "Upcoming").length,
-        inProgress: exams.filter((exam) => exam.status === "In Progress").length,
-    };
 
     // Render student dashboard
     return (
@@ -69,7 +170,7 @@ const StudentDashboard: React.FC = () => {
                     <div className="flex items-center">
                         <div className="mr-4 text-right">
                             <p className="text-sm font-medium text-gray-900">{studentName}</p>
-                            <p className="text-xs text-gray-500">Student ID: STD12345</p>
+                            <p className="text-xs text-gray-500">Student ID: {studentId}</p>
                         </div>
                         <div className="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center text-white">
                             <span className="text-sm font-medium">
@@ -142,7 +243,7 @@ const StudentDashboard: React.FC = () => {
                         </h3>
                     </div>
                     <div className="divide-y divide-gray-200">
-                        {exams.map((exam) => (
+                        {examHistory.map((exam) => (
                             <div key={exam.id} className="p-6">
                                 <div className="flex items-center justify-between flex-wrap">
                                     <div className="w-full sm:w-auto mb-4 sm:mb-0">
@@ -190,7 +291,7 @@ const StudentDashboard: React.FC = () => {
                                         )}
                                         {exam.status === "Completed" && (
                                             <a
-                                                href="https://readdy.ai/home/dd072350-6984-48f2-ae7c-be10a0324a73/d7d9ae1b-ecd4-4c98-87f1-e8ae4cc447ab"
+                                                href=""
                                                 data-readdy="true"
                                             >
                                                 <button className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 !rounded-button whitespace-nowrap cursor-pointer">
@@ -208,4 +309,5 @@ const StudentDashboard: React.FC = () => {
         </div>
     );
 };
+
 export default StudentDashboard;

@@ -37,6 +37,6 @@ export const useAuthStore = create<AuthState>()(
                     settings: null,
                 })
         }),
-        { name: 'auth-store' }
+        { name: 'auth-login' }
     )
 );

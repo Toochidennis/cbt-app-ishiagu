@@ -10,19 +10,21 @@ import Users from '@/layouts/admin/Users'
 import Exams from '@/layouts/admin/Exams'
 import Results from '@/layouts/admin/Results'
 import Settings from '@/layouts/admin/Settings'
-import Unauthorized from '@/components/commons/UnAuthorized'
 import Login from '@/components/commons/Login'
 import StudentDashboard from '@/layouts/student/Dashboard'
 import ProtectedRoute from '@/states/ProtectedRoute'
-
+import Unauthorized from '@/components/commons/Unauthorized';
+import RedirectByRole from './components/commons/RedirectByRole';
 
 
 function App() {
   return (
     <BrowserRouter>
-    <ToastContainer />
-    
+      <ToastContainer />
+
       <Routes>
+        <Route path="/" element={<RedirectByRole />} />
+
         {/* Login route is public*/}
         <Route path='/login' element={<Login />} />
 

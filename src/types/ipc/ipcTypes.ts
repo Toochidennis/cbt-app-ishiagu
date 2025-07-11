@@ -1,3 +1,5 @@
+import type { ExamAttempt } from "@/electron/services/sqlite/models";
+
 export interface CreateResults {
     id?: string;
     studentId: string;
@@ -136,6 +138,7 @@ export interface CreateSetting {
     updatedAt?: string;
 }
 
+export interface CreateExamScheduleWithSubject extends CreateExamSchedule { subjectName: string };
 
 export interface CreateResult {
     id: string;
@@ -187,6 +190,11 @@ export interface IpcChannels {
         result: CreateResult;
     };
 
+    'exam-schedule:get': {
+        input: { classId: string, term: number, year: number };
+        result: GetResult<CreateExamScheduleWithSubject>;
+    };
+
     'grade:create': {
         input: CreateGrade;
         result: CreateResult;
@@ -234,5 +242,10 @@ export interface IpcChannels {
     'setting:get': {
         input: CreateSetting;
         result: GetResult<CreateSetting>;
+    };
+
+    'exam-attempt:get': {
+        input: {studentId:string, examScheduleId: string};
+        result: GetResult<ExamAttempt>;
     };
 }

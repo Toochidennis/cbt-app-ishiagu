@@ -78,7 +78,9 @@ export class UserRepository {
     findByUsername(username: string): User {
         const row = this.db.prepare(`
                 SELECT 
-                    id, username, class_id, role, is_active
+                    id, surname, first_name, middle_name,
+                    username, password_hash, class_id, role,
+                    is_active
                 FROM
                     users 
                 WHERE 
