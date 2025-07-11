@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import Select from 'react-select'
@@ -24,8 +24,8 @@ const AssignSubjectToClassModal: React.FC<SubjectModalProps> = ({
         resolver: yupResolver(assignSubjectSchema)
     })
 
-    const [subjectsList, setSubjectsList] = React.useState<SelectOption[]>([]);
-    const [classesList, setClassesList] = React.useState<SelectOption[]>([]);
+    const [subjectsList, setSubjectsList] = useState<SelectOption[]>([]);
+    const [classesList, setClassesList] = useState<SelectOption[]>([]);
 
     async function getSubjects() {
         try {

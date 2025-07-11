@@ -143,6 +143,10 @@ function exposeIpcHandlers() {
 
             return { id: results[0].id, changes: results[0].changes };
         },
+        'question:get': async (_e, {examScheduleId}) => {
+            const results = questionRepo.findByExam(examScheduleId);
+            return { data: results };
+        },
         'subject:create': async (_e, data) => {
             const model = new Subject({ id: uuid(), ...data, updatedAt: now });
             const result = subjectRepo.create(model);

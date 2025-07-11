@@ -84,6 +84,7 @@ CREATE TABLE
         subject_id TEXT,
         class_id TEXT,
         exam_date TEXT NOT NULL,
+        time TEXT NOT NULL,
         duration_minutes INTEGER NOT NULL,
         year INTEGER NOT NULL,
         term INTEGER NOT NULL,

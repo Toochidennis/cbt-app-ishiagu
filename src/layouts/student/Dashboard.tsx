@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { useAuthStore } from "@/states/AuthStore";
+import { useNavigate } from "react-router-dom";
 import type { CreateExamScheduleWithSubject, CreateSetting, CreateUser } from "@/types/ipc/ipcTypes";
 import duration from "dayjs/plugin/duration";
+import FormattedDate from "@/components/commons/FormattedDate";
 dayjs.extend(duration);
 
 interface ExamHistoryItem {
     id: string;
+    subjectId: string;
+    classId: string;
+    term: number;
+    year: number;
     subject: string;
     title: string;
     date: string;
@@ -132,6 +138,10 @@ const StudentDashboard: React.FC = () => {
 
             history.push({
                 id: schedule.id,
+                subjectId: schedule.subjectId,
+                classId: schedule.classId,
+                term: schedule.term,
+                year: schedule.year,
                 subject: schedule.subjectName,
                 title: schedule.description,
                 date: start.format("YYYY-MM-DD"),
@@ -152,9 +162,12 @@ const StudentDashboard: React.FC = () => {
         }
     }, [user, settings]);
 
+    const navigate = useNavigate();
+
     // Placeholder for launching an exam
     const startExam = (exam: ExamHistoryItem) => {
-        console.log("Start exam:", exam.id);
+        console.log("Start exam:", exam);
+        navigate('/exam', { state: { exam } });
     };
 
 
@@ -187,7 +200,7 @@ const StudentDashboard: React.FC = () => {
                     <h2 className="text-2xl font-bold text-gray-800 mb-2">
                         Welcome, {studentName}
                     </h2>
-                    <p className="text-gray-600">Sunday, June 29, 2025</p>
+                    <p className="text-gray-600">{<FormattedDate />}</p>
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
                     <div className="bg-white shadow rounded-lg p-6 flex items-center">

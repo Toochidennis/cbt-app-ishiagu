@@ -4,7 +4,7 @@ export class ExamSchedule {
     subjectId!: string;
     classId!: string;
     examDate!: string;
-    startTime!: string;
+    time!: string;
     durationMinutes!: number;
     year!: number;
     term!: number;

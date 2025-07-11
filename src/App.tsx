@@ -7,7 +7,6 @@ import Dashboard from '@/layouts/admin/Dashboard'
 import Subjects from '@/layouts/admin/Subjects'
 import Classes from '@/layouts/admin/Classes'
 import Users from '@/layouts/admin/Users'
-import Exams from '@/layouts/admin/Exams'
 import Results from '@/layouts/admin/Results'
 import Settings from '@/layouts/admin/Settings'
 import Login from '@/components/commons/Login'
@@ -15,6 +14,8 @@ import StudentDashboard from '@/layouts/student/Dashboard'
 import ProtectedRoute from '@/states/ProtectedRoute'
 import Unauthorized from '@/components/commons/Unauthorized';
 import RedirectByRole from './components/commons/RedirectByRole';
+import StudentExam from '@/layouts/student/StudentExam';
+import Exams from '@/layouts/admin/Exams';
 
 
 function App() {
@@ -91,6 +92,7 @@ function App() {
         {/** Student routes */}
         <Route element={<ProtectedRoute allowedRoles={['student']} />} >
           <Route path='/student' element={<StudentDashboard />} />
+          <Route path='/exam' element={<StudentExam />} />
         </Route>
         <Route path='*' element={<Unauthorized />} />
       </Routes>

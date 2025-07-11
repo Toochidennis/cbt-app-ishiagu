@@ -1,7 +1,7 @@
 
 export class Question {
     id?: string;
-    examScheduleId?: string;
+    examScheduleId!: string;
     questionText!: string;
     options!: string;
     correctOption!: string;

@@ -62,7 +62,7 @@ export interface CreateExamSchedule {
     subjectId: string;
     classId: string;
     examDate: string;
-    startTime: string;
+    time: string;
     durationMinutes: number;
     year: number;
     term: number;
@@ -209,7 +209,10 @@ export interface IpcChannels {
         input: CreateQuestion[];
         result: CreateResult;
     };
-
+    'question:get': {
+        input: {examScheduleId:string};
+        result: GetResult<CreateQuestion[]>;
+    };
     'subject:create': {
         input: CreateSubject;
         result: CreateResult;

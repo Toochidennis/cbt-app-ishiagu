@@ -1,6 +1,6 @@
 import Database from "better-sqlite3";
 import { Question } from "../models";
-import { appToDb } from "../../../../electron/util/caseTransform";
+import { appToDb, dbToApp } from "../../../../electron/util/caseTransform";
 
 export class QuestionRepository {
     private db: Database.Database;
@@ -56,9 +56,13 @@ export class QuestionRepository {
         return insertMany(examQuestions);
     }
 
-    findByExam(exam_schedule_id: string) {
-        return this.db.prepare(`SELECT * FROM questions WHERE exam_schedule_id = ?`)
-            .all(exam_schedule_id);
+    findByExam(examScheduleId: string): Question[] {
+        const rows = this.db.prepare(`
+                SELECT * FROM questions WHERE 
+                exam_schedule_id = @examScheduleId
+            `).all({ examScheduleId }) as Record<string, any>[];
+
+        return rows.map(row => dbToApp<Question>(row));
     }
 
     delete(id: string) {
