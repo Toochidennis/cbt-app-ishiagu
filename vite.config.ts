@@ -22,7 +22,7 @@ export default defineConfig({
               main: 'src/electron/main.ts',
               preload: 'src/electron/preload.ts'
             },
-            external: ['electron','better-sqlite3']
+            external: ['electron','better-sqlite3', 'ws']
           }
         },
         configFile: 'src/electron/tsconfig.electron.json'

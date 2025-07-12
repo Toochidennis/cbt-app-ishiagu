@@ -1,6 +1,6 @@
-import type { Class } from '../sqlite/models';
+import { Class } from '../sqlite/models';
 import { DB } from './db.offline'
-import { appToDb } from "../../util/caseTransform";
+import { appToDb, dbToApp } from "../../util/caseTransform";
 
 export class ClassesOffline {
   static save(rows: Class[]) {
@@ -32,9 +32,13 @@ export class ClassesOffline {
     txn(rows);
   }
 
-  static getUpdatedSince(lastSynced: string) {
-    return DB.getConnection()
+  static getUpdatedSince(lastSynced: string): Class[] {
+    const rows = DB.getConnection()
       .prepare(`SELECT * FROM classes WHERE updated_at > ?`)
-      .all(lastSynced);
+      .all(lastSynced) as Record<string, any>[];
+
+    if (!rows) return [];
+
+    return rows.map((row) => dbToApp<Class>(row))
   }
 }

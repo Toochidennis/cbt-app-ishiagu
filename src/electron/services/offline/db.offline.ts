@@ -1,4 +1,4 @@
-import { isDev } from '@/electron/util/util';
+import { isDev } from '../../../electron/util/util';
 import Database from 'better-sqlite3';
 import { app } from 'electron';
 import path from 'path';

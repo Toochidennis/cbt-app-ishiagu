@@ -76,8 +76,8 @@ const StudentDashboard: React.FC = () => {
                 examScheduleId: schedule.id,
             });
 
-            const start = dayjs(schedule.startTime);
-            const end = dayjs(schedule.endTime);
+            const start = dayjs(schedule.time);
+            const end = start.add(6, 'hour');
 
             let status: ExamWithStatus["status"];
 
@@ -124,8 +124,7 @@ const StudentDashboard: React.FC = () => {
             });
 
             const start = dayjs(schedule.examDate);
-            const end = dayjs(schedule.endTime);
-            const durationMinutes = end.diff(start, "minute");
+            const end = start.add(6, 'hour');
 
             let status: ExamHistoryItem["status"];
             if (attempt?.status === 1 || attempt?.status === "completed") {
@@ -149,7 +148,7 @@ const StudentDashboard: React.FC = () => {
                 title: schedule.description,
                 date: start.format("YYYY-MM-DD"),
                 time: start.format("h:mm A"),
-                duration: `${durationMinutes} minutes`,
+                duration: `${schedule.durationMinutes} minutes`,
                 status,
             });
         }

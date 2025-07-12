@@ -1,33 +1,43 @@
 import { SettingsOffline } from "../offline/settings.offline";
 import { SettingsOnline } from "../online/settings.online";
-import { SyncMeta } from "./syncMeta";
+import type { SyncMeta } from "../sqlite/models";
+import { Sync } from "./sync.sync";
 
 
 export class SettingsSync {
     static async pullOnlineToOffline() {
-        const lastSynced = SyncMeta.getLastSynced('settings');
+        const lastSynced = Sync.getLastSynced('settings');
         const rows = await SettingsOnline.fetchSince(lastSynced);
         if (rows.length) {
             SettingsOffline.save(rows);
             const latest = rows.reduce(
-                (max, r) => (r.updated_at > max ? r.updated_at : max),
+                (max, r) => (r.updatedAt! > max ? r.updatedAt! : max),
                 lastSynced
             );
-            SyncMeta.updateLastSynced('settings', latest);
+
+            const payload: SyncMeta = {
+                tableName: 'settings',
+                lastSynced: latest
+            }
+            Sync.updateLastSynced(payload);
         }
         console.log('✔ settings pulled');
     }
 
     static async pushOfflineToOnline() {
-        const lastPushed = SyncMeta.getLastPushed('settings');
+        const lastPushed = Sync.getLastPushed('settings');
         const rows = SettingsOffline.getUpdatedSince(lastPushed);
         if (rows.length) {
             await SettingsOnline.upsert(rows);
             const latest = rows.reduce(
-                (max, r) => (r.updated_at > max ? r.updated_at : max),
+                (max, r) => (r.updatedAt! > max ? r.updatedAt! : max),
                 lastPushed
             );
-            SyncMeta.updateLastPushed('settings', latest);
+            const payload: SyncMeta = {
+                tableName: 'settings',
+                lastSyncedToServer: latest
+            }
+            Sync.updateLastPushed(payload);
         }
         console.log('✔ settings pushed');
     }

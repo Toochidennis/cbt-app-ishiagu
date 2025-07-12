@@ -1,5 +1,5 @@
 export class Grade {
-    id!: string;
+    id?: string;
     grade!: string;
     minScore!: number;
     maxScore!: number;

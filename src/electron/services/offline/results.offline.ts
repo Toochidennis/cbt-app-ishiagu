@@ -1,5 +1,5 @@
 import { DB } from "./db.offline";
-import { appToDb } from "../../../electron/util/caseTransform";
+import { appToDb, dbToApp } from "../../../electron/util/caseTransform";
 import type { Result } from "../sqlite/models";
 
 export class ResultsOffline {
@@ -65,13 +65,16 @@ export class ResultsOffline {
     txn(rows);
   }
 
-  static getUpdatedSince(lastSynced: string) {
-    const db = DB.getConnection();
-    return db
+  static getUpdatedSince(lastSynced: string): Result[] {
+    const rows = DB.getConnection()
       .prepare(`
         SELECT * FROM results
         WHERE updated_at > ?
       `)
-      .all(lastSynced);
+      .all(lastSynced) as Record<string, any>[];
+
+    if (!rows) return [];
+
+    return rows.map((row) => dbToApp<Result>(row))
   }
 }

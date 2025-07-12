@@ -1,5 +1,5 @@
-import { appToDb } from "../../util/caseTransform";
-import type { Assessment } from "../sqlite/models";
+import { appToDb, dbToApp } from "../../util/caseTransform";
+import { Assessment } from "../sqlite/models";
 import { DB } from "./db.offline";
 
 export class AssessmentsOffline {
@@ -33,17 +33,20 @@ export class AssessmentsOffline {
 
     const txn = db.transaction((assessments: Assessment[]) => {
       for (const row of assessments) {
-        const dbRow = appToDb(row);
-        stmt.run(dbRow);
+        stmt.run(appToDb(row));
       }
     });
 
     txn(rows);
   }
 
-  static getUpdatedSince(lastSynced: string) {
-    return DB.getConnection()
+  static getUpdatedSince(lastSynced: string): Assessment[] {
+    const rows = DB.getConnection()
       .prepare(`SELECT * FROM assessments WHERE updated_at > ?`)
-      .all(lastSynced);
+      .all(lastSynced) as Record<string, any>[];
+
+    if (!rows) return [];
+
+    return rows.map((row) => dbToApp<Assessment>(row))
   }
 }

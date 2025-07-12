@@ -9,5 +9,6 @@ export * from  './result.model';
 export * from  './setting.model';
 export * from  './subject.model';
 export * from  './user.model';
-export * from './examAttempt.model'
-export * from './examScheduleWithSubject.model'
+export * from './examAttempt.model';
+export * from './examScheduleWithSubject.model';
+export * from './syncMeta.model';

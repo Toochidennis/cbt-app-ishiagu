@@ -191,9 +191,9 @@ CREATE TABLE IF NOT EXISTS exam_attempts (
 );
 
 -- SYNC META
-CREATE TABLE sync_meta (
+CREATE TABLE IF NOT EXISTS sync_meta (
     table_name TEXT PRIMARY KEY,
-    last_synced BIGINT,
+    last_synced TEXT,
     last_synced_to_server TEXT
 );
 

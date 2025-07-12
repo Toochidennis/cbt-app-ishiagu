@@ -1,6 +1,6 @@
 import type { ExamSchedule } from "../sqlite/models";
 import { DB } from "./db.offline";
-import { appToDb } from "../../../electron/util/caseTransform";
+import { appToDb, dbToApp } from "../../../electron/util/caseTransform";
 
 export class ExamSchedulesOffline {
   static save(rows: ExamSchedule[]) {
@@ -56,9 +56,13 @@ export class ExamSchedulesOffline {
     txn(rows);
   }
 
-  static getUpdatedSince(lastSynced: string) {
-    return DB.getConnection()
+  static getUpdatedSince(lastSynced: string): ExamSchedule[] {
+    const rows = DB.getConnection()
       .prepare(`SELECT * FROM exam_schedules WHERE updated_at > ?`)
-      .all(lastSynced);
+      .all(lastSynced) as Record<string, any>[];
+
+    if (!rows) return [];
+
+    return rows.map((row) => dbToApp<ExamSchedule>(row))
   }
 }

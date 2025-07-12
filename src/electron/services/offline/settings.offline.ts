@@ -1,6 +1,6 @@
 import type { Setting } from "../sqlite/models";
 import { DB } from "./db.offline";
-import { appToDb } from "../../../electron/util/caseTransform";
+import { appToDb, dbToApp } from "../../../electron/util/caseTransform";
 
 export class SettingsOffline {
   static save(rows: Setting[]) {
@@ -43,9 +43,13 @@ export class SettingsOffline {
     txn(rows);
   }
 
-  static getUpdatedSince(lastSynced: string) {
-    return DB.getConnection()
+  static getUpdatedSince(lastSynced: string): Setting[] {
+    const rows = DB.getConnection()
       .prepare(`SELECT * FROM settings WHERE updated_at > ?`)
-      .all(lastSynced);
+      .all(lastSynced) as Record<string, any>[];
+
+    if (!rows) return [];
+
+    return rows.map((row) => dbToApp<Setting>(row))
   }
 }

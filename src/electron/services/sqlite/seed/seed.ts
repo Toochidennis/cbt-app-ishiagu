@@ -1,7 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import { Subject, Class, Assessment, Grade, Setting } from "../models";
 import Database from 'better-sqlite3';
-import { SubjectRepository, ClassRepository, AssessmentRepository, GradeRepository, SettingRepository } from "../repositories";
+import { SubjectRepository, ClassRepository, AssessmentRepository, GradeRepository, SettingRepository, UserRepository } from "../repositories";
 
 const gradeData = [
     {
@@ -112,7 +112,7 @@ export function seedSettings(db: Database.Database) {
     const gradeRepo = new GradeRepository(db);
     const assessmentRepo = new AssessmentRepository(db);
     const settingRepo = new SettingRepository(db);
-
+    const userRepo = new UserRepository(db);
     const classRepo = new ClassRepository(db);
     const subjectRepo = new SubjectRepository(db);
 
@@ -209,6 +209,28 @@ export function seedSettings(db: Database.Database) {
         }
     } catch (e) {
         console.error(`Error inserting setting: ${setting.schoolName}`, e);
+    }
+
+    try {
+        const result = userRepo.create({
+            regNumber: '',
+            role: 'admin',
+            surname: 'Admin',
+            firstName: 'Ishiagu',
+            classId: '',
+            gender: 'male',
+            username: 'CSS/2024/2025/admin',
+            passwordHash: 'Ishi79843',
+            isActive: 1
+        })
+
+        if (result.changes > 0) {
+            console.log(`Inserted user:`);
+        } else {
+            console.log(`user not inserted:`);
+        }
+    } catch (error) {
+
     }
 }
 
