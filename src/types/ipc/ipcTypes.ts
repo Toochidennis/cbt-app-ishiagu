@@ -205,14 +205,17 @@ export interface IpcChannels {
         input: CreateQuestion;
         result: CreateResult;
     };
+
     'question:create-many': {
         input: CreateQuestion[];
         result: CreateResult;
     };
+
     'question:get': {
-        input: {examScheduleId:string};
+        input: { examScheduleId: string };
         result: GetResult<CreateQuestion[]>;
     };
+
     'subject:create': {
         input: CreateSubject;
         result: CreateResult;
@@ -248,13 +251,23 @@ export interface IpcChannels {
         result: CreateResult;
     };
 
+    'result:get': {
+        input: {classId: string};
+        result: GetResult<CreateResults[]>;
+    };
+
     'setting:get': {
         input: CreateSetting;
         result: GetResult<CreateSetting>;
     };
 
+    'exam-attempt:create': {
+        input: CreateExamAttempt;
+        result: CreateResult;
+    };
+
     'exam-attempt:get': {
-        input: {studentId:string, examScheduleId: string};
+        input: { studentId: string, examScheduleId: string };
         result: GetResult<ExamAttempt>;
     };
 }

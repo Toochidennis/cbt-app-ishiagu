@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import dayjs from "dayjs";
 import { useAuthStore } from "@/states/AuthStore";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +9,7 @@ dayjs.extend(duration);
 
 interface ExamHistoryItem {
     id: string;
+    studentId: string;
     subjectId: string;
     classId: string;
     term: number;
@@ -42,6 +43,8 @@ const StudentDashboard: React.FC = () => {
         upcoming: 0,
         inProgress: 0,
     });
+    const [open, setOpen] = useState(false);
+    const menuRef = useRef<HTMLDivElement | null>(null);
 
     const user = useAuthStore((state) => state.user);
     const settings = useAuthStore((state) => state.settings);
@@ -60,7 +63,6 @@ const StudentDashboard: React.FC = () => {
             term: settings.term,
             year: settings.year,
         });
-        console.log('Schedules ', examSchedules);
 
         if (!examSchedules) return {
             total: 0, completed: 0, missed: 0, upcoming: 0, inProgress: 0
@@ -138,6 +140,7 @@ const StudentDashboard: React.FC = () => {
 
             history.push({
                 id: schedule.id,
+                studentId: user.id!,
                 subjectId: schedule.subjectId,
                 classId: schedule.classId,
                 term: schedule.term,
@@ -166,9 +169,21 @@ const StudentDashboard: React.FC = () => {
 
     // Placeholder for launching an exam
     const startExam = (exam: ExamHistoryItem) => {
-        console.log("Start exam:", exam);
         navigate('/exam', { state: { exam } });
     };
+
+    useEffect(() => {
+        const handler = (e: MouseEvent) => {
+            if (!menuRef.current?.contains(e.target as Node)) {
+                setOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handler);
+        return () => {
+            document.removeEventListener('mousedown', handler);
+        };
+    }, []);
 
 
     // Render student dashboard
@@ -182,16 +197,35 @@ const StudentDashboard: React.FC = () => {
                             CBT Examination System
                         </h1>
                     </div>
-                    <div className="flex items-center">
+                    <div className="relative flex items-center" ref={menuRef}>
                         <div className="mr-4 text-right">
                             <p className="text-sm font-medium text-gray-900">{studentName}</p>
                             <p className="text-xs text-gray-500">Student ID: {studentId}</p>
                         </div>
-                        <div className="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center text-white">
+                        <button
+                            onClick={() => setOpen((prev) => !prev)}
+                            className="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center text-white focus:outline-none"
+                        >
                             <span className="text-sm font-medium">
                                 {studentName[0]}
                             </span>
-                        </div>
+                        </button>
+
+                        {open && (
+                            <div className="absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                                <div className="py-1">
+                                    <button
+                                        onClick={() => {
+                                            setOpen(false);
+                                            logout();
+                                        }}
+                                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    >
+                                        Logout
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </header>

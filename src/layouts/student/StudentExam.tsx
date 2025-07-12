@@ -1,3 +1,4 @@
+import type { CreateExamAttempt, CreateResults } from "@/types/ipc/ipcTypes";
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2'
@@ -100,7 +101,6 @@ const StudentExam: React.FC = () => {
     // Answer handler
     const handleAnswerSelect = (questionId: string, optionId: string) => {
         setAnswers((prev) => ({ ...prev, [questionId]: optionId }));
-        console.log('Answers:', answers);
     };
 
     // Navigation handlers
@@ -146,18 +146,38 @@ const StudentExam: React.FC = () => {
             }
         });
 
+        const studentResult: CreateResults = {
+            studentId: currentExam.studentId,
+            subjectId: currentExam.subjectId,
+            classId: currentExam.classId,
+            term: currentExam.term,
+            year: currentExam.year,
+            exam: totalScore
+        }
 
+        const { id: resultId } = await window.api.invoke('result:create', studentResult)
 
+        if (resultId) {
+            const studentAttempt: CreateExamAttempt = {
+                examScheduleId: currentExam.id,
+                studentId: currentExam.studentId,
+                status: 1
+            }
 
-        await Swal.fire({
-            title: 'Submitted!',
-            text: 'Your exam has been submitted successfully.',
-            icon: 'success',
-            timer: 2000,
-            showConfirmButton: false,
-        });
+            const { id: attemptId } = await window.api.invoke('exam-attempt:create', studentAttempt)
 
-        //  navigate('/student'); // or results page
+            if (attemptId) {
+                await Swal.fire({
+                    title: 'Submitted!',
+                    text: 'Your exam has been submitted successfully.',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false,
+                });
+
+                navigate('/student');
+            }
+        }
     };
 
     const saveAndExit = () => {

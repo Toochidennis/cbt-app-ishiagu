@@ -1,13 +1,18 @@
 schema:
-  -  https://lvmfvgcmadzkcxlrjoje.supabase.co/graphql/v1:
+  - https://lvmfvgcmadzkcxlrjoje.supabase.co/graphql/v1:
       headers:
-        apiKey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx2bWZ2Z2NtYWR6a2N4bHJqb2plIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3MTY5OTEsImV4cCI6MjA2NzI5Mjk5MX0.cWDq8BAY2ApYS4yi_MGQiKDtvBwWF8nRJuQK_kVTfhI
-        Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx2bWZ2Z2NtYWR6a2N4bHJqb2plIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3MTY5OTEsImV4cCI6MjA2NzI5Mjk5MX0.cWDq8BAY2ApYS4yi_MGQiKDtvBwWF8nRJuQK_kVTfhI
+        apiKey: eyJhb2bWX0.cWDq8BAY2ApYS4yi_MGQiKDtvBwWF8nRJuQK_kVTfhI
+        Authorization: BearermA2NzI5
 
-documents: "src/graphql/**/*.graphql"
+documents: "src/electron/services/graphql/**/*.graphql"
+
 generates:
-  ./src/services/graphql/schema.graphql:
+  ./src/generated/graphql.ts:
     plugins:
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
+    config:
+      withHooks: true
+      withComponent: false
+      withHOC: false

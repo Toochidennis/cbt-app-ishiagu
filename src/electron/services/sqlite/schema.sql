@@ -122,7 +122,7 @@ CREATE TABLE
         grade TEXT NOT NULL,
         remark TEXT,
         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-        updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT DEFAULT CURRENT_TIMESTAMP
     );
 
 -- RESULTS TABLE
@@ -174,7 +174,7 @@ CREATE TABLE
         term INTEGER NOT NULL,
         year INTEGER NOT NULL,
         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-        updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT DEFAULT CURRENT_TIMESTAMP
     );
 
 -- EXAM ATTEMPTS
@@ -189,3 +189,11 @@ CREATE TABLE IF NOT EXISTS exam_attempts (
     FOREIGN KEY (exam_schedule_id) REFERENCES exam_schedules (id),
     FOREIGN KEY (student_id) REFERENCES users (id)
 );
+
+-- SYNC META
+CREATE TABLE sync_meta (
+    table_name TEXT PRIMARY KEY,
+    last_synced BIGINT,
+    last_synced_to_server TEXT
+);
+

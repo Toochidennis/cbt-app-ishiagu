@@ -9,3 +9,4 @@ export * from './result.repository';
 export * from './setting.repository';
 export * from './subject.repository';
 export * from './user.repository';
+export * from './examAttempt.repository';

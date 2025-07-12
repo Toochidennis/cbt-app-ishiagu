@@ -4,7 +4,7 @@ import { v4 as uuid } from 'uuid';
 import { isDev } from './util/util';
 import { getPreloadPath } from './util/pathResolver';
 import { LocalDatabase } from './services/sqlite/Database';
-import { type CreateExamAttempt, type CreateExamSchedule, type CreateQuestion, type CreateUser, type IpcChannels } from '../types/ipc/ipcTypes';
+import { type CreateQuestion, type CreateUser, type IpcChannels } from '../types/ipc/ipcTypes';
 import {
     ClassRepository,
     CourseAssignmentRepository,
@@ -15,13 +15,13 @@ import {
     SubjectRepository,
     UserRepository,
     SettingRepository,
+    ExamAttemptRepository
 } from './services/sqlite/repositories';
 
 import {
     Class, CourseAssignment, CourseRegistration, ExamSchedule,
-    Question, Result, Subject, User,
+    Question, Result, Subject, User, ExamAttempt
 } from './services/sqlite/models';
-import { ExamAttemptRepository } from './services/sqlite/repositories/examAttempt.repository';
 //import { seedSettings } from './services/sqlite/seed/seed';
 
 let mainWindow: BrowserWindow;
@@ -189,9 +189,18 @@ function exposeIpcHandlers() {
             const result = resultRepo.create(model);
             return { id: model.id, changes: result.changes };
         },
+        'result:get': async (_e, {classId}) => {
+            const result = resultRepo.findByClass(classId!);
+            return { data: result };
+        },
         'setting:get': async () => {
             const result = settingRepo.getCurrent();
             return { data: result };
+        },
+        'exam-attempt:create': async (_e, data) => {
+            const model = new ExamAttempt({ id: uuid(), ...data });
+            const result = examAttemptRepo.create(model);
+            return { id: model.id!, changes: result.changes };
         },
         'exam-attempt:get': async (_e, {studentId, examScheduleId}) => {
             const result = examAttemptRepo.findAttemptById(examScheduleId, studentId);

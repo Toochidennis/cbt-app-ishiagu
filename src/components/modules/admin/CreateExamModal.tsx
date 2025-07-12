@@ -8,6 +8,7 @@ import Select from 'react-select'
 import type { SelectOption } from "@/types/shared";
 import { toast } from "react-toastify";
 import type { CreateExamSchedule, CreateQuestion } from "@/types/ipc/ipcTypes";
+import { useAuthStore } from "@/states/AuthStore";
 
 
 const CreateExamModal: React.FC<CreateExamProps> = ({
@@ -27,6 +28,7 @@ const CreateExamModal: React.FC<CreateExamProps> = ({
 
     const [subjectsList, setSubjectsList] = React.useState<SelectOption[]>([]);
     const [classesList, setClassesList] = React.useState<SelectOption[]>([]);
+    const settings = useAuthStore((state) => state.settings);
 
     async function getSubjects() {
         try {
@@ -76,65 +78,68 @@ const CreateExamModal: React.FC<CreateExamProps> = ({
         const toastId = toast.loading('Scheduling exam...');
 
         try {
-            const examSchedule: CreateExamSchedule = {
-                description: data.name,
-                examDate: data.date,
-                durationMinutes: data.duration,
-                year: 2025,
-                term: 3,
-                subjectId: subject.value,
-                classId: classes.value,
-            };
+            if (settings) {
+                const examSchedule: CreateExamSchedule = {
+                    description: data.name,
+                    examDate: data.date,
+                    durationMinutes: data.duration,
+                    year: settings.year,
+                    term: settings.term,
+                    subjectId: subject.value,
+                    classId: classes.value,
+                    time: data.time
+                };
 
-            const { id } = await window.api.invoke('exam-schedule:create', examSchedule);
+                const { id } = await window.api.invoke('exam-schedule:create', examSchedule);
 
-            const reader = new FileReader();
+                const reader = new FileReader();
 
-            reader.onload = async (event) => {
-                try {
-                    const json = JSON.parse(event.target?.result as string);
-                    const questions: CreateQuestion[] = [];
+                reader.onload = async (event) => {
+                    try {
+                        const json = JSON.parse(event.target?.result as string);
+                        const questions: CreateQuestion[] = [];
 
-                    for (const question of json) {
-                        const opts = [
-                            { label: "A", value: question.option_1 },
-                            { label: "B", value: question.option_2 },
-                            { label: "C", value: question.option_3 },
-                            { label: "D", value: question.option_4 },
-                        ];
+                        for (const question of json) {
+                            const opts = [
+                                { label: "A", value: question.option_1 },
+                                { label: "B", value: question.option_2 },
+                                { label: "C", value: question.option_3 },
+                                { label: "D", value: question.option_4 },
+                            ];
 
-                        questions.push({
-                            examScheduleId: id,
-                            questionText: question.question,
-                            options: JSON.stringify(opts),
-                            marks: 2,
-                            correctOption: question.answer,
+                            questions.push({
+                                examScheduleId: id,
+                                questionText: question.question,
+                                options: JSON.stringify(opts),
+                                marks: 2,
+                                correctOption: question.answer,
+                            });
+                        }
+
+                        const results = await window.api.invoke('question:create-many', questions);
+                        console.log('Inserted questions:', results);
+
+                        toast.update(toastId, {
+                            render: "Exam scheduled successfully!",
+                            type: "success",
+                            isLoading: false,
+                            autoClose: 3000,
+                        });
+
+                        reset();
+                    } catch (error) {
+                        console.error("Invalid JSON or failed insert:", error);
+                        toast.update(toastId, {
+                            render: "Error scheduling exam!",
+                            type: "error",
+                            isLoading: false,
+                            autoClose: 3000,
                         });
                     }
+                };
 
-                    const results = await window.api.invoke('question:create-many', questions);
-                    console.log('Inserted questions:', results);
-
-                    toast.update(toastId, {
-                        render: "Exam scheduled successfully!",
-                        type: "success",
-                        isLoading: false,
-                        autoClose: 3000,
-                    });
-
-                    reset();
-                } catch (error) {
-                    console.error("Invalid JSON or failed insert:", error);
-                    toast.update(toastId, {
-                        render: "Error scheduling exam!",
-                        type: "error",
-                        isLoading: false,
-                        autoClose: 3000,
-                    });
-                }
-            };
-
-            reader.readAsText(file);
+                reader.readAsText(file);
+            }
         } catch (error) {
             console.error("Error creating exam schedule:", error);
             toast.update(toastId, {
