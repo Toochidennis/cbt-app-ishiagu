@@ -1,10 +1,10 @@
 import { Supabase } from "./superbaseClient.online";
 
-export class UsersOnline {
+export class CourseRegistrationsOnline {
     static async fetchSince(timestamp: string) {
         const client = Supabase.getClient();
         const { data, error } = await client
-            .from('users')
+            .from('course_registrations')
             .select('*')
             .gt('updated_at', timestamp);
 
@@ -14,10 +14,13 @@ export class UsersOnline {
 
     static async upsert(rows: any[]) {
         if (!rows.length) return;
+
         const client = Supabase.getClient();
         const { error } = await client
-            .from('users')
-            .upsert(rows, { onConflict: 'id' });
+            .from('course_registrations')
+            .upsert(rows, {
+                onConflict: 'student_id,subject_id,term,year',
+            });
 
         if (error) throw error;
     }
