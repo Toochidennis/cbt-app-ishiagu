@@ -23,7 +23,9 @@ export class ExamAttemptsOffline {
             @created_at,
             @updated_at
           )
-          ON CONFLICT(exam_schedule_id, student_id) DO UPDATE SET
+          ON CONFLICT(id) DO UPDATE SET
+            exam_schedule_id = excluded.exam_schedule_id,
+            student_id = excluded.student_id,
             status = excluded.status,
             created_at = excluded.created_at,
             updated_at = excluded.updated_at;

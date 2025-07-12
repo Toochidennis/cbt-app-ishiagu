@@ -27,7 +27,7 @@ export class ExamAttemptsOnline {
         const { error } = await client
             .from('exam_attempts')
             .upsert(payload, {
-                onConflict: ['exam_schedule_id', 'student_id'].join(','),
+                onConflict: 'id',
             });
 
         if (error) throw new Error(`Supabase error inserting exam_attempts: ${error.message}`);

@@ -26,7 +26,7 @@ export class ResultsOnline {
         const { error } = await client
             .from('results')
             .upsert(payload, {
-                onConflict: ['student_id', 'subject_id', 'class_id', 'term', 'year'].join(',')
+                onConflict: 'id'
             });
 
         if (error) throw new Error(`Supabase error inserting results: ${error.message}`);

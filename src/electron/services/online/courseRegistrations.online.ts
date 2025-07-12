@@ -23,10 +23,12 @@ export class CourseRegistrationsOnline {
         const client = Supabase.getClient();
         const payload = rows.map(appToDb);
 
+        //console.log(payload);
+
         const { error } = await client
             .from('course_registrations')
             .upsert(payload, {
-                onConflict: ['student_id', 'subject_id', 'term', 'year'].join(','),
+                onConflict: 'id',
             });
 
         if (error) throw new Error(`Supabase error inserting course_registrations: ${error.message}`);

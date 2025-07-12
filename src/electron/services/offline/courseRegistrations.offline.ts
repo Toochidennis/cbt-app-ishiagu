@@ -8,26 +8,30 @@ export class CourseRegistrationsOffline {
 
         const stmt = db.prepare(`
             INSERT INTO course_registrations (
-            id,
-            student_id,
-            subject_id,
-            term,
-            year,
-            created_at,
-            updated_at
+                id,
+                student_id,
+                subject_id,
+                term,
+                year,
+                created_at,
+                updated_at
             )
             VALUES (
-            @id,
-            @student_id,
-            @subject_id,
-            @term,
-            @year,
-            @created_at,
-            @updated_at
+                @id,
+                @student_id,
+                @subject_id,
+                @term,
+                @year,
+                @created_at,
+                @updated_at
             )
-            ON CONFLICT(student_id, subject_id, term, year) DO UPDATE SET
-            created_at = excluded.created_at,
-            updated_at = excluded.updated_at;
+            ON CONFLICT(id) DO UPDATE SET
+                student_id = excluded.student_id,
+                subject_id = excluded.subject_id,
+                term = excluded.term,
+                year = excluded.year,
+                created_at = excluded.created_at,
+                updated_at = excluded.updated_at;
     `);
 
         const txn = db.transaction((regs: CourseRegistration[]) => {

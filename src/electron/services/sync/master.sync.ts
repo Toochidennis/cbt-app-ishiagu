@@ -34,8 +34,8 @@ export class MasterSync {
         await SubjectsSync.pushOfflineToOnline();
         await SettingsSync.pushOfflineToOnline();
         await GradesSync.pullOnlineToOffline();
-        await UsersSync.pushOfflineToOnline();
         await AssessmentsSync.pushOfflineToOnline();
+        await UsersSync.pushOfflineToOnline();
         await CourseAssignmentsSync.pushOfflineToOnline();
         await CourseRegistrationsSync.pushOfflineToOnline();
         await ExamSchedulesSync.pushOfflineToOnline();

@@ -6,9 +6,9 @@ import type { SyncMeta } from "../sqlite/models";
 export class UsersSync {
     static async pullOnlineToOffline() {
         const lastSynced = Sync.getLastSynced('users');
+        console.log('last online sync ', lastSynced);
         const rows = await UsersOnline.fetchSince(lastSynced);
         if (rows.length) {
-            console.log()
             UsersOffline.save(rows);
             const latest = rows.reduce(
                 (max, r) => (r.updatedAt! > max ? r.updatedAt! : max),

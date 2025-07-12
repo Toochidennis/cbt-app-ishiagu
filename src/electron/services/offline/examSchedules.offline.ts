@@ -35,8 +35,10 @@ export class ExamSchedulesOffline {
           @created_at,
           @updated_at
         )
-        ON CONFLICT(subject_id, class_id, term, year) DO UPDATE SET
+        ON CONFLICT(id) DO UPDATE SET
           description = excluded.description,
+          subject_id = excluded.subject_id,
+          class_id = excluded.class_id,
           exam_date = excluded.exam_date,
           time = excluded.time,
           duration_minutes = excluded.duration_minutes,

@@ -22,7 +22,10 @@ export class CourseAssignmentsOffline {
             @created_at,
             @updated_at
           )
-          ON CONFLICT(staff_id, subject_id, class_id) DO UPDATE SET
+          ON CONFLICT(id) DO UPDATE SET
+            staff_id = excluded.staff_id,
+            subject_id = excluded.subject_id,
+            class_id = excluded.class_id,
             created_at = excluded.created_at,
             updated_at = excluded.updated_at;
     `);

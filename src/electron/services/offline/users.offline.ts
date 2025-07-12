@@ -49,6 +49,7 @@ export class UsersOffline {
   }
 
   static getUpdatedSince(lastSynced: string): User[] {
+    console.log('last synced ', lastSynced)
     const rows = DB.getConnection()
       .prepare(`SELECT * FROM users WHERE updated_at > ?`)
       .all(lastSynced) as Record<string, any>[];

@@ -42,8 +42,12 @@ export class ResultsOffline {
         @created_at,
         @updated_at
       )
-      ON CONFLICT(student_id, subject_id, class_id, term, year)
-      DO UPDATE SET
+      ON CONFLICT(id) DO UPDATE SET
+        student_id = excluded.student_id,
+        subject_id = excluded.subject_id,
+        class_id = excluded.class_id,
+        term = excluded.term,
+        year = excluded.year,
         ca1 = excluded.ca1,
         ca2 = excluded.ca2,
         exam = excluded.exam,

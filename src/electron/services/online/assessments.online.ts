@@ -1,5 +1,5 @@
-import type { Assessment } from "../sqlite/models";
 import { appToDb, dbToApp } from "../../../electron/util/caseTransform";
+import type { Assessment } from "../sqlite/models";
 import { Supabase } from "./superbaseClient.online";
 
 export class AssessmentsOnline {
@@ -26,7 +26,7 @@ export class AssessmentsOnline {
         const { error } = await client
             .from('assessments')
             .upsert(payload, {
-                onConflict: ['subject_id', 'class_id', 'assessment_name'].join(','),
+                onConflict: 'id',
             });
 
         if (error) throw new Error(`Supabase error inserting assessments: ${error.message}`);
