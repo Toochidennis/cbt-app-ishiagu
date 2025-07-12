@@ -2,14 +2,14 @@ import type { SelectOption } from "@/types/shared";
 
 export interface UserFormData {
     id?: string;
-    surname: string;
+    surname?: string;
     middleName?: string | null;
-    firstName: string;
+    firstName?: string;
     gender: "Male" | "Female";
     dateOfBirth?: string | null;
     contact?: string | null;
-    role: "Admin" | "Staff" | "Student";
-    classes: SelectOption[];
+    role: "admin" | "staff" | "student";
+    classes: SelectOption;
     address?: string | null;
     state: string;
     lga?: string | null;

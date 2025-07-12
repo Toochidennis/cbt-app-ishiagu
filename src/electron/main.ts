@@ -54,7 +54,7 @@ app.on('ready', async () => {
 
     await runFullSync();
     startSyncInterval();
-    seedSettings(db.getConnection());
+   // seedSettings(db.getConnection());
 
     mainWindow = new BrowserWindow({
         webPreferences: {
@@ -190,6 +190,7 @@ function exposeIpcHandlers() {
         },
         'user:login': async (_e, { username, password }) => {
             const user = userRepo.findByUsername(username);
+            console.log(user);
             if (!user) return { data: [], error: 'User not found' }
 
             const isValid = password === user.passwordHash;

@@ -3,12 +3,12 @@ import * as yup from "yup";
 export const userSchema = yup.object().shape({
     surname: yup
         .string()
-        .length(3, "Surname must be more than 2 letters"),
+        .nullable(),
     //.required("Surname is required"),
     middleName: yup.string().nullable(),
     firstName: yup
         .string()
-        .length(3, "First name must be more than 2 letters"),
+        .nullable(),
     //.required("First name is required"),
     gender: yup
         .string()
@@ -22,16 +22,12 @@ export const userSchema = yup.object().shape({
     contact: yup.string().nullable(),
     role: yup
         .string()
-        .oneOf(["Admin", "Staff", "Student", ""])
-        .required("Role is required")
-        .notOneOf([""], "Role is required"),
-    classes: yup.array()
-        .of(
-            yup.object({
-                value: yup.string().required(),
-                label: yup.string().required()
-            })
-        )
+        .nullable()
+        .oneOf(["admin", "staff", "student", ""]),
+    classes: yup.object({
+        value: yup.string().required(),
+        label: yup.string().required()
+    })
         .when("role", {
             is: "Student",
             then: (schema) => schema.required("Class is required for students"),

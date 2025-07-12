@@ -25,7 +25,10 @@ export class AssessmentsOffline {
         @created_at,
         @updated_at
       )
-      ON CONFLICT(subject_id, class_id, assessment_name) DO UPDATE SET
+      ON CONFLICT(id) DO UPDATE SET
+        subject_id = excluded.subject_id,
+        class_id = excluded.class_id,
+        assessment_name = excluded.assessment_name,
         max_score = excluded.max_score,
         created_at = excluded.created_at,
         updated_at = excluded.updated_at;

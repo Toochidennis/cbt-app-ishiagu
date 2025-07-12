@@ -32,7 +32,7 @@ function App() {
         {/* Admin routes*/}
         <Route element={<ProtectedRoute allowedRoles={['admin']} />} >
           <Route
-            path="/"
+            path="/admin"
             element={
               <Layout>
                 <Dashboard />

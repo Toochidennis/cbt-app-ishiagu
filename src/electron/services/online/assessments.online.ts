@@ -25,7 +25,7 @@ export class AssessmentsOnline {
 
         const { error } = await client
             .from('assessments')
-            .upsert(appToDb(payload), {
+            .upsert(payload, {
                 onConflict: ['subject_id', 'class_id', 'assessment_name'].join(','),
             });
 

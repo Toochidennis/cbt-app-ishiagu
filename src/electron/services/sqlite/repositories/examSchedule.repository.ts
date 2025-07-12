@@ -13,10 +13,10 @@ export class ExamScheduleRepository {
         const dbExamSchedule = appToDb(examSchedule);
         return this.db.prepare(`
             INSERT INTO exam_schedules (
-            id, description, subject_id, class_id, exam_date,
+            id, description, subject_id, class_id, exam_date, time,
             duration_minutes, year, term, created_by
             ) VALUES (
-            @id, @description, @subject_id, @class_id, @exam_date,
+            @id, @description, @subject_id, @class_id, @exam_date, @time,
             @duration_minutes, @year, @term, @created_by
             )
         `).run(dbExamSchedule);

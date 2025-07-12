@@ -51,10 +51,11 @@ const Login: React.FC = () => {
             const userRole = user.role as "admin" | "staff" | "student";
             login(userRole); // your custom auth handler
 
+
             // Navigation based on role
             switch (userRole) {
                 case "admin":
-                    navigate("/", { replace: true });
+                    navigate("/admin", { replace: true });
                     break;
                 case "staff":
                     navigate("/staff", { replace: true });

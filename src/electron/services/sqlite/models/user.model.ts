@@ -6,7 +6,7 @@ export class User {
     surname!: string;
     firstName!: string;
     middleName?: string;
-    classId!: string;
+    classId?: string;
     gender!: 'male' | 'female';
     dateOfBirth?: string;
     contact?: string;

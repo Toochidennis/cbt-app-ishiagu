@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import { useAuthStore } from '@/states/AuthStore';
 
 type HeaderProps = {
   sidebarCollapsed: boolean;
@@ -18,6 +19,9 @@ const Header: React.FC<HeaderProps> = ({
   notificationsOpen,
   profileMenuOpen,
 }) => {
+
+  const logout  = useAuthStore(state => state.logout);
+  
   return (
     <header
       className={`bg-white fixed top-0 left-0 right-0 z-10 shadow-sm transition-all duration-300 ${
@@ -115,8 +119,8 @@ const Header: React.FC<HeaderProps> = ({
                 </a>
                 <div className="border-t border-gray-100 my-1"></div>
                 <a
-                  href="#logout"
-                  className="block px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-700"
+                  onClick={logout}
+                  className="block px-4 cursor-pointer py-2 text-gray-700 hover:bg-red-50 hover:text-red-700"
                 >
                   <i className="fas fa-sign-out-alt mr-2"></i> Logout
                 </a>
