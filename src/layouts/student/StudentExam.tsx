@@ -1,5 +1,5 @@
 import type { CreateExamAttempt, CreateResults } from "@/types/ipc/ipcTypes";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2'
 
@@ -102,21 +102,19 @@ const StudentExam: React.FC = () => {
         return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
     };
 
-    // Answer handler
-    const handleAnswerSelect = (questionId: string, optionId: string) => {
-        setAnswers((prev) => ({ ...prev, [questionId]: optionId }));
-    };
-
-    // Navigation handlers
-    const goToNextQuestion = () => {
+    const goToNextQuestion = useCallback(() => {
         if (currentQuestionIndex < questions.length - 1)
             setCurrentQuestionIndex((prev) => prev + 1);
-    };
+    }, [currentQuestionIndex, questions.length]);
 
-    const goToPreviousQuestion = () => {
+    const goToPreviousQuestion = useCallback(() => {
         if (currentQuestionIndex > 0)
             setCurrentQuestionIndex((prev) => prev - 1);
-    };
+    }, [currentQuestionIndex]);
+
+    const handleAnswerSelect = useCallback((questionId: string, optionId: string) => {
+        setAnswers((prev) => ({ ...prev, [questionId]: optionId }));
+    }, []);
 
     const goToQuestion = (index: number) => setCurrentQuestionIndex(index);
 
@@ -195,6 +193,37 @@ const StudentExam: React.FC = () => {
     if (!currentExam || loading) {
         return <div className="p-8 text-center text-gray-500">Loading exam...</div>;
     }
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            const key = event.key.toUpperCase();
+
+            // Arrow keys
+            if (key === "ArrowLeft") {
+                goToPreviousQuestion();
+            } else if (key === "ArrowRight") {
+                goToNextQuestion();
+            }
+
+            // Letter keys (A–Z for options)
+            const currentOpts = currentQuestion?.options || [];
+            const selected = currentOpts.find(opt => opt.id.toUpperCase() === key);
+            if (selected) {
+                handleAnswerSelect(currentQuestion.id, selected.id);
+            }
+
+            // Enter key for submit (only on last question)
+            if (key === "ENTER" && currentQuestionIndex === questions.length - 1) {
+                submitExam();
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [currentQuestion, goToNextQuestion, goToPreviousQuestion, handleAnswerSelect]);
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col">

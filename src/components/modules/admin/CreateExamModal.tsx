@@ -99,6 +99,10 @@ const CreateExamModal: React.FC<CreateExamProps> = ({
                         const json = JSON.parse(event.target?.result as string);
                         const questions: CreateQuestion[] = [];
 
+                        let marks = 2;
+                        if (json.length === 20) marks = 3;
+                        else if (json.length === 15) marks = 4;
+
                         for (const question of json) {
                             const opts = [
                                 { label: "A", value: question.option_1 },
@@ -115,7 +119,7 @@ const CreateExamModal: React.FC<CreateExamProps> = ({
                                     passage: question.passage ?? ''
                                 }),
                                 options: JSON.stringify(opts),
-                                marks: 2,
+                                marks,
                                 correctOption: question.answer,
                             });
                         }
