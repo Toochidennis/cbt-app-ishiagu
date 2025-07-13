@@ -48,6 +48,7 @@ dist-react/
 dist-electron/
 src/electron/services/online/superbaseClient.online.ts
 
+
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
 

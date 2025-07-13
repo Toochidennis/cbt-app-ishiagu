@@ -109,7 +109,11 @@ const CreateExamModal: React.FC<CreateExamProps> = ({
 
                             questions.push({
                                 examScheduleId: id,
-                                questionText: question.question,
+                                questionText: JSON.stringify({
+                                    text: question.question,
+                                    image: question.image,
+                                    passage: question.passage ?? ''
+                                }),
                                 options: JSON.stringify(opts),
                                 marks: 2,
                                 correctOption: question.answer,

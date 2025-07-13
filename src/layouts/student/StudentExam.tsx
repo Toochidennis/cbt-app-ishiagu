@@ -10,8 +10,9 @@ interface Option {
 
 interface ExamQuestionItem {
     id: string;
-    type: string;
-    content: string;
+    text: string;
+    image: string;
+    passage: string;
     options: Option[];
     correctAnswer: number;
 }
@@ -42,6 +43,7 @@ const StudentExam: React.FC = () => {
         });
 
         const quests: ExamQuestionItem[] = results.map((quest: any) => {
+            const parsedQuestion = JSON.parse(quest.questionText);
             const parsedOptions = JSON.parse(quest.options);
             const options: Option[] = parsedOptions.map((opt: any) => ({
                 id: opt.label,
@@ -50,8 +52,9 @@ const StudentExam: React.FC = () => {
 
             return {
                 id: quest.id,
-                type: question
-                content: quest.questionText,
+                text: parsedQuestion.text,
+                image: parsedQuestion.image,
+                passage: parsedQuestion.passage,
                 options,
                 correctAnswer: quest.correctOption,
             };
@@ -222,8 +225,28 @@ const StudentExam: React.FC = () => {
                 <div className="flex-grow max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div className="bg-white shadow rounded-lg p-6 mb-6">
                         <h2 className="text-lg font-medium text-gray-800 mb-4">
-                            Question {currentQuestionIndex + 1}: {currentQuestion.content}
+                            Question {currentQuestionIndex + 1}:
                         </h2>
+
+                        {currentQuestion.image && (
+                            <img
+                                src={currentQuestion.image}
+                                alt={`Question ${currentQuestionIndex + 1}`}
+                                className="mb-4 rounded shadow max-w-full h-auto"
+                            />
+                        )}
+
+                        {currentQuestion.passage && currentQuestion.passage.length > 0 && (
+                            <div className="mb-4 p-4 bg-gray-100 border-l-4 border-blue-500 text-gray-800 rounded">
+                                <strong>Passage:</strong>
+                                <p className="mt-2 whitespace-pre-line">{currentQuestion.passage}</p>
+                            </div>
+                        )}
+
+                        <p className="text-lg font-medium text-gray-700 mb-4">
+                            {currentQuestion.text}
+                        </p>
+
                         <div className="space-y-4">
                             {currentQuestion.options.map((option) => (
                                 <div
