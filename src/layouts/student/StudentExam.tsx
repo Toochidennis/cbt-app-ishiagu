@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2'
 
-
 interface Option {
     id: string;
     text: string;
@@ -11,7 +10,8 @@ interface Option {
 
 interface ExamQuestionItem {
     id: string;
-    text: string;
+    type: string;
+    content: string;
     options: Option[];
     correctAnswer: number;
 }
@@ -50,7 +50,8 @@ const StudentExam: React.FC = () => {
 
             return {
                 id: quest.id,
-                text: quest.questionText,
+                type: question
+                content: quest.questionText,
                 options,
                 correctAnswer: quest.correctOption,
             };
@@ -80,7 +81,7 @@ const StudentExam: React.FC = () => {
                 setTimeRemaining((prev) => {
                     if (prev <= 1) {
                         clearInterval(timer);
-                        submitExam();
+                        saveAndExit();
                         return 0;
                     }
                     return prev - 1;
@@ -129,6 +130,10 @@ const StudentExam: React.FC = () => {
 
         if (!result.isConfirmed) return;
 
+        saveAndExit();
+    };
+
+    const saveAndExit = async () => {
         let totalScore = 0;
 
         questions.forEach((question) => {
@@ -180,10 +185,6 @@ const StudentExam: React.FC = () => {
         }
     };
 
-    const saveAndExit = () => {
-        submitExam();
-    };
-
     const currentQuestion = questions[currentQuestionIndex];
     const attemptedQuestionsCount = Object.keys(answers).length;
     const progressPercentage = (attemptedQuestionsCount / questions.length) * 100;
@@ -221,7 +222,7 @@ const StudentExam: React.FC = () => {
                 <div className="flex-grow max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div className="bg-white shadow rounded-lg p-6 mb-6">
                         <h2 className="text-lg font-medium text-gray-800 mb-4">
-                            Question {currentQuestionIndex + 1}: {currentQuestion.text}
+                            Question {currentQuestionIndex + 1}: {currentQuestion.content}
                         </h2>
                         <div className="space-y-4">
                             {currentQuestion.options.map((option) => (

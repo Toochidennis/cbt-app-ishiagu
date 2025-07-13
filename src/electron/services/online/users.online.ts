@@ -17,13 +17,11 @@ export class UsersOnline {
     }
 
     static async upsert(rows: User[]) {
-        console.log('Heelo, ',rows);
         if (!rows.length) return;
 
         const client = Supabase.getClient();
         const payload = rows.map(appToDb)
-
-        console.log('hshshshjdhdjhdhd ', payload);
+        
         const { error } = await client
             .from('users')
             .upsert(payload, { onConflict: 'id' });

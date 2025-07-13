@@ -2,42 +2,77 @@ import { SubjectsOffline } from "../offline/subjects.offline";
 import { SubjectsOnline } from "../online/subjects.online";
 import type { SyncMeta } from "../sqlite/models";
 import { Sync } from "./sync.sync";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+dayjs.extend(utc);
 
 export class SubjectsSync {
+    static tableName = "subjects";
+
     static async pullOnlineToOffline() {
-        const lastSynced = Sync.getLastSynced('subjects');
+        let lastSynced = Sync.getLastSynced(this.tableName);
+
+        if (lastSynced) {
+            lastSynced = dayjs.utc(lastSynced).toISOString();
+        }
+
         const rows = await SubjectsOnline.fetchSince(lastSynced);
+
         if (rows.length) {
-            SubjectsOffline.save(rows);
+            const cleanedRows = rows.map(row => ({
+                ...row,
+                updatedAt: dayjs.utc(row.updatedAt!).toISOString(),
+            }));
+
+            SubjectsOffline.save(cleanedRows);
+
             const latest = rows.reduce(
-                (max, r) => (r.updatedAt! > max ? r.updatedAt! : max),
-                lastSynced
+                (max, r) =>
+                    dayjs.utc(r.updatedAt!).isAfter(dayjs.utc(max))
+                        ? r.updatedAt!
+                        : max,
+                lastSynced || "1970-01-01T00:00:00.000Z"
             );
 
             const payload: SyncMeta = {
-                tableName: 'subjects',
-                lastSynced: latest
-            }
+                tableName: this.tableName,
+                lastSynced: dayjs.utc(latest).toISOString(),
+            };
+
             Sync.updateLastSynced(payload);
         }
-        console.log('✔ subjects pulled');
+
+        console.log("✔ subjects pulled");
     }
 
     static async pushOfflineToOnline() {
-        const lastPushed = Sync.getLastPushed('subjects');
+        let lastPushed = Sync.getLastPushed(this.tableName);
+
+        if (lastPushed) {
+            lastPushed = dayjs.utc(lastPushed).toISOString();
+        }
+
         const rows = SubjectsOffline.getUpdatedSince(lastPushed);
+
         if (rows.length) {
             await SubjectsOnline.upsert(rows);
+
             const latest = rows.reduce(
-                (max, r) => (r.updatedAt! > max ? r.updatedAt! : max),
-                lastPushed
+                (max, r) =>
+                    dayjs.utc(r.updatedAt!).isAfter(dayjs.utc(max))
+                        ? r.updatedAt!
+                        : max,
+                lastPushed || "1970-01-01T00:00:00.000Z"
             );
+
             const payload: SyncMeta = {
-                tableName: 'subjects',
-                lastSyncedToServer: latest
-            }
+                tableName: this.tableName,
+                lastSyncedToServer: dayjs.utc(latest).toISOString(),
+            };
+
             Sync.updateLastPushed(payload);
         }
-        console.log('✔ subjects pushed');
+
+        console.log("✔ subjects pushed");
     }
 }

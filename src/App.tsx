@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { HashRouter, Routes, Route } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '@fortawesome/fontawesome-free/css/all.min.css'
@@ -20,7 +20,7 @@ import Exams from '@/layouts/admin/Exams';
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <ToastContainer />
 
       <Routes>
@@ -96,7 +96,7 @@ function App() {
         </Route>
         <Route path='*' element={<Unauthorized />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 

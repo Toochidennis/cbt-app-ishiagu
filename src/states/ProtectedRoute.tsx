@@ -17,7 +17,7 @@ const ProtectedRoute: React.FC<Props> = ({ allowedRoles }) => {
         return <Outlet />
     }
     
-    return <Navigate to="unauthorized" replace />
+    return <Navigate to="/unauthorized" replace />
 }
 
 export default ProtectedRoute;

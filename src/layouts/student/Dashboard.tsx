@@ -3,9 +3,9 @@ import dayjs from "dayjs";
 import { useAuthStore } from "@/states/AuthStore";
 import { useNavigate } from "react-router-dom";
 import type { CreateExamScheduleWithSubject, CreateSetting, CreateUser } from "@/types/ipc/ipcTypes";
-import duration from "dayjs/plugin/duration";
+import utc from 'dayjs/plugin/utc'
 import FormattedDate from "@/components/commons/FormattedDate";
-dayjs.extend(duration);
+dayjs.extend(utc);
 
 interface ExamHistoryItem {
     id: string;
@@ -56,8 +56,6 @@ const StudentDashboard: React.FC = () => {
 
     // Fetch stats
     async function getExamSchedulesAndStats(user: CreateUser, settings: CreateSetting): Promise<ExamStats> {
-        const now = dayjs();
-
         const { data: examSchedules } = await window.api.invoke("exam-schedule:get", {
             classId: user.classId,
             term: settings.term,
@@ -76,10 +74,11 @@ const StudentDashboard: React.FC = () => {
                 examScheduleId: schedule.id,
             });
 
-            const start = dayjs(schedule.time);
+            const start = dayjs(`${schedule.examDate} ${schedule.time}`, "YYYY-MM-DD HH:mm");
             const end = start.add(6, 'hour');
 
             let status: ExamWithStatus["status"];
+            const now = dayjs.utc();
 
             if (attempt?.status === 1 || attempt?.status === "completed") {
                 status = "Completed";
@@ -105,8 +104,6 @@ const StudentDashboard: React.FC = () => {
 
     // Fetch exam history
     async function getExamHistory(user: CreateUser, settings: CreateSetting): Promise<ExamHistoryItem[]> {
-        const now = dayjs();
-
         const { data: examSchedules } = await window.api.invoke("exam-schedule:get", {
             classId: user.classId,
             term: settings.term,
@@ -123,10 +120,12 @@ const StudentDashboard: React.FC = () => {
                 examScheduleId: schedule.id,
             });
 
-            const start = dayjs(schedule.examDate);
+            const start = dayjs(`${schedule.examDate} ${schedule.time}`, "YYYY-MM-DD HH:mm");
             const end = start.add(6, 'hour');
 
             let status: ExamHistoryItem["status"];
+            const now = dayjs.utc(); // compare in same timezone
+
             if (attempt?.status === 1 || attempt?.status === "completed") {
                 status = "Completed";
             } else if (now.isBefore(start)) {
@@ -146,8 +145,8 @@ const StudentDashboard: React.FC = () => {
                 year: schedule.year,
                 subject: schedule.subjectName,
                 title: schedule.description,
-                date: start.format("YYYY-MM-DD"),
-                time: start.format("h:mm A"),
+                date: start.local().format("YYYY-MM-DD"),
+                time: start.local().format("h:mm A"),
                 duration: `${schedule.durationMinutes} minutes`,
                 status,
             });

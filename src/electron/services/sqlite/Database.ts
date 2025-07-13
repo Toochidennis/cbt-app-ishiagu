@@ -9,9 +9,7 @@ export class LocalDatabase {
     private db: Database.Database;
 
     constructor() {
-        const dbPath = isDev()
-            ? path.join(app.getAppPath(), '/dist-electron/data/cbt.sqlite')
-            : path.join(process.resourcesPath, "data", "cbt.sqlite");
+        const dbPath = path.join(app.getPath('userData'), 'data', 'cbt.sqlite');
 
         // Ensure parent folders exist
         fs.mkdirSync(path.dirname(dbPath), { recursive: true });

@@ -30,7 +30,8 @@ import {
     User,
     ExamAttempt
 } from './services/sqlite/models';
-import { seedSettings } from './services/sqlite/seed/seed';
+import log from 'electron-log'
+//import { seedSettings } from './services/sqlite/seed/seed';
 
 let mainWindow: BrowserWindow;
 let db: LocalDatabase;
@@ -46,16 +47,9 @@ let settingRepo: SettingRepository;
 let examAttemptRepo: ExamAttemptRepository;
 
 const now = new Date().toISOString();
+const gotTheLock = app.requestSingleInstanceLock();
 
-app.on('ready', async () => {
-    db = new LocalDatabase();
-
-    initRepos();
-
-    await runFullSync();
-    startSyncInterval();
-   // seedSettings(db.getConnection());
-
+function createWindow() {
     mainWindow = new BrowserWindow({
         webPreferences: {
             contextIsolation: true,
@@ -73,13 +67,46 @@ app.on('ready', async () => {
     } else {
         mainWindow.loadFile(path.join(app.getAppPath(), '/dist-react/index.html'));
     }
+}
+
+if (!gotTheLock) {
+    app.quit()
+} else {
+    app.on('second-instance', () => {
+        if (mainWindow) {
+            if (mainWindow.isMinimized()) mainWindow.restore();
+            mainWindow.show();
+            mainWindow.focus();
+        }
+    })
+
+    app.on('ready', async () => {
+        db = new LocalDatabase();
+
+        initRepos();
+
+        await runFullSync();
+        startSyncInterval();
+        //seedSettings(db.getConnection());
+
+        createWindow();
+
+        app.on('activate', () => {
+            if (BrowserWindow.getAllWindows().length === 0) createWindow();
+        });
+    });
+
+    app.on('window-all-closed', () => {
+        if (process.platform !== 'darwin') app.quit();
+    });
+}
+process.on('uncaughtException', (error) => {
+    log.error('Uncaught Exception:', error);
 });
 
 // app.on('browser-window-focus', async () => {
 //     await runFullSync();
 // });
-
-
 exposeIpcHandlers();
 
 function initRepos() {
@@ -258,7 +285,7 @@ async function runFullSync() {
 
 
 function startSyncInterval() {
-    const intervalMillis = 15 * 60 * 1000;
+    const intervalMillis = 5 * 60 * 1000;
 
     setInterval(() => {
         runFullSync();

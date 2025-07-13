@@ -5,7 +5,7 @@ CREATE TABLE
     IF NOT EXISTS users (
         id TEXT PRIMARY KEY,
         display_id INTEGER,
-        reg_number TEXT NOT NULL UNIQUE,
+        reg_number TEXT UNIQUE,
         role TEXT NOT NULL CHECK (role IN ('admin', 'staff', 'student')),
         surname TEXT NOT NULL,
         first_name TEXT NOT NULL,
@@ -17,11 +17,12 @@ CREATE TABLE
         state TEXT,
         lga TEXT,
         address TEXT,
-        username TEXT NOT NULL UNIQUE,
+        username TEXT NOT NULL,
         password_hash TEXT NOT NULL,
         is_active INTEGER NOT NULL DEFAULT 1,
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-        updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        created_at TEXT DEFAULT (STRFTIME ('%Y-%m-%dT%H:%M:%fZ', 'now')),
+        updated_at TEXT DEFAULT (STRFTIME ('%Y-%m-%dT%H:%M:%fZ', 'now')),
+        UNIQUE (class_id, username),
         FOREIGN KEY (class_id) REFERENCES classes (id)
     );
 
@@ -31,8 +32,8 @@ CREATE TABLE
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL UNIQUE,
         form_teacher TEXT,
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-        updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        created_at TEXT DEFAULT (STRFTIME ('%Y-%m-%dT%H:%M:%fZ', 'now')),
+        updated_at TEXT DEFAULT (STRFTIME ('%Y-%m-%dT%H:%M:%fZ', 'now')),
         FOREIGN KEY (form_teacher) REFERENCES users (id)
     );
 
@@ -42,8 +43,8 @@ CREATE TABLE
         id TEXT PRIMARY KEY,
         code TEXT NOT NULL UNIQUE,
         name TEXT NOT NULL UNIQUE,
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-        updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+        created_at TEXT DEFAULT (STRFTIME ('%Y-%m-%dT%H:%M:%fZ', 'now')),
+        updated_at TEXT DEFAULT (STRFTIME ('%Y-%m-%dT%H:%M:%fZ', 'now'))
     );
 
 -- COURSE ASSIGNMENTS
@@ -53,8 +54,8 @@ CREATE TABLE
         staff_id TEXT,
         subject_id TEXT,
         class_id TEXT,
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-        updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        created_at TEXT DEFAULT (STRFTIME ('%Y-%m-%dT%H:%M:%fZ', 'now')),
+        updated_at TEXT DEFAULT (STRFTIME ('%Y-%m-%dT%H:%M:%fZ', 'now')),
         UNIQUE (staff_id, subject_id, class_id),
         FOREIGN KEY (staff_id) REFERENCES users (id),
         FOREIGN KEY (subject_id) REFERENCES subjects (id),
@@ -69,8 +70,8 @@ CREATE TABLE
         subject_id TEXT,
         term INTEGER NOT NULL,
         year INTEGER NOT NULL,
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-        updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        created_at TEXT DEFAULT (STRFTIME ('%Y-%m-%dT%H:%M:%fZ', 'now')),
+        updated_at TEXT DEFAULT (STRFTIME ('%Y-%m-%dT%H:%M:%fZ', 'now')),
         UNIQUE (student_id, subject_id, term, year),
         FOREIGN KEY (student_id) REFERENCES users (id),
         FOREIGN KEY (subject_id) REFERENCES subjects (id)
@@ -89,8 +90,8 @@ CREATE TABLE
         year INTEGER NOT NULL,
         term INTEGER NOT NULL,
         created_by TEXT,
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-        updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        created_at TEXT DEFAULT (STRFTIME ('%Y-%m-%dT%H:%M:%fZ', 'now')),
+        updated_at TEXT DEFAULT (STRFTIME ('%Y-%m-%dT%H:%M:%fZ', 'now')),
         UNIQUE (subject_id, class_id, term, year),
         FOREIGN KEY (subject_id) REFERENCES subjects (id),
         FOREIGN KEY (class_id) REFERENCES classes (id),
@@ -107,8 +108,8 @@ CREATE TABLE
         correct_option TEXT NOT NULL,
         marks INTEGER DEFAULT 1,
         created_by TEXT,
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-        updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        created_at TEXT DEFAULT (STRFTIME ('%Y-%m-%dT%H:%M:%fZ', 'now')),
+        updated_at TEXT DEFAULT (STRFTIME ('%Y-%m-%dT%H:%M:%fZ', 'now')),
         FOREIGN KEY (exam_schedule_id) REFERENCES exam_schedules (id),
         FOREIGN KEY (created_by) REFERENCES users (id)
     );
@@ -121,8 +122,8 @@ CREATE TABLE
         max_score NUMERIC NOT NULL,
         grade TEXT NOT NULL,
         remark TEXT,
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-        updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+        created_at TEXT DEFAULT (STRFTIME ('%Y-%m-%dT%H:%M:%fZ', 'now')),
+        updated_at TEXT DEFAULT (STRFTIME ('%Y-%m-%dT%H:%M:%fZ', 'now'))
     );
 
 -- RESULTS TABLE
@@ -142,8 +143,8 @@ CREATE TABLE
         remarks TEXT,
         approved INTEGER DEFAULT 0,
         approved_at TEXT,
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-        updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        created_at TEXT DEFAULT (STRFTIME ('%Y-%m-%dT%H:%M:%fZ', 'now')),
+        updated_at TEXT DEFAULT (STRFTIME ('%Y-%m-%dT%H:%M:%fZ', 'now')),
         UNIQUE (student_id, subject_id, class_id, term, year),
         FOREIGN KEY (student_id) REFERENCES users (id),
         FOREIGN KEY (subject_id) REFERENCES subjects (id),
@@ -158,8 +159,8 @@ CREATE TABLE
         class_id TEXT,
         assessment_name TEXT NOT NULL,
         max_score NUMERIC NOT NULL,
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-        updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        created_at TEXT DEFAULT (STRFTIME ('%Y-%m-%dT%H:%M:%fZ', 'now')),
+        updated_at TEXT DEFAULT (STRFTIME ('%Y-%m-%dT%H:%M:%fZ', 'now')),
         UNIQUE (subject_id, class_id, assessment_name),
         FOREIGN KEY (subject_id) REFERENCES subjects (id),
         FOREIGN KEY (class_id) REFERENCES classes (id)
@@ -173,27 +174,28 @@ CREATE TABLE
         logo TEXT,
         term INTEGER NOT NULL,
         year INTEGER NOT NULL,
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-        updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+        created_at TEXT DEFAULT (STRFTIME ('%Y-%m-%dT%H:%M:%fZ', 'now')),
+        updated_at TEXT DEFAULT (STRFTIME ('%Y-%m-%dT%H:%M:%fZ', 'now'))
     );
 
 -- EXAM ATTEMPTS
-CREATE TABLE IF NOT EXISTS exam_attempts (
-    id TEXT PRIMARY KEY,
-    exam_schedule_id TEXT NOT NULL,
-    student_id TEXT NOT NULL,
-    status INTEGER NOT NULL DEFAULT 1,
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-    updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (exam_schedule_id, student_id),
-    FOREIGN KEY (exam_schedule_id) REFERENCES exam_schedules (id),
-    FOREIGN KEY (student_id) REFERENCES users (id)
-);
+CREATE TABLE
+    IF NOT EXISTS exam_attempts (
+        id TEXT PRIMARY KEY,
+        exam_schedule_id TEXT NOT NULL,
+        student_id TEXT NOT NULL,
+        status INTEGER NOT NULL DEFAULT 1,
+        created_at TEXT DEFAULT (STRFTIME ('%Y-%m-%dT%H:%M:%fZ', 'now')),
+        updated_at TEXT DEFAULT (STRFTIME ('%Y-%m-%dT%H:%M:%fZ', 'now')),
+        UNIQUE (exam_schedule_id, student_id),
+        FOREIGN KEY (exam_schedule_id) REFERENCES exam_schedules (id),
+        FOREIGN KEY (student_id) REFERENCES users (id)
+    );
 
 -- SYNC META
-CREATE TABLE IF NOT EXISTS sync_meta (
-    table_name TEXT PRIMARY KEY,
-    last_synced TEXT,
-    last_synced_to_server TEXT
-);
-
+CREATE TABLE
+    IF NOT EXISTS sync_meta (
+        table_name TEXT PRIMARY KEY,
+        last_synced TEXT,
+        last_synced_to_server TEXT
+    );
