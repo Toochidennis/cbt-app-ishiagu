@@ -25,7 +25,6 @@ export class Sync {
         if (!row) return defaultValue;
 
         const data = dbToApp<SyncMeta>(row);
-        console.log('Sync meta ', data);
         return data[column] || defaultValue;
     }
 

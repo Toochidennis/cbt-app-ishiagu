@@ -9,7 +9,7 @@ export class LocalDatabase {
     private db: Database.Database;
 
     constructor() {
-        const dbPath = path.join(app.getPath('userData'), 'data', 'cbt.sqlite');
+        const dbPath = path.join(app.getPath('userData'), 'data', 'cbt1.sqlite');
 
         // Ensure parent folders exist
         fs.mkdirSync(path.dirname(dbPath), { recursive: true });
@@ -37,7 +37,7 @@ export class LocalDatabase {
 
         const sql = fs.readFileSync(schemaPath, "utf-8");
         this.db.exec(sql);
-    }
+    } 
 
     getConnection(): Database.Database {
         return this.db;

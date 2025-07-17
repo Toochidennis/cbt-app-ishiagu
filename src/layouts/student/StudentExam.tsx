@@ -131,7 +131,7 @@ const StudentExam: React.FC = () => {
 
         if (!result.isConfirmed) return;
 
-        saveAndExit();
+        await saveAndExit();
     };
 
     const saveAndExit = async () => {
@@ -190,18 +190,15 @@ const StudentExam: React.FC = () => {
     const attemptedQuestionsCount = Object.keys(answers).length;
     const progressPercentage = (attemptedQuestionsCount / questions.length) * 100;
 
-    if (!currentExam || loading) {
-        return <div className="p-8 text-center text-gray-500">Loading exam...</div>;
-    }
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             const key = event.key.toUpperCase();
 
             // Arrow keys
-            if (key === "ArrowLeft") {
+            if (key === "ARROWLEFT") {
                 goToPreviousQuestion();
-            } else if (key === "ArrowRight") {
+            } else if (key === "ARROWRIGHT") {
                 goToNextQuestion();
             }
 
@@ -224,6 +221,10 @@ const StudentExam: React.FC = () => {
             window.removeEventListener("keydown", handleKeyDown);
         };
     }, [currentQuestion, goToNextQuestion, goToPreviousQuestion, handleAnswerSelect]);
+
+    if (!currentExam || loading) {
+        return <div className="p-8 text-center text-gray-500">Loading exam...</div>;
+    }
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col">

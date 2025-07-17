@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import type { CreateExamScheduleWithSubject, CreateSetting, CreateUser } from "@/types/ipc/ipcTypes";
 import utc from 'dayjs/plugin/utc'
 import FormattedDate from "@/components/commons/FormattedDate";
+import { toast } from 'react-toastify';
 dayjs.extend(utc);
 
 interface ExamHistoryItem {
@@ -21,11 +22,9 @@ interface ExamHistoryItem {
     duration: string;
     status: "Completed" | "Missed" | "In Progress" | "Upcoming";
 }
-
 interface ExamWithStatus extends CreateExamScheduleWithSubject {
     status: "Completed" | "Missed" | "In Progress" | "Upcoming";
 }
-
 interface ExamStats {
     total: number;
     completed: number;
@@ -57,7 +56,7 @@ const StudentDashboard: React.FC = () => {
     // Fetch stats
     async function getExamSchedulesAndStats(user: CreateUser, settings: CreateSetting): Promise<ExamStats> {
         const { data: examSchedules } = await window.api.invoke("exam-schedule:get", {
-            classId: user.classId,
+            classId: user.classId!,
             term: settings.term,
             year: settings.year,
         });
@@ -75,7 +74,7 @@ const StudentDashboard: React.FC = () => {
             });
 
             const start = dayjs(`${schedule.examDate} ${schedule.time}`, "YYYY-MM-DD HH:mm");
-            const end = start.add(6, 'hour');
+            const end = start.add(30, 'day');
 
             let status: ExamWithStatus["status"];
             const now = dayjs.utc();
@@ -105,7 +104,7 @@ const StudentDashboard: React.FC = () => {
     // Fetch exam history
     async function getExamHistory(user: CreateUser, settings: CreateSetting): Promise<ExamHistoryItem[]> {
         const { data: examSchedules } = await window.api.invoke("exam-schedule:get", {
-            classId: user.classId,
+            classId: user.classId!,
             term: settings.term,
             year: settings.year,
         });
@@ -121,7 +120,7 @@ const StudentDashboard: React.FC = () => {
             });
 
             const start = dayjs(`${schedule.examDate} ${schedule.time}`, "YYYY-MM-DD HH:mm");
-            const end = start.add(6, 'hour');
+            const end = start.add(30, 'day');
 
             let status: ExamHistoryItem["status"];
             const now = dayjs.utc(); // compare in same timezone
@@ -152,7 +151,19 @@ const StudentDashboard: React.FC = () => {
             });
         }
 
-        return history;
+        return history.sort((a, b) => {
+            const statusOrder: Record<ExamHistoryItem["status"], number> = {
+                "Upcoming": 0,
+                "In Progress": 1,
+                "Completed": 2,
+                "Missed": 3,
+            };
+
+            const statusDiff = statusOrder[a.status] - statusOrder[b.status];
+            if (statusDiff !== 0) return statusDiff;
+
+            return dayjs(`${a.date} ${a.time}`).isAfter(dayjs(`${b.date} ${b.time}`)) ? 1 : -1;
+        });
     }
 
     // On load
@@ -184,10 +195,35 @@ const StudentDashboard: React.FC = () => {
     }, []);
 
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+            refreshData();
+        }, 5 * 60 * 1000); // Refresh every 5 minutes
+
+        return () => clearInterval(interval);
+    }, [user, settings]);
+
+
+    const refreshData = () => {
+        if (user && settings) {
+            Promise.all([
+                getExamSchedulesAndStats(user, settings).then(setExamStats),
+                getExamHistory(user, settings).then(setExamHistory),
+            ])
+                .then(() => {
+                    toast.success("Exam data refreshed!");
+                })
+                .catch(() => {
+                    toast.error("Failed to refresh exam data.");
+                });
+        }
+    };
+
+
     // Render student dashboard
     return (
         <div className="min-h-screen bg-gray-50">
-            <header className="bg-white shadow">
+            <header className=" fixed top-0 left-0 right-0 z-50 bg-white shadow">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
                     <div className="flex items-center">
                         <i className="fas fa-graduation-cap text-3xl text-blue-600 mr-3"></i>
@@ -217,7 +253,7 @@ const StudentDashboard: React.FC = () => {
                                             setOpen(false);
                                             logout();
                                         }}
-                                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                        className="w-full text-left px-4 py-2 text-sm text-gray-700 bg-blue- hover:bg-gray-100"
                                     >
                                         Logout
                                     </button>
@@ -227,14 +263,14 @@ const StudentDashboard: React.FC = () => {
                     </div>
                 </div>
             </header>
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-20">
                 <div className="mb-8">
                     <h2 className="text-2xl font-bold text-gray-800 mb-2">
                         Welcome, {studentName}
                     </h2>
                     <p className="text-gray-600">{<FormattedDate />}</p>
                 </div>
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+                <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-8">
                     <div className="bg-white shadow rounded-lg p-6 flex items-center">
                         <div className="rounded-full bg-blue-100 p-3 mr-4">
                             <i className="fas fa-clipboard-list text-blue-600 text-xl"></i>
@@ -279,12 +315,30 @@ const StudentDashboard: React.FC = () => {
                             </p>
                         </div>
                     </div>
+                    <div className="bg-white shadow rounded-lg p-6 flex items-center">
+                        <div className="rounded-full bg-red-100 p-3 mr-4">
+                            <i className="fas fa-times-circle text-red-500 text-xl"></i>
+                        </div>
+                        <div>
+                            <p className="text-sm text-gray-500">Missed</p>
+                            <p className="text-2xl font-bold text-gray-800">
+                                {examStats.missed}
+                            </p>
+                        </div>
+                    </div>
                 </div>
                 <div className="bg-white shadow rounded-lg overflow-hidden">
-                    <div className="px-6 py-5 border-b border-gray-200">
+                    <div className="px-6 py-5 border-b border-gray-200 flex justify-between items-center">
                         <h3 className="text-lg font-medium text-gray-800">
                             Available Exams
                         </h3>
+                        <button
+                            onClick={refreshData}
+                            className="text-sm text-black-600 hover:bg-gray-200 rounded p-2 focus:outline-none flex items-center cursor-pointer"
+                            title="Refresh"
+                        >
+                            <i className="fas fa-sync-alt mr-2"></i> Refresh
+                        </button>
                     </div>
                     <div className="divide-y divide-gray-200">
                         {examHistory.map((exam) => (
@@ -338,7 +392,7 @@ const StudentDashboard: React.FC = () => {
                                                 href=""
                                                 data-readdy="true"
                                             >
-                                                <button className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 !rounded-button whitespace-nowrap cursor-pointer">
+                                                <button disabled className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 !rounded-button whitespace-nowrap cursor-pointer">
                                                     View Results
                                                 </button>
                                             </a>

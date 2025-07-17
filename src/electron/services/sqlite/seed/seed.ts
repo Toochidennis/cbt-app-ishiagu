@@ -83,28 +83,30 @@ const classData = [
 ]
 
 const subjects = [
-    { id: uuid(), name: "Accounting", code: "ACC" },
-    { id: uuid(), name: "Agricultural Science", code: "AGR" },
-    { id: uuid(), name: "Asusu Igbo", code: "ASU" },
-    { id: uuid(), name: "Basic Technology", code: "BTE" },
-    { id: uuid(), name: "Basic Science", code: "BSC" },
-    { id: uuid(), name: "Biology", code: "BIO" },
-    { id: uuid(), name: "Business Studies", code: "BST" },
-    { id: uuid(), name: "Cultural and Creative Arts", code: "CCA" },
-    { id: uuid(), name: "Chemistry", code: "CHE" },
-    { id: uuid(), name: "Civic Education", code: "CIV" },
-    { id: uuid(), name: "Commerce", code: "COM" },
-    { id: uuid(), name: "Computer Science", code: "CPT" },
-    { id: uuid(), name: "Christian Religious Studies", code: "CRS" },
-    { id: uuid(), name: "Economics", code: "ECO" },
-    { id: uuid(), name: "English Language", code: "ENG" },
-    { id: uuid(), name: "Geography", code: "GEO" },
-    { id: uuid(), name: "Government", code: "GOV" },
-    { id: uuid(), name: "Home Economics", code: "HEC" },
-    { id: uuid(), name: "Literature in English", code: "LIT" },
-    { id: uuid(), name: "Mathematics", code: "MAT" },
-    { id: uuid(), name: "Physical and Health Education", code: "PHE" },
-    { id: uuid(), name: "Social Studies", code: "SOS" }
+    // { id: uuid(), name: "Accounting", code: "ACC" },
+    // { id: uuid(), name: "Agricultural Science", code: "AGR" },
+    // { id: uuid(), name: "Asusu Igbo", code: "ASU" },
+    // { id: uuid(), name: "Basic Technology", code: "BTE" },
+    // { id: uuid(), name: "Basic Science", code: "BSC" },
+    // { id: uuid(), name: "Biology", code: "BIO" },
+    // { id: uuid(), name: "Business Studies", code: "BST" },
+    // { id: uuid(), name: "Cultural and Creative Arts", code: "CCA" },
+    // { id: uuid(), name: "Chemistry", code: "CHE" },
+    // { id: uuid(), name: "Civic Education", code: "CIV" },
+    // { id: uuid(), name: "Commerce", code: "COM" },
+    // { id: uuid(), name: "Computer Science", code: "CPT" },
+    // { id: uuid(), name: "Christian Religious Studies", code: "CRS" },
+    // { id: uuid(), name: "Economics", code: "ECO" },
+    // { id: uuid(), name: "English Language", code: "ENG" },
+    // { id: uuid(), name: "Geography", code: "GEO" },
+    // { id: uuid(), name: "General Test", code: "GT" },
+    // { id: uuid(), name: "Government", code: "GOV" },
+    // { id: uuid(), name: "Home Economics", code: "HEC" },
+    // { id: uuid(), name: "Literature in English", code: "LIT" },
+    // { id: uuid(), name: "Mathematics", code: "MAT" },
+    // { id: uuid(), name: "Physical and Health Education", code: "PHE" },
+    // { id: uuid(), name: "Social Studies", code: "SOS" },
+    { id: uuid(), name: "Physics", code: "PHY" },
 ];
 
 
@@ -115,23 +117,23 @@ export function seedSettings(db: Database.Database) {
     const classRepo = new ClassRepository(db);
     const subjectRepo = new SubjectRepository(db);
 
-    classData.forEach((classSeed) => {
-        const clas = new Class({
-            id: classSeed.id,
-            name: classSeed.name,
-        });
+    // classData.forEach((classSeed) => {
+    //     const clas = new Class({
+    //         id: classSeed.id,
+    //         name: classSeed.name,
+    //     });
 
-        try {
-            const result = classRepo.create(clas);
-            if (result.changes > 0) {
-                console.log(`Inserted class: ${clas.name}`);
-            } else {
-                console.log(`Class not inserted: ${clas.name}`);
-            }
-        } catch (e) {
-            console.error(`Error inserting class: ${clas.name}`, e);
-        }
-    });
+    //     try {
+    //         const result = classRepo.create(clas);
+    //         if (result.changes > 0) {
+    //             console.log(`Inserted class: ${clas.name}`);
+    //         } else {
+    //             console.log(`Class not inserted: ${clas.name}`);
+    //         }
+    //     } catch (e) {
+    //         console.error(`Error inserting class: ${clas.name}`, e);
+    //     }
+    // });
 
     subjects.forEach((seed) => {
         const sub = new Subject({
@@ -152,62 +154,62 @@ export function seedSettings(db: Database.Database) {
         }
     });
 
-    gradeData.forEach((gradeSeed) => {
-        const grade = new Grade({
-            id: gradeSeed.id,
-            grade: gradeSeed.label,
-            minScore: gradeSeed.min_score,
-            maxScore: gradeSeed.max_score,
-            remark: gradeSeed.description
-        });
+    // gradeData.forEach((gradeSeed) => {
+    //     const grade = new Grade({
+    //         id: gradeSeed.id,
+    //         grade: gradeSeed.label,
+    //         minScore: gradeSeed.min_score,
+    //         maxScore: gradeSeed.max_score,
+    //         remark: gradeSeed.description
+    //     });
 
-        try {
-            const result = gradeRepo.create(grade);
-            if (result.changes > 0) {
-                console.log(`Inserted grade: ${grade.grade}`);
-            } else {
-                console.log(`Grade not inserted: ${grade.grade}`);
-            }
-        } catch (e) {
-            console.error(`Error inserting grade: ${grade.grade}`, e);
-        }
-    });
+    //     try {
+    //         const result = gradeRepo.create(grade);
+    //         if (result.changes > 0) {
+    //             console.log(`Inserted grade: ${grade.grade}`);
+    //         } else {
+    //             console.log(`Grade not inserted: ${grade.grade}`);
+    //         }
+    //     } catch (e) {
+    //         console.error(`Error inserting grade: ${grade.grade}`, e);
+    //     }
+    // });
 
-    assessmentData.forEach((assessmentSeed) => {
-        const assessment = new Assessment({
-            id: assessmentSeed.id,
-            assessmentName: assessmentSeed.name,
-            maxScore: assessmentSeed.max_score
-        });
+    // assessmentData.forEach((assessmentSeed) => {
+    //     const assessment = new Assessment({
+    //         id: assessmentSeed.id,
+    //         assessmentName: assessmentSeed.name,
+    //         maxScore: assessmentSeed.max_score
+    //     });
 
-        try {
-            const result = assessmentRepo.create(assessment);
-            if (result.changes > 0) {
-                console.log(`Inserted assessment: ${assessment.assessmentName}`);
-            } else {
-                console.log(`Assessment not inserted: ${assessment.assessmentName}`);
-            }
-        } catch (e) {
-            console.error(`Error inserting assessment: ${assessment.assessmentName}`, e);
-        }
-    });
+    //     try {
+    //         const result = assessmentRepo.create(assessment);
+    //         if (result.changes > 0) {
+    //             console.log(`Inserted assessment: ${assessment.assessmentName}`);
+    //         } else {
+    //             console.log(`Assessment not inserted: ${assessment.assessmentName}`);
+    //         }
+    //     } catch (e) {
+    //         console.error(`Error inserting assessment: ${assessment.assessmentName}`, e);
+    //     }
+    // });
 
-    const setting = new Setting({
-        id: uuid(),
-        schoolName: 'Kings and Queens Group of Schools, (Calvary Campus/ Okue) Ishiagu, Ivo LGA, Ebonyi State',
-        term: 3,
-        year: 2025
-    });
+    // const setting = new Setting({
+    //     id: uuid(),
+    //     schoolName: 'Kings and Queens Group of Schools, (Calvary Campus/ Okue) Ishiagu, Ivo LGA, Ebonyi State',
+    //     term: 3,
+    //     year: 2025
+    // });
 
-    try {
-        const result = settingRepo.create(setting);
-        if (result.changes > 0) {
-            console.log(`Inserted setting: ${setting.schoolName}`);
-        } else {
-            console.log(`Setting not inserted: ${setting.schoolName}`);
-        }
-    } catch (e) {
-        console.error(`Error inserting setting: ${setting.schoolName}`, e);
-    }
+    // try {
+    //     const result = settingRepo.create(setting);
+    //     if (result.changes > 0) {
+    //         console.log(`Inserted setting: ${setting.schoolName}`);
+    //     } else {
+    //         console.log(`Setting not inserted: ${setting.schoolName}`);
+    //     }
+    // } catch (e) {
+    //     console.error(`Error inserting setting: ${setting.schoolName}`, e);
+    // }
 }
 

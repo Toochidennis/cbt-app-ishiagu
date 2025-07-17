@@ -3,6 +3,7 @@ import { useAuthStore } from "@/states/AuthStore";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import type { CreateSetting, CreateUser } from "@/types/ipc/ipcTypes";
+import Logo from '@/assets/logo.ico';
 
 
 const Login: React.FC = () => {
@@ -47,7 +48,7 @@ const Login: React.FC = () => {
 
             useAuthStore.getState().setUser(user as CreateUser);
             useAuthStore.getState().setSettings(settings as CreateSetting);
-            
+
             const userRole = user.role as "admin" | "staff" | "student";
             login(userRole); // your custom auth handler
 
@@ -88,15 +89,19 @@ const Login: React.FC = () => {
 
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center p-4">
+        <div className="min-h-screen bg-gradient-to-tr from-blue-100 via-white to-pink-100 flex flex-col justify-center items-center p-4">
             <div className="w-full max-w-md">
-                <div className="text-center mb-8">
-                    <i className="fas fa-graduation-cap text-5xl text-blue-600 mb-4"></i>
-                    <h1 className="text-3xl font-bold text-gray-800">
-                        CBT Examination System
+                <div className="text-center flex flex-col items-center mb-8">
+                    <img
+                        src={Logo}
+                        alt='Logo'
+                        className="mb-4 w-32 h-32 object-cover rounded-full shadow-xl ring-2 ring-blue-500 max-w-full h-auto"
+                    />
+                    <h1 className="text-4xl font-bold tracking-tight text-blue-700 drop-shadow-md">
+                        Kings and Queens Group of Schools
                     </h1>
                 </div>
-                <div className="bg-white rounded-lg shadow-lg p-8">
+                <div className="bg-white/80 backdrop-blur-md rounded-xl shadow-2xl p-8 border border-gray-200">
                     <div className="flex text-3xl font-bold text-gray-700 justify-center mb-6">Login
 
                     </div>

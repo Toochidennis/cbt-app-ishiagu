@@ -7,7 +7,7 @@ export class DB {
 
     static getConnection(): Database.Database {
         if (!DB.db) {
-            const dbPath = path.join(app.getPath('userData'), 'data', 'cbt.sqlite');
+            const dbPath = path.join(app.getPath('userData'), 'data', 'cbt1.sqlite');
             DB.db = new Database(dbPath);
         }
         return DB.db;

@@ -5,7 +5,7 @@ CREATE TABLE
     IF NOT EXISTS users (
         id TEXT PRIMARY KEY,
         display_id INTEGER,
-        reg_number TEXT UNIQUE,
+        reg_number TEXT,
         role TEXT NOT NULL CHECK (role IN ('admin', 'staff', 'student')),
         surname TEXT NOT NULL,
         first_name TEXT NOT NULL,

@@ -31,7 +31,7 @@ import {
     ExamAttempt
 } from './services/sqlite/models';
 import log from 'electron-log'
-//import { seedSettings } from './services/sqlite/seed/seed';
+import { seedSettings } from './services/sqlite/seed/seed';
 
 let mainWindow: BrowserWindow;
 let db: LocalDatabase;
@@ -87,7 +87,7 @@ if (!gotTheLock) {
 
         await runFullSync();
         startSyncInterval();
-        //seedSettings(db.getConnection());
+        //  seedSettings(db.getConnection());
 
         createWindow();
 

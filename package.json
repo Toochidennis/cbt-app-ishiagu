@@ -1,7 +1,7 @@
 {
   "name": "KingsCBT",
   "private": true,
-  "version": "0.0.2",
+  "version": "0.0.4",
   "type": "module",
   "main": "dist-electron/main.js",
   "scripts": {
@@ -45,13 +45,13 @@
     "publish": [
       {
         "provider": "generic",
-        "url": "https://linkschoolonline.com/assets/downloads/"
+        "url": "https://lvmfvgcmadzkcxlrjoje.supabase.co/storage/v1/object/public/downloads/updates/"
       }
     ]
   },
   "author": "ToochiDennis",
   "license": "ISC",
-  "description": "CBT",
+  "description": "CBT Examination System Kings and Queens Group of Schools Ishiagu",
   "dependencies": {
     "@apollo/client": "^3.13.8",
     "@fortawesome/fontawesome-free": "^6.7.2",
@@ -66,6 +66,7 @@
     "echarts": "^5.6.0",
     "electron-log": "^5.4.1",
     "electron-store": "^10.1.0",
+    "electron-updater": "^6.6.2",
     "graphql": "^16.11.0",
     "is-online": "^11.0.0",
     "react": "^19.1.0",
@@ -97,7 +98,6 @@
     "@vitejs/plugin-react-swc": "^3.9.0",
     "electron": "^36.5.0",
     "electron-builder": "^25.1.8",
-    "electron-updater": "^6.6.2",
     "eslint": "^9.25.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",

@@ -12,3 +12,4 @@ export * from './settings.sync';
 export * from './subject.sync';
 export * from './sync.sync';
 export * from './users.sync';
+export * from './syncService.sync'
