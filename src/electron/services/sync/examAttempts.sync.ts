@@ -9,6 +9,7 @@ dayjs.extend(utc);
 export class ExamAttemptsSync {
     static async pullOnlineToOffline() {
         let lastSynced = Sync.getLastSynced("exam_attempts");
+        console.log('last sync online ', lastSynced);
 
         if (lastSynced) {
             lastSynced = dayjs.utc(lastSynced).toISOString();
@@ -45,6 +46,7 @@ export class ExamAttemptsSync {
 
     static async pushOfflineToOnline() {
         let lastPushed = Sync.getLastPushed("exam_attempts");
+        console.log('last pushed ', lastPushed);
 
         if (lastPushed) {
             lastPushed = dayjs.utc(lastPushed).toISOString();

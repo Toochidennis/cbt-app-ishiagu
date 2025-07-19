@@ -119,6 +119,11 @@ const StudentDashboard: React.FC = () => {
                 examScheduleId: schedule.id,
             });
 
+            console.log("user id ", user.id);
+            console.log("schedule id ", schedule.id);
+
+            console.log('Attempted ', attempt.status);
+
             const start = dayjs(`${schedule.examDate} ${schedule.time}`, "YYYY-MM-DD HH:mm");
             const end = start.add(30, 'day');
 

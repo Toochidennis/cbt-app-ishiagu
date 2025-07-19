@@ -12,3 +12,4 @@ export * from  './user.model';
 export * from './examAttempt.model';
 export * from './examScheduleWithSubject.model';
 export * from './syncMeta.model';
+export * from './courseResult.model';

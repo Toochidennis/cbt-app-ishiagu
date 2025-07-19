@@ -2,7 +2,6 @@ import StatsCards from '@/components/modules/admin/StatsCards';
 import ExamChart from '@/components/modules/admin/ExamChart';
 import QuickActions from '@/components/modules/admin/QuickActions';
 import RecentActivities from '@/components/modules/admin/RecentActivities';
-import FormattedDate from '@/components/commons/FormattedDate';
 
 const Dashboard: React.FC = () => {
     const stats = {
