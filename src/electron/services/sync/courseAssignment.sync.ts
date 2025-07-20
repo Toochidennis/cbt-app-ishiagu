@@ -1,5 +1,5 @@
 import { CourseAssignmentsOffline } from "../offline/courseAssignments.offline";
-import { CourseAssignmentsOnline } from "../online/courseAssignment.sonline";
+import { CourseAssignmentsOnline } from "../online/courseAssignments.online";
 import type { SyncMeta } from "../sqlite/models";
 import { Sync } from "./sync.sync";
 import dayjs from "dayjs";
