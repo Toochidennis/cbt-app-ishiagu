@@ -50,7 +50,15 @@ export class CourseRegistrationRepository {
     }
 
     findAll() {
-        return this.db.prepare(`SELECT * FROM course_registrations`).all();
+        return this.db.prepare(`SELECT
+  cr.*,
+  s.name AS subject_name
+FROM course_registrations cr
+JOIN subjects s ON cr.subject_id = s.id
+WHERE cr.student_id = '339e8208-888b-442c-a281-a768ca6e5cfe'
+  AND cr.term = 3
+  AND cr.year = 2025;
+`).all();
     }
 
     findByStudent(student_id: string) {
@@ -58,6 +66,6 @@ export class CourseRegistrationRepository {
     }
 
     delete(id: string) {
-        return this.db.prepare(`DELETE FROM course_registrations WHERE id = ?`).run(id);
+        return this.db.prepare(`DELETE FROM course_registrations WHERE created_at = ?`).run(id);
     }
 }

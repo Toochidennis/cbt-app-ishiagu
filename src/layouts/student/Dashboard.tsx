@@ -55,8 +55,9 @@ const StudentDashboard: React.FC = () => {
 
     // Fetch stats
     async function getExamSchedulesAndStats(user: CreateUser, settings: CreateSetting): Promise<ExamStats> {
-        const { data: examSchedules } = await window.api.invoke("exam-schedule:get", {
+        const { data: examSchedules } = await window.api.invoke("exam-schedule:by-student", {
             classId: user.classId!,
+            studentId: user.id!,
             term: settings.term,
             year: settings.year,
         });
@@ -103,8 +104,9 @@ const StudentDashboard: React.FC = () => {
 
     // Fetch exam history
     async function getExamHistory(user: CreateUser, settings: CreateSetting): Promise<ExamHistoryItem[]> {
-        const { data: examSchedules } = await window.api.invoke("exam-schedule:get", {
+        const { data: examSchedules } = await window.api.invoke("exam-schedule:by-student", {
             classId: user.classId!,
+            studentId: user.id!,
             term: settings.term,
             year: settings.year,
         });

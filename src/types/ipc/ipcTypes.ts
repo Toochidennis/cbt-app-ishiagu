@@ -1,4 +1,4 @@
-import type { ExamAttempt } from "@/electron/services/sqlite/models";
+import type { CourseResult, ExamAttempt } from "../../electron/services/sqlite/models";
 
 export interface CreateResults {
     id?: string;
@@ -191,8 +191,8 @@ export interface IpcChannels {
         result: CreateResult;
     };
 
-    'exam-schedule:get': {
-        input: { classId: string, term: number, year: number };
+    'exam-schedule:by-student': {
+        input: { classId:string, studentId: string, term: number, year: number };
         result: GetResult<CreateExamScheduleWithSubject>;
     };
 
@@ -225,6 +225,11 @@ export interface IpcChannels {
         input?: Partial<CreateSubject>;
         result: GetResult<CreateSubject>;
     };
+
+    'subject:get-by-class': {
+        input: { classId: string, term: number, year: number };
+        result: GetResult<CreateSubject>;
+    }
 
     'user:create': {
         input: CreateUser;
@@ -269,5 +274,10 @@ export interface IpcChannels {
     'exam-attempt:get': {
         input: { studentId: string, examScheduleId: string };
         result: GetResult<ExamAttempt>;
+    };
+
+    'course-result:get': {
+        input: { classId: string, subjectId: string, year: number, term: number };
+        result: GetResult<CourseResult[]>;
     };
 }

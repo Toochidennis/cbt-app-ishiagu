@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import * as echarts from "echarts";
+import {useNavigate} from 'react-router-dom';
 
 interface ExamResult {
     id: number;
@@ -50,6 +51,8 @@ const Results: React.FC = () => {
     const [showExportOptions, setShowExportOptions] = useState(false);
     const [selectedExam, setSelectedExam] = useState<ExamDetail | null>(null);
     const [showExamDetailModal, setShowExamDetailModal] = useState(false);
+
+    const navigate = useNavigate();
 
     // Mock data for exam results
     const [examResults, setExamResults] = useState<ExamResult[]>([
@@ -716,7 +719,7 @@ const Results: React.FC = () => {
                 </div>
                 <div className="relative flex gap-4 export-options-container mt-4 md:mt-0">
                     <button
-                        onClick={(e) => console.log(e.target)}
+                        onClick={() => navigate('/results/subjects')}
                         className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow-sm flex items-center cursor-pointer !rounded-button whitespace-nowrap"
                     >
                         <i className="fas fa-upload mr-2"></i>

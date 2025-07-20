@@ -23,6 +23,14 @@ export class AssessmentRepository {
         `).run(dbAssessment);
     }
 
+    findAll(): Assessment[] {
+        const rows = this.db.prepare(`
+            SELECT assessment_name, max_score FROM assessments 
+        `).all() as Record<string, any>[];
+
+        return rows.map(row => dbToApp<Assessment>(row));
+    }
+
     findByClassAndSubject(classId: string, subjectId: string): Assessment[] {
         const rows = this.db.prepare(`
             SELECT * FROM assessments

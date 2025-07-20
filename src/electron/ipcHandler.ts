@@ -36,8 +36,7 @@ export class IPCHandler {
                 return { id: model.id, changes: result.changes };
             },
             'class:get': async () => {
-                const result = this.dbManager.classRepo.findAll();
-                return { data: result, count: result.length };
+                return { data:  this.dbManager.classRepo.findAll()};
             },
             'course-assignment:create': async (_e, data) => {
                 const model = new CourseAssignment({ id: uuid(), ...data, updatedAt: now });
@@ -65,8 +64,8 @@ export class IPCHandler {
                 const result = this.dbManager.examScheduleRepo.create(model);
                 return { id: model.id!, changes: result.changes };
             },
-            'exam-schedule:get': async (_e, { classId, term, year }) => {
-                return { data: this.dbManager.examScheduleRepo.findBySession(classId, term, year) };
+            'exam-schedule:by-student': async (_e, {classId, studentId, term, year }) => {
+                return { data: this.dbManager.examScheduleRepo.findStudentExams(classId, studentId, term, year) };
             },
             'question:create': async (_e, data) => {
                 const model = new Question({ id: uuid(), ...data, updatedAt: now });
@@ -95,6 +94,10 @@ export class IPCHandler {
             'subject:get': async () => {
                 const result = this.dbManager.subjectRepo.findAll();
                 return { data: result, count: result.length };
+            },
+            'subject:get-by-class': async (_e, { classId, term, year }) => {
+                const result = this.dbManager.subjectRepo.findByClassAndTerm(classId, term, year);
+                return { data: result };
             },
             'user:create': async (_e, data) => {
                 const model = new User({ id: uuid(), ...data, updatedAt: now });
@@ -143,6 +146,12 @@ export class IPCHandler {
             'exam-attempt:get': async (_e, { studentId, examScheduleId }) => {
                 return { data: this.dbManager.examAttemptRepo.findAttemptById(examScheduleId, studentId) };
             },
+            'course-result:get': async (_e, { classId, subjectId, year, term }) => {
+                return {
+                    data: this.dbManager
+                        .courseResultRepo.findCourseResults(classId, subjectId, year, term)
+                };
+            }
         };
 
         for (const [channel, handler] of Object.entries(channels)) {

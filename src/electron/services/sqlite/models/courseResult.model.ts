@@ -3,10 +3,11 @@ export type CourseResult = {
     regNo: string;
     resultId: string;
     totalScore: number;
+    grade?: string;
     assessments: {
-        assessment_name: string;
+        assessmentName: string;
         score: number;
-        max_score: number;
+        maxScore: number;
     }[];
 };
 
@@ -15,8 +16,8 @@ export type RawRow = {
     username: string;
     studentName: string;
     resultId: string;
+    ca1: number;
+    ca2: number;
+    exam: number;
     totalScore: number;
-    assessmentName: string;
-    maxScore: number;
-    score: number;
 };

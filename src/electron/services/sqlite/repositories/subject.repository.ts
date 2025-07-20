@@ -42,6 +42,21 @@ export class SubjectRepository {
         return dbToApp<Subject>(row);
     }
 
+    findByClassAndTerm(classId: string, term: number, year: number): Subject[] {
+        const rows = this.db.prepare(`
+            SELECT DISTINCT 
+                s.id, s.name, s.code
+            FROM course_registrations cr
+            JOIN users u ON cr.student_id = u.id
+            JOIN subjects s ON s.id = cr.subject_id
+            WHERE u.class_id = @classId
+                AND cr.term = @term
+                AND cr.year = @year
+    `).all({ classId, term, year }) as Record<string, any>[];
+
+        return rows.map(row => dbToApp<Subject>(row));
+    }
+
     update(id: string, data: Subject) {
         const fields = Object.keys(data).map(k => `${k} = @${k}`).join(', ');
         return this.db.prepare(`UPDATE subjects SET ${fields} WHERE id = @id`)

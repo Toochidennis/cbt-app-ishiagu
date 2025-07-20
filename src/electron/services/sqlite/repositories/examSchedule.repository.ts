@@ -27,18 +27,33 @@ export class ExamScheduleRepository {
             .all();
     }
 
-    findBySession(classId: string, term: number, year: number): ExamScheduleWithSubject[] {
+    findStudentExams(
+        classId: string,
+        studentId: string,
+        term: number,
+        year: number
+    ): ExamScheduleWithSubject[] {
         const rows = this.db.prepare(`
-            SELECT 
-                e.*, s.name AS subject_name
-            FROM exam_schedules e
-                INNER JOIN subjects s ON e.subject_id = s.id
-            WHERE
-                class_id = @classId AND term = @term AND year = @year
-            `).all({ classId, term, year }) as Record<string, any>[];
+        SELECT 
+            e.*, 
+            s.name AS subject_name
+        FROM course_registrations cr
+        INNER JOIN exam_schedules e 
+            ON e.subject_id = cr.subject_id
+            AND e.class_id = @classId
+        INNER JOIN subjects s 
+            ON s.id = e.subject_id
+        WHERE 
+            cr.student_id = @studentId
+            AND cr.term = @term
+            AND cr.year = @year
+            AND e.term = @term
+            AND e.year = @year
+    `).all({ classId, studentId, term, year }) as Record<string, any>[];
 
         return rows.map(row => dbToApp<ExamScheduleWithSubject>(row));
     }
+
 
     findByClass(class_id: string) {
         return this.db.prepare(`SELECT * FROM exam_schedules WHERE class_id = ?`)

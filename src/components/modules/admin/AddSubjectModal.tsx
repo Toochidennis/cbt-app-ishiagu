@@ -6,8 +6,8 @@ import { type SubjectModalProps } from '@/types/admin/ui/subject'
 import { subjectSchema } from '@/validations/subject.schema'
 
 const AddSubjectModal: React.FC<SubjectModalProps> = ({
-    showAddModal,
-    setShowAddModal
+    assignSubject,
+    setAssignSubject
 }) => {
     const {
         register,
@@ -21,12 +21,12 @@ const AddSubjectModal: React.FC<SubjectModalProps> = ({
     const onSubmit = (data: CreateSubjectDto) => {
         console.log(data)
         reset()
-        setShowAddModal((prev) => !prev)
+        setAssignSubject((prev) => !prev)
     }
 
     return (
         <>
-            {showAddModal && (
+            {assignSubject && (
                 <div className='fixed inset-0 z-50 flex items-center justify-center'>
                     {/**Backdrop */}
                     <div className='fixed inset-0 bg-black opacity-50 z-40'></div>
@@ -74,7 +74,7 @@ const AddSubjectModal: React.FC<SubjectModalProps> = ({
                                     <button
                                         type="button"
                                         onClick={() => {
-                                            setShowAddModal((prev) => !prev);
+                                            setAssignSubject((prev) => !prev);
                                             reset();
                                         }}
                                         className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"

@@ -1,36 +1,32 @@
 import { CourseRegistration } from "../sqlite/models";
 import { appToDb, dbToApp } from "../../../electron/util/caseTransform";
 import { Supabase } from "./superbaseClient.online";
+import { HelperOnline } from "./helper.online";
 
 export class CourseRegistrationsOnline {
+    private static table: string = 'course_registrations';
+
     static async fetchSince(timestamp: string): Promise<CourseRegistration[]> {
         const client = Supabase.getClient();
 
-        const { data, error } = await client
-            .from('course_registrations')
-            .select('*')
-            .gt('updated_at', timestamp);
-
-        if (error) throw new Error(`Supabase error fetching course_registrations: ${error.message}`);
-        if (!data) return [];
-
-        return data.map((row) => dbToApp<CourseRegistration>(row));
+        return await HelperOnline.fetchAllMatching<CourseRegistration>(
+            client,
+            this.table,
+            (q) => q.gt('updated_at', timestamp),
+            dbToApp
+        );
     }
 
     static async upsert(rows: CourseRegistration[]) {
         if (!rows.length) return;
 
         const client = Supabase.getClient();
-        const payload = rows.map(appToDb);
 
-        //console.log(payload);
-
-        const { error } = await client
-            .from('course_registrations')
-            .upsert(payload, {
-                onConflict: 'id',
-            });
-
-        if (error) throw new Error(`Supabase error inserting course_registrations: ${error.message}`);
+        await HelperOnline.upsertInBatches(
+            client,
+            this.table,
+            rows.map(appToDb),
+            'id'
+        );
     }
 }

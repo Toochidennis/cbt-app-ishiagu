@@ -193,8 +193,8 @@ const Subjects: React.FC = () => {
 
             {showAddModal && (
                 <AddSubjectModal
-                    showAddModal={showAddModal}
-                    setShowAddModal={setShowAddModal} />
+                    assignSubject={showAddModal}
+                    setAssignSubject={setShowAddModal} />
             )}
         </>
     );

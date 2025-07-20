@@ -16,6 +16,7 @@ import Unauthorized from '@/components/commons/Unauthorized';
 import RedirectByRole from './components/commons/RedirectByRole';
 import StudentExam from '@/layouts/student/StudentExam';
 import Exams from '@/layouts/admin/Exams';
+import ResultSubjects from '@/components/modules/admin/ResultSubjects';
 
 
 function App() {
@@ -84,6 +85,14 @@ function App() {
             element={
               <Layout>
                 <Settings />
+              </Layout>
+            }
+          />
+          <Route
+            path="/results/subjects"
+            element={
+              <Layout>
+                <ResultSubjects />
               </Layout>
             }
           />

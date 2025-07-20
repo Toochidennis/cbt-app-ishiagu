@@ -26,6 +26,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         '/users': 'User Management',
         '/results': 'Results Management',
         '/settings': 'Settings',
+        '/results/subjects': 'Subject Results',
+        '/results/upload': 'Upload Results',
     };
 
     const location = useLocation();
