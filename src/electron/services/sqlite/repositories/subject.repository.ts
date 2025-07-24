@@ -52,7 +52,8 @@ export class SubjectRepository {
             WHERE u.class_id = @classId
                 AND cr.term = @term
                 AND cr.year = @year
-    `).all({ classId, term, year }) as Record<string, any>[];
+            ORDER BY s.name
+        `).all({ classId, term, year }) as Record<string, any>[];
 
         return rows.map(row => dbToApp<Subject>(row));
     }

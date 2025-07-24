@@ -71,7 +71,7 @@ const StudentDashboard: React.FC = () => {
         for (const schedule of examSchedules) {
             const { data: attempt } = await window.api.invoke("exam-attempt:get", {
                 studentId: user.id!,
-                examScheduleId: schedule.id,
+                examScheduleId: schedule.id, 
             });
 
             const start = dayjs(`${schedule.examDate} ${schedule.time}`, "YYYY-MM-DD HH:mm");

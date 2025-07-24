@@ -10,7 +10,6 @@ const ResultSubjects: React.FC = () => {
     const navigate = useNavigate();
     const settings = useAuthStore((state) => state.settings);
 
-
     async function getSubjects(classId: string, term: number, year: number) {
         try {
             const { data } = await window.api.invoke('subject:get-by-class', { classId, term, year });
@@ -37,7 +36,6 @@ const ResultSubjects: React.FC = () => {
 
         fetchClassesAndSubjects();
     }, []);
-
 
     // Fetch subjects when selectedClass changes
     useEffect(() => {

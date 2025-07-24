@@ -193,6 +193,8 @@ CREATE TABLE
     );
 
 -- SYNC META
+DROP TABLE IF EXISTS sync_meta;
+
 CREATE TABLE
     IF NOT EXISTS sync_meta (
         table_name TEXT PRIMARY KEY,

@@ -4,7 +4,6 @@ import { SyncService } from "./services/sync";
 import { WindowManager } from "./windowManager";
 import { UpdaterService } from "./services/updater/updateService";
 
-
 export class MainApp {
     private windowManager: WindowManager;
     private dbManager: DatabaseManager;
@@ -25,12 +24,6 @@ export class MainApp {
 
         await this.syncService.runFullSync();
         this.syncService.startInterval();
-        // for (let i = 220; i <= 270; i++) {
-        //     const timestamp = `2025-07-20T06:24:20.${i.toString().padStart(3, '0')}Z`;
-        //     this.dbManager.courseRegRepo.delete(timestamp);
-        // }
-
-         console.log(this.dbManager.courseRegRepo.findAll());
 
         this.updaterService.checkNow();
         this.updaterService.startInterval();
