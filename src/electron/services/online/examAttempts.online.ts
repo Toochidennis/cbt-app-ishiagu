@@ -23,11 +23,27 @@ export class ExamAttemptsOnline {
 
         const client = Supabase.getClient();
 
-        await HelperOnline.upsertInBatches(
-            client,
-            this.table,
-            rows.map(appToDb),
-            'id'
-        );
+        const { data, error } = await
+            client.rpc('filter_new_exam_attempts', {
+                rows: rows.map(row => ({
+                    id: row.id,
+                    exam_schedule_id: row.examScheduleId,
+                    student_id: row.studentId,
+                    status: row.status,
+                    created_at: row.createdAt,
+                    updated_at: row.updatedAt,
+                })),
+            });
+
+        if (error) throw new Error('RPC failed: ' + error.message);
+
+        if (data?.length) {
+            await HelperOnline.upsertInBatches(
+                client,
+                'exam_attempts',
+                data.map(appToDb),
+                'id'
+            );
+        }
     }
 }

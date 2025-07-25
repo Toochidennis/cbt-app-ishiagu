@@ -17,68 +17,41 @@ export class ResultsOnline {
         );
     }
 
-    // static async upsert(rows: Result[]) {
-    //     if (!rows.length) return;
-
-    //     const client = Supabase.getClient();
-
-    //     await HelperOnline.upsertInBatches(
-    //         client,
-    //         this.table,
-    //         rows.map(appToDb),
-    //         'id'
-    //     );
-    // }
-
     static async upsert(rows: Result[]) {
         if (!rows.length) return;
 
         const client = Supabase.getClient();
 
-        // Step 1: Build OR filter
-        const orFilters = rows.map(row => {
-            const composite = [
-                `student_id.eq.${row.studentId}`,
-                `subject_id.eq.${row.subjectId}`,
-                `class_id.eq.${row.classId}`,
-                `term.eq.${row.term}`,
-                `year.eq.${row.year}`
-            ].join(',');
+        const { data, error } = await client
+            .rpc('filter_new_results', {
+                rows: rows.map(row => ({
+                    id: row.id,
+                    student_id: row.studentId,
+                    subject_id: row.subjectId,
+                    class_id: row.classId,
+                    term: row.term,
+                    year: row.year,
+                    ca1: row.ca1,
+                    ca2: row.ca2,
+                    exam: row.exam,
+                    grade: row.grade,
+                    remarks: row.remarks,
+                    approved: row.approved,
+                    approved_at: row.approvedAt,
+                    created_at: row.createdAt,
+                    updated_at: row.updatedAt,
+                })),
+            });
 
-            return `id.eq.${row.id},and(${composite})`;
-        });
+        if (error) throw new Error('RPC failed: ' + error.message);
 
-        // Step 2: Query for existing entries (by ID or composite key)
-        const { data: existing, error } = await client
-            .from(this.table)
-            .select('id, student_id, subject_id, class_id, term, year')
-            .or(orFilters.join(','))
-            .limit(5000); // increase if needed
-
-        if (error) throw new Error(`Error checking for existing ${this.table}: ${error.message}`);
-
-        // Step 3: Filter out existing rows from input
-        const filteredRows = rows.filter(row => {
-            const idConflict = existing?.some(e => e.id === row.id);
-            const compositeConflict = existing?.some(e =>
-                e.student_id === row.studentId &&
-                e.subject_id === row.subjectId &&
-                e.class_id === row.classId &&
-                e.term === row.term &&
-                e.year === row.year
+        if (data?.length) {
+            await HelperOnline.upsertInBatches(
+                client,
+                this.table,
+                data.map(appToDb),
+                'id'
             );
-            return !(idConflict || compositeConflict);
-        });
-
-        if (!filteredRows.length) return;
-
-        // Step 4: Proceed with upsert on `id`
-        await HelperOnline.upsertInBatches(
-            client,
-            this.table,
-            filteredRows.map(appToDb),
-            'id' // still use `id` as conflict target
-        );
+        }
     }
-
 }
