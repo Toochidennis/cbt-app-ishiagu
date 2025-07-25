@@ -34,11 +34,11 @@ export class CourseResultRepository {
                 JOIN users u ON cr.student_id = u.id
                 LEFT JOIN results r ON r.student_id = u.id
                     AND r.subject_id = cr.subject_id
-                    AND r.class_id = u.class_id
+                    AND r.class_id = cr.class_id
                     AND r.term = cr.term
                     AND r.year = cr.year
                 WHERE
-                    u.class_id = @classId
+                    cr.class_id = @classId
                     AND cr.subject_id = @subjectId
                     AND cr.term = @term
                     AND cr.year = @year

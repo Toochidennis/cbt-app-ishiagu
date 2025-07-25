@@ -11,6 +11,7 @@ export class CourseRegistrationsOffline {
                 id,
                 student_id,
                 subject_id,
+                class_id,
                 term,
                 year,
                 created_at,
@@ -20,6 +21,7 @@ export class CourseRegistrationsOffline {
                 @id,
                 @student_id,
                 @subject_id,
+                @class_id,
                 @term,
                 @year,
                 @created_at,
@@ -28,6 +30,7 @@ export class CourseRegistrationsOffline {
             ON CONFLICT(id) DO UPDATE SET
                 student_id = excluded.student_id,
                 subject_id = excluded.subject_id,
+                class_id = excluded.class_id,
                 term = excluded.term,
                 year = excluded.year,
                 created_at = excluded.created_at,

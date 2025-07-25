@@ -1,9 +1,11 @@
 import fs from 'fs';
 import path from 'path';
-import { parse } from 'json2csv';
+import * as XLSX from 'xlsx';
 import Database from 'better-sqlite3';
+import { dbToApp } from '../../../../electron/util/caseTransform';
+import type { Subject } from '../models';
 
-export class ExportScoresBySubject {
+export class ExportRepository {
     private db: Database.Database;
     private exportDir: string;
 
@@ -16,46 +18,59 @@ export class ExportScoresBySubject {
         }
     }
 
-    exportByClassId(classId: string, term = 3, year = 2025) {
-        const subjects = this.db.prepare(
+    async exportByClassId(classId: string, term = 3, year = 2025) {
+        const workbook = XLSX.utils.book_new();
+
+        const results = this.db.prepare(
             `SELECT DISTINCT s.id, s.name
             FROM course_registrations cr
             JOIN users u ON u.id = cr.student_id
             JOIN subjects s ON s.id = cr.subject_id
-            WHERE u.class_id = ?
+            WHERE cr.class_id = ?
                 AND cr.term = ?
-                AND cr.year = ?`
-        ).all(classId, term, year);
+                AND cr.year = ?
+            `).all(classId, term, year) as Record<string, any>[];
+
+        const subjects = results.map(row => dbToApp<Subject>(row));
 
         for (const subject of subjects) {
-            const rows = this.db.prepare(
-                `
-                            SELECT 
-                                u.username AS reg_number,
-                                u.surname,
-                                u.first_name,
-                                u.middle_name,
-                                s.name AS subject_name,
-                                COALESCE(r.exam, 0) AS exam_score
-                            FROM users u
-                            JOIN course_registrations cr ON cr.student_id = u.id
-                            JOIN subjects s ON s.id = cr.subject_id
-                            LEFT JOIN results r 
-                                ON r.student_id = u.id 
-                                AND r.subject_id = s.id
-                                AND r.term = ?
-                                AND r.year = ?
-                                WHERE u.class_id = ?
-                                AND s.id = ?
-                            ORDER BY u.surname, u.first_name
-        `).all(term, year, classId, subject.id);
+            const rows = this.db.prepare(`
+                    SELECT 
+                        u.username AS reg_number,
+                        u.surname,
+                        u.first_name,
+                        u.middle_name,
+                        s.name AS subject_name,
+                        COALESCE(r.exam, 0) AS exam_score
+                    FROM course_registrations cr
+                    JOIN users u ON u.id = cr.student_id
+                    JOIN subjects s ON s.id = cr.subject_id
+                    LEFT JOIN results r 
+                        ON r.student_id = u.id 
+                        AND r.subject_id = s.id
+                        AND r.class_id = cr.class_id
+                        AND r.term = cr.term
+                        AND r.year = cr.year
+                    WHERE cr.class_id = ?
+                    AND cr.subject_id = ?
+                    AND cr.term = ?
+                    AND cr.year = ?
+                    ORDER BY u.surname, u.first_name`
+            ).all(classId, subject.id, term, year);
 
-            const fileName = `${subject.name.replace(/\s+/g, '_')}.csv`;
+            if (rows.length > 0) {
+                const sheet = XLSX.utils.json_to_sheet(rows);
+                const cleanName = subject.name.replace(/[^a-z0-9]/gi, '_').substring(0, 31);
+                XLSX.utils.book_append_sheet(workbook, sheet, cleanName);
+            }
+
+            const fileName = `SSS2_Results.xlsx`;
             const filePath = path.join(this.exportDir, fileName);
-            const csv = parse(rows);
-            fs.writeFileSync(filePath, csv);
 
-            console.log(`Exported: ${filePath}`);
+            const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' });
+
+            fs.writeFileSync(filePath, buffer);
+            console.log(`✅ Excel file saved to: ${filePath}`);
         }
     }
 }

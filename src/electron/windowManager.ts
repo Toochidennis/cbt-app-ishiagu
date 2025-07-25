@@ -1,4 +1,3 @@
-// src/WindowManager.ts
 import { app, BrowserWindow } from 'electron';
 import { getPreloadPath } from './util/pathResolver';
 import path from 'path';

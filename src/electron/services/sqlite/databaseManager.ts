@@ -10,7 +10,8 @@ import {
     UserRepository,
     SettingRepository,
     ExamAttemptRepository,
-    CourseResultRepository
+    CourseResultRepository,
+    ExportRepository
 } from './repositories'
 
 export class DatabaseManager {
@@ -27,6 +28,7 @@ export class DatabaseManager {
     public settingRepo!: SettingRepository;
     public examAttemptRepo!: ExamAttemptRepository;
     public courseResultRepo!: CourseResultRepository;
+    public exportRepo!: ExportRepository;
 
     constructor() {
         this.db = new LocalDatabase();
@@ -46,5 +48,6 @@ export class DatabaseManager {
         this.settingRepo = new SettingRepository(connection);
         this.examAttemptRepo = new ExamAttemptRepository(connection);
         this.courseResultRepo = new CourseResultRepository(connection);
+        this.exportRepo = new ExportRepository(connection);
     }
 }

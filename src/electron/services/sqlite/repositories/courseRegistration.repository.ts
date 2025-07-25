@@ -13,10 +13,10 @@ export class CourseRegistrationRepository {
         const dbCourseReg = appToDb(courseReg);
         return this.db.prepare(`
             INSERT OR IGNORE INTO course_registrations (
-                id, student_id, subject_id, term, year
+                id, student_id, subject_id, class_id, term, year
             )
             VALUES (
-                @id, @student_id, @subject_id, @term, @year
+                @id, @student_id, @subject_id, @class_id, @term, @year
             )
         `).run(dbCourseReg);
     }
@@ -24,10 +24,10 @@ export class CourseRegistrationRepository {
     createMany(courseRegs: CourseRegistration[]) {
         const insert = this.db.prepare(`
             INSERT OR IGNORE INTO course_registrations (
-                id, student_id, subject_id, term, year
+                id, student_id, subject_id, class_id, term, year
             )
             VALUES (
-                @id, @student_id, @subject_id, @term, @year
+                @id, @student_id, @subject_id, @class_id, @term, @year
             )
         `);
 
@@ -47,18 +47,6 @@ export class CourseRegistrationRepository {
         });
 
         return insertMany(courseRegs);
-    }
-
-    findAll() {
-        return this.db.prepare(`SELECT
-  cr.*,
-  s.name AS subject_name
-FROM course_registrations cr
-JOIN subjects s ON cr.subject_id = s.id
-WHERE cr.student_id = '339e8208-888b-442c-a281-a768ca6e5cfe'
-  AND cr.term = 3
-  AND cr.year = 2025;
-`).all();
     }
 
     findByStudent(student_id: string) {

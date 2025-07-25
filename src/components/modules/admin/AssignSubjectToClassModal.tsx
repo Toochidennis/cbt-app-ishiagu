@@ -8,7 +8,7 @@ import { assignSubjectSchema } from '@/validations/subject.schema'
 import type { SelectOption } from '@/types/shared'
 import type { CreateCourseRegistration } from '@/types/ipc/ipcTypes'
 import { toast } from 'react-toastify'
-
+import { useAuthStore } from '@/states/AuthStore';
 
 
 const AssignSubjectToClassModal: React.FC<SubjectModalProps> = ({
@@ -26,6 +26,7 @@ const AssignSubjectToClassModal: React.FC<SubjectModalProps> = ({
 
     const [subjectsList, setSubjectsList] = useState<SelectOption[]>([]);
     const [classesList, setClassesList] = useState<SelectOption[]>([]);
+    const settings = useAuthStore((state) => state.settings);
 
     async function getSubjects() {
         try {
@@ -75,14 +76,17 @@ const AssignSubjectToClassModal: React.FC<SubjectModalProps> = ({
             for (const cls of classes) {
                 const { data: students } = await window.api.invoke('user:get', cls.value);
                 console.log('Fetched students for class', cls.label, students);
-
+                
                 for (const subject of subjects) {
                     for (const student of students) {
+                        console.log('ClassId', student.classId)
+
                         courseRegs.push({
                             studentId: student.id,
                             subjectId: subject.value,
-                            term: 3,
-                            year: 2025,
+                            classId: student.classId,
+                            term: settings!.term,
+                            year: settings!.year,
                         });
                     }
                 }
@@ -109,7 +113,6 @@ const AssignSubjectToClassModal: React.FC<SubjectModalProps> = ({
             });
         }
     };
-
 
     return (
         <>

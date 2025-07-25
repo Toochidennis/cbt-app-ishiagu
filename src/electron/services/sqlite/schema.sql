@@ -68,13 +68,15 @@ CREATE TABLE
         id TEXT PRIMARY KEY,
         student_id TEXT,
         subject_id TEXT,
+        class_id TEXT,
         term INTEGER NOT NULL,
         year INTEGER NOT NULL,
         created_at TEXT DEFAULT (STRFTIME ('%Y-%m-%dT%H:%M:%fZ', 'now')),
         updated_at TEXT DEFAULT (STRFTIME ('%Y-%m-%dT%H:%M:%fZ', 'now')),
-        UNIQUE (student_id, subject_id, term, year),
+        UNIQUE (student_id, subject_id, class_id, term, year),
         FOREIGN KEY (student_id) REFERENCES users (id),
-        FOREIGN KEY (subject_id) REFERENCES subjects (id)
+        FOREIGN KEY (subject_id) REFERENCES subjects (id),
+        FOREIGN KEY (class_id) REFERENCES classes (id)
     );
 
 -- EXAM SCHEDULES
@@ -193,7 +195,7 @@ CREATE TABLE
     );
 
 -- SYNC META
-DROP TABLE IF EXISTS sync_meta;
+-- DROP TABLE IF EXISTS sync_meta;
 
 CREATE TABLE
     IF NOT EXISTS sync_meta (
